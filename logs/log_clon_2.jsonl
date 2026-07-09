@@ -1,0 +1,28 @@
+{"evento": "NUEVO_MAPA", "mapa": "Ruta 29", "step": 1}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 182}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 209}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 7, "step": 241}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 1, "step": 291}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 1, "hp_enemigo": 0, "step": 344}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 554}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 582}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 611}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 659}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 0, "step": 708}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 799}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 829}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 8, "step": 861}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 3, "step": 942}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 3, "hp_enemigo": 0, "step": 989}
+{"evento": "NUEVO_MAPA", "mapa": "Pueblo Primavera (Exterior)", "step": 1465}
+{"evento": "NUEVO_MAPA", "mapa": "Laboratorio del Prof. Elm", "step": 1668}
+{"evento": "NUEVO_MAPA", "mapa": "Ruta 29", "step": 1}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 65}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 93}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 126}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 173}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 0, "step": 225}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 298}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 332}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 7, "step": 361}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 1, "step": 411}

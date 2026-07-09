@@ -1,0 +1,15 @@
+{"evento": "NUEVO_MAPA", "mapa": "Ruta 29", "step": 1}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 32}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 60}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 138}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 190}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 0, "step": 237}
+{"evento": "NUEVO_MAPA", "mapa": "Pueblo Primavera (Exterior)", "step": 503}
+{"evento": "NUEVO_MAPA", "mapa": "Casa del Rival", "step": 2499}
+{"evento": "NUEVO_MAPA", "mapa": "Casa del Vecino", "step": 3084}
+{"evento": "NUEVO_MAPA", "mapa": "Ruta 29", "step": 1}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 249}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 280}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 7, "step": 314}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 7, "hp_enemigo": 0, "step": 366}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 464}

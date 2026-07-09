@@ -1,0 +1,105 @@
+{"evento": "NUEVO_MAPA", "mapa": "Ruta 29", "step": 1}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 91}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 122}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 8, "hp_enemigo": 7, "step": 161}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 2, "step": 220}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 2, "hp_enemigo": 0, "step": 269}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 347}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 380}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 410}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 460}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 0, "step": 536}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 792}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 821}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 852}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 905}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 0, "step": 951}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1025}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1056}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 1088}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 1135}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 0, "step": 1185}
+{"evento": "INICIO_COMBATE", "tipo": "Entrenador", "mapa": "Ruta 29", "step": 1255}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1289}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 7, "step": 1320}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 1, "step": 1376}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 1, "hp_enemigo": 0, "step": 1425}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1544}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1578}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 7, "hp_enemigo": 6, "step": 1611}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 0, "step": 1659}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1778}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1806}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 9, "step": 1847}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 3, "step": 1898}
+{"evento": "EQUIPO_DEBILITADO", "mapa": "Ruta 29", "step": 1934}
+{"evento": "FIN_COMBATE", "mapa": "Ruta 29", "step": 1}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 279}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 313}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 11, "hp_enemigo": 3, "step": 342}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 3, "hp_enemigo": 0, "step": 402}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 486}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 524}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 13, "step": 554}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 9, "step": 626}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 5, "step": 679}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 1, "step": 758}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 1, "hp_enemigo": 0, "step": 801}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 919}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 947}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 7, "step": 976}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 1, "step": 1026}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 1, "hp_enemigo": 0, "step": 1073}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1142}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1170}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 14, "step": 1270}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 10, "step": 1322}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 6, "step": 1369}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 2, "step": 1417}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 2, "hp_enemigo": 0, "step": 1463}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 7, "step": 1823}
+{"evento": "EQUIPO_DEBILITADO", "mapa": "Ruta 29", "step": 1866}
+{"evento": "FIN_COMBATE", "mapa": "Ruta 29", "step": 1}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 556}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 585}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 617}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 666}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 0, "step": 712}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 795}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 825}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 853}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 900}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 0, "step": 985}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1095}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1124}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 7, "step": 1158}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 7, "hp_enemigo": 0, "step": 1204}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1305}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1335}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 8, "step": 1369}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 6, "hp_enemigo": 2, "step": 1426}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 2, "hp_enemigo": 0, "step": 1478}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1559}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1588}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 11, "step": 1620}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1664}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 6, "step": 1702}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 1, "step": 1756}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 1, "hp_enemigo": 0, "step": 1807}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1931}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 1961}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 10, "step": 1996}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 5, "hp_enemigo": 5, "step": 2055}
+{"evento": "EQUIPO_DEBILITADO", "mapa": "Ruta 29", "step": 2098}
+{"evento": "FIN_COMBATE", "mapa": "Ruta 29", "step": 1}
+{"evento": "NUEVO_MAPA", "mapa": "Pueblo Primavera (Exterior)", "step": 208}
+{"evento": "NUEVO_MAPA", "mapa": "Laboratorio del Prof. Elm", "step": 1633}
+{"evento": "NUEVO_MAPA", "mapa": "Ruta 29", "step": 1}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 69}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 100}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 14, "step": 134}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 7, "hp_enemigo": 7, "step": 183}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 4, "hp_enemigo": 3, "step": 235}
+{"evento": "DA\u00d1O_CAUSADO", "da\u00f1o": 3, "hp_enemigo": 0, "step": 359}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 442}
+{"evento": "INICIO_COMBATE", "tipo": "Salvaje", "mapa": "Ruta 29", "step": 475}
