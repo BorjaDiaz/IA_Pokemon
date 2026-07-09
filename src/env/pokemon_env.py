@@ -20,17 +20,16 @@ class PokemonGoldEnv(gym.Env):
     def __init__(self, rank=0):
         super().__init__()
         self.rank = rank
-        self.total_reward = 0.0
+        self.total_speedrun_reward = 0.0
         self.ultimo_tipo_combate = 0
-        
 
-        # 🧠 Memoria persistente del entorno
-        self.last_pos = (-1, -1)
-        self.last_map = (-1, -1)
-        self.visited_maps = set()
-        self.visited_tiles = set()
-        
-        # Trackeo de salud y niveles del equipo
+        # 🧠 Memoria persistente del entorno speedrun
+        self.last_speedrun_pos = (-1, -1)
+        self.last_speedrun_map = (-1, -1)
+        self.speedrun_visited_maps = set()
+        self.speedrun_visited_tiles = set()
+
+        # Trackeo de salud y niveles del equipo durante la partida
         self.vida_equipo_anterior = 999
         self.nivel_total_previo = 0
 
@@ -78,12 +77,12 @@ class PokemonGoldEnv(gym.Env):
                 with open(path, "rb") as f: self.pb.load_state(f)
 
         if hasattr(self, 'steps_count') and self.steps_count > 0:
-            print(f"🏁 [Clon {self.rank}] FIN DEL EPISODIO | Pasos: {self.steps_count} | Puntuación Final: {round(self.total_reward, 2)}")
+            print(f"🏁 [Clon {self.rank}] FIN DEL EPISODIO | Pasos: {self.steps_count} | Puntuación Speedrun Final: {round(self.total_speedrun_reward, 2)}")
 
-        # Reseteo de variables de control
+        # Reseteo de variables de control del speedrun
         self.steps_count = 0
-        self.total_reward = 0.0
-        self.last_pos, self.last_map = (-1, -1), (-1, -1)
+        self.total_speedrun_reward = 0.0
+        self.last_speedrun_pos, self.last_speedrun_map = (-1, -1), (-1, -1)
         
         self.vida_equipo_anterior = self.ram.leer_vida_total_equipo()
         self.nivel_total_previo = self.ram.leer_nivel_total_equipo()
@@ -113,11 +112,11 @@ class PokemonGoldEnv(gym.Env):
         self.steps_count += 1
         reward = c.REWARD_STEP
 
-        # 📍 Leer coordenadas y mapa actuales
+        # 📍 Leer coordenadas y mapa actuales del speedrun
         x, y = self.pb.memory[c.ADDR_PLAYER_X], self.pb.memory[c.ADDR_PLAYER_Y]
         grp, mid = self.pb.memory[c.ADDR_MAP_GRP], self.pb.memory[c.ADDR_MAP_ID]
-        curr_tile, curr_map = (grp, mid, x, y), (grp, mid)
-        map_name = c.MAP_NAMES.get(curr_map, f"Mapa {grp}-{mid}")
+        current_speedrun_tile, current_speedrun_map = (grp, mid, x, y), (grp, mid)
+        map_name = c.MAP_NAMES.get(current_speedrun_map, f"Mapa {grp}-{mid}")
 
         # Guardar coordenadas cada 5 pasos para el mapa de calor
         if self.steps_count % 5 == 0:
@@ -132,7 +131,7 @@ class PokemonGoldEnv(gym.Env):
 
         # 🗺️ 1. GESTIÓN DE MOVIMIENTO Y ATASCOS (Delegado)
         # Ahora que 'en_combate' ya está definido arriba, funciona perfecto
-        r_mov, done_atasco = self.h_movement.procesar(x, y, self.last_pos, curr_tile, self.visited_tiles, map_name, en_combate)
+        r_mov, done_atasco = self.h_movement.procesar(x, y, self.last_speedrun_pos, current_speedrun_tile, self.speedrun_visited_tiles, map_name, en_combate)
         reward += r_mov
         if done_atasco:
             return self._get_obs(), -1.0, False, True, {} # Termina el episodio por atasco
@@ -178,8 +177,8 @@ class PokemonGoldEnv(gym.Env):
             self.nivel_total_previo = nivel_actual_total
 
         # 🌍 3. GESTIÓN DE MAPAS Y FLAGS DE HISTORIA (Delegado)
-        if curr_map not in self.visited_maps:
-            self.visited_maps.add(curr_map)
+        if current_speedrun_map not in self.speedrun_visited_maps:
+            self.speedrun_visited_maps.add(current_speedrun_map)
             reward += c.REWARD_NEW_MAP
             print(f"🌍 [Clon {self.rank}] ¡Mapa descubierto! -> {map_name}")
             if self.logger: self.logger.log_step({"evento": "NUEVO_MAPA", "mapa": map_name, "step": self.steps_count})
@@ -194,8 +193,8 @@ class PokemonGoldEnv(gym.Env):
             return self._get_obs(), (reward + c.PENALTY_TEAM_FAINTED) / 10.0, False, True, {}
 
         # Guardar estado para el siguiente step
-        self.last_pos, self.last_map = (x, y), curr_map
-        self.total_reward += reward
+        self.last_speedrun_pos, self.last_speedrun_map = (x, y), current_speedrun_map
+        self.total_speedrun_reward += reward
 
         # Normalizamos la recompensa para Stable Baselines
         return self._get_obs(), reward / 10.0, False, self.steps_count >= config.MAX_STEPS_PER_EPISODE, {}

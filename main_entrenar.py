@@ -21,7 +21,6 @@ def make_env(rank):
 
 if __name__ == "__main__":
     os.makedirs(config.IA_DIR, exist_ok=True)
-    
     if config.NUM_CLONES == 1:
         env = DummyVecEnv([make_env(0)])
     else:
@@ -37,13 +36,19 @@ if __name__ == "__main__":
         # Se añade entropy coefficient para forzar que explore más y no caiga en bucles
         model = PPO("CnnPolicy", env, verbose=1, ent_coef=0.1, learning_rate=0.0003)
 
-    print("\n🔥 ¡Entrenando! Pulsa Ctrl+C en esta consola para guardar y salir.")
+    print("\n� INICIO DEL ENTRENAMIENTO SPEEDRUN")
+    print("================================")
+    print("Opciones:")
+    print("- Presiona Ctrl+C para detener y guardar el progreso")
+    print("- El modelo se guardará automáticamente al finalizar")
+    print("================================")
 
     try:
         model.learn(total_timesteps=5_000_000)
     except KeyboardInterrupt:
-        print("\n🛑 Entrenamiento detenido. Guardando progreso...")
+        print("\n🛑 Entrenamiento detenido por el usuario. Guardando progreso...")
     finally:
         model.save(model_path)
         print("💾 Cerebro guardado correctamente.")
-        env.close() 
+        env.close()
+        print("👋 Sesión de entrenamiento finalizada.") 
