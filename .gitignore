@@ -1,8 +1,13 @@
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *.log
+*.jsonl
+*.pkl
+*.zip
+*.state
 .venv/
 venv/
 .env
@@ -11,3 +16,8 @@ venv/
 .mypy_cache/
 .idea/
 .vscode/
+coordinates/
+logs/
+ia/
+eventos_descubiertos.json
+mapas_descubiertos.json
