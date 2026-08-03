@@ -1,141 +1,127 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import json
 import os
 import glob
-from matplotlib.animation import FuncAnimation
-import matplotlib.ticker as ticker
+from collections import defaultdict
 
-# Configuración visual estilo Cyberpunk / Radar
-plt.style.use('dark_background')
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
 
-# 🖼️ Ajustamos el tamaño de la figura para que tenga más altura por defecto
-fig, ax = plt.subplots(figsize=(10, 10))
-ax.set_title("RADAR DE EXPLORACIÓN (Mapa de Calor de Alta Resolución)", fontsize=14, weight='bold', pad=15)
-ax.invert_yaxis() 
+from src.utils.constantes import MAP_NAMES
 
-# 🌟 ESTA ES LA CLAVE: Forzamos a que el eje X y el eje Y tengan la misma escala.
-# Así los mapas volverán a ser cuadrados y no rectángulos aplastados.
-ax.set_aspect('equal', adjustable='box')
+OUTPUT_DIR = os.path.join("visualizaciones")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# 📏 AJUSTE DE ESCALAS Y NÚMEROS LATERALES
-ax.xaxis.set_major_locator(ticker.MultipleLocator(150))
-ax.yaxis.set_major_locator(ticker.MultipleLocator(150))
 
-# Números más grandes y blancos
-ax.tick_params(axis='both', colors='white', labelsize=11, width=2, length=6)
+def _load_metrics():
+    metrics_path = os.path.join("logs", "metrics.jsonl")
+    if not os.path.exists(metrics_path):
+        return []
 
-# Nombres de los ejes
-ax.set_xlabel("Coordenada X Global", color='#00ffff', fontsize=10, weight='bold', labelpad=10)
-ax.set_ylabel("Coordenada Y Global", color='#00ffff', fontsize=10, weight='bold', labelpad=10)
+    rows = []
+    with open(metrics_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    rows.append(json.loads(line))
+                except Exception:
+                    pass
+    return rows
 
-# Cuadrícula de fondo
-ax.grid(color='#444444', linestyle='--', linewidth=1.2, alpha=0.7)
 
-imagenes_calor = {}
-islas_descubiertas = set()
-primera_vez = True
-
-def actualizar_mapa(frame):
-    global primera_vez
-    archivos = glob.glob("coordinates/coords_clon_*.txt")
-    if not archivos: return
-        
-    x_totales = []
-    y_totales = []
-    
-    for archivo in archivos:
+def _load_coordinates():
+    points = []
+    zones = []
+    for path in glob.glob(os.path.join("coordinates", "coords_clon_*.txt")):
         try:
-            with open(archivo, "r") as f:
-                lineas = f.readlines()
-                
-            for l in lineas:
-                partes = l.strip().split(",")
-                if len(partes) == 4:
-                    x, y, grp, mid = int(partes[0]), int(partes[1]), int(partes[2]), int(partes[3])
-                    
-                    x_global = x + (mid * 150)
-                    y_global = y + (grp * 150)
-                    
-                    x_totales.append(x_global)
-                    y_totales.append(y_global)
-                    
-                    map_key = f"{grp}-{mid}"
-                    if map_key not in islas_descubiertas:
-                        islas_descubiertas.add(map_key)
-                        ax.text(mid * 150 + 5, grp * 150 + 15, f"Sector {map_key}", 
-                                color='#00ffff', fontsize=8, alpha=0.8, weight='bold',
-                                bbox=dict(facecolor='black', alpha=0.5, edgecolor='none', pad=2))
-                        
+            with open(path, "r", encoding="utf-8") as f:
+                for line in f:
+                    parts = line.strip().split(",")
+                    if len(parts) == 4:
+                        x, y, grp, mid = map(int, parts)
+                        points.append((x + mid * 150, y + grp * 150))
+                        zones.append((grp, mid))
         except Exception:
-            pass 
+            pass
+    return points, zones
 
-    if len(x_totales) > 0:
-        min_x, max_x = min(x_totales) - 20, max(x_totales) + 20
-        min_y, max_y = min(y_totales) - 20, max(y_totales) + 20
-        
-        # Alta resolución
-        resolucion_x = int((max_x - min_x) / 0.2)
-        resolucion_y = int((max_y - min_y) / 0.2)
-        
-        if resolucion_x > 5 and resolucion_y > 5:
-            heatmap, xedges, yedges = np.histogram2d(
-                x_totales, y_totales, 
-                bins=[resolucion_x, resolucion_y], 
-                range=[[min_x, max_x], [min_y, max_y]]
+
+def plot_progress_and_heatmap():
+    metrics = _load_metrics()
+    points, zones = _load_coordinates()
+
+    fig, axes = plt.subplots(2, 1, figsize=(10, 10), constrained_layout=True)
+    fig.suptitle("Progreso de la IA y mapa de calor", fontsize=14, fontweight="bold")
+
+    if metrics:
+        by_rank = defaultdict(list)
+        for row in metrics:
+            by_rank[row.get("rank", 0)].append(row)
+
+        ax_metrics = axes[0]
+        for rank, rows in sorted(by_rank.items()):
+            rows = sorted(rows, key=lambda r: (r.get("episode", 0), r.get("steps", 0)))
+            episodes = [r.get("episode", 0) for r in rows]
+            rewards = [r.get("reward", 0.0) for r in rows]
+            ax_metrics.plot(episodes, rewards, marker="o", linewidth=1.2, alpha=0.9, label=f"Clone {rank}")
+
+        ax_metrics.set_title("Recompensa por episodio")
+        ax_metrics.set_xlabel("Episodio")
+        ax_metrics.set_ylabel("Recompensa")
+        ax_metrics.grid(True, alpha=0.3)
+        ax_metrics.legend(loc="best", fontsize=8)
+    else:
+        axes[0].text(0.5, 0.5, "No hay métricas aún. Ejecuta el entrenamiento para generar datos.",
+                     ha="center", va="center", transform=axes[0].transAxes)
+        axes[0].set_title("Recompensa por episodio")
+
+    ax_heatmap = axes[1]
+    if points:
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
+        min_x, max_x = min(xs) - 20, max(xs) + 20
+        min_y, max_y = min(ys) - 20, max(ys) + 20
+        heatmap, _, _ = np.histogram2d(xs, ys, bins=80, range=[[min_x, max_x], [min_y, max_y]])
+        heatmap = np.log1p(heatmap)
+        img = ax_heatmap.imshow(heatmap.T, extent=[min_x, max_x, max_y, min_y], origin="upper", cmap="inferno", aspect="auto")
+
+        zone_positions = defaultdict(list)
+        for point, zone in zip(points, zones):
+            zone_positions[zone].append(point)
+
+        for (grp, mid), zone_points in sorted(zone_positions.items()):
+            key = (grp, mid)
+            name = MAP_NAMES.get(key, f"Zona {grp}-{mid}")
+            x_center = np.mean([p[0] for p in zone_points])
+            y_center = np.mean([p[1] for p in zone_points])
+            ax_heatmap.text(
+                x_center,
+                y_center,
+                name,
+                color="white",
+                fontsize=6,
+                fontweight="bold",
+                ha="center",
+                va="center",
+                clip_on=True,
+                alpha=0.95,
+                bbox=dict(boxstyle="round,pad=0.15", facecolor="black", alpha=0.45, edgecolor="none"),
             )
-            
-            heatmap = np.log1p(heatmap)
-            
-            if "global" in imagenes_calor:
-                imagenes_calor["global"].remove()
-                
-            imagenes_calor["global"] = ax.imshow(
-                heatmap.T, 
-                extent=[min_x, max_x, max_y, min_y], 
-                cmap='inferno', 
-                origin='upper',
-                alpha=0.98,
-                interpolation='sinc' 
-            )
 
-    # Autoajuste de cámara SOLO la primera vez
-    if primera_vez and x_totales and y_totales:
-        # Hacemos que la cámara inicial tenga un tamaño cuadrado mínimo para que no se aplaste
-        centro_x = (min(x_totales) + max(x_totales)) / 2
-        centro_y = (min(y_totales) + max(y_totales)) / 2
-        rango = 100 # Radio de visión
-        
-        ax.set_xlim(centro_x - rango, centro_x + rango)
-        ax.set_ylim(centro_y + rango, centro_y - rango)
-        primera_vez = False 
+        ax_heatmap.set_title("Mapa de calor de posiciones visitadas")
+        ax_heatmap.set_xlabel("X")
+        ax_heatmap.set_ylabel("Y")
+        fig.colorbar(img, ax=ax_heatmap, shrink=0.9)
+    else:
+        ax_heatmap.text(0.5, 0.5, "No hay coordenadas guardadas todavía.", ha="center", va="center", transform=ax_heatmap.transAxes)
+        ax_heatmap.set_title("Mapa de calor de posiciones visitadas")
+
+    output_path = os.path.join(OUTPUT_DIR, "progreso_y_mapa.png")
+    fig.savefig(output_path, dpi=220)
+    print(f"✅ Visualización guardada en {output_path}")
 
 
-# 🖱️ CONTROLES (Zoom y movimiento)
-def zoom(event):
-    if event.xdata is None or event.ydata is None: return
-    scale_factor = 0.8 if event.button == 'up' else 1.2
-    cur_xlim, cur_ylim = ax.get_xlim(), ax.get_ylim()
-    new_width = (cur_xlim[1] - cur_xlim[0]) * scale_factor
-    new_height = (cur_ylim[1] - cur_ylim[0]) * scale_factor
-    rel_x = (cur_xlim[1] - event.xdata) / (cur_xlim[1] - cur_xlim[0])
-    rel_y = (cur_ylim[1] - event.ydata) / (cur_ylim[1] - cur_ylim[0])
-    ax.set_xlim([event.xdata - new_width * (1 - rel_x), event.xdata + new_width * rel_x])
-    ax.set_ylim([event.ydata - new_height * (1 - rel_y), event.ydata + new_height * rel_y])
-    plt.draw()
-
-def presionar_tecla(event):
-    cur_xlim, cur_ylim = ax.get_xlim(), ax.get_ylim()
-    ancho, alto = cur_xlim[1] - cur_xlim[0], cur_ylim[1] - cur_ylim[0]
-    paso = 0.1 
-    if event.key == 'right': ax.set_xlim([cur_xlim[0] + ancho * paso, cur_xlim[1] + ancho * paso])
-    elif event.key == 'left': ax.set_xlim([cur_xlim[0] - ancho * paso, cur_xlim[1] - ancho * paso])
-    elif event.key == 'up': ax.set_ylim([cur_ylim[0] - alto * paso, cur_ylim[1] - alto * paso])
-    elif event.key == 'down': ax.set_ylim([cur_ylim[0] + alto * paso, cur_ylim[1] + alto * paso])
-    plt.draw()
-
-fig.canvas.mpl_connect('scroll_event', zoom)
-fig.canvas.mpl_connect('key_press_event', presionar_tecla)
-
-ani = FuncAnimation(fig, actualizar_mapa, interval=2000, cache_frame_data=False)
-
-plt.show()
+if __name__ == "__main__":
+    plot_progress_and_heatmap()

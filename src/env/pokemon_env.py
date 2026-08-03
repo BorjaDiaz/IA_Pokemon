@@ -2,6 +2,7 @@ import gymnasium as gym
 import numpy as np
 import os
 import glob
+import json
 from gymnasium import spaces
 from pyboy import PyBoy
 from pyboy.utils import WindowEvent
@@ -22,6 +23,9 @@ class PokemonGoldEnv(gym.Env):
         self.rank = rank
         self.total_speedrun_reward = 0.0
         self.ultimo_tipo_combate = 0
+        self.episode_counter = 0
+        self.episode_maps = set()
+        self.metrics_path = os.path.join(config.LOG_DIR, "metrics.jsonl")
 
         # 🧠 Memoria persistente del entorno speedrun
         self.last_speedrun_pos = (-1, -1)
@@ -64,7 +68,31 @@ class PokemonGoldEnv(gym.Env):
         # Mapeo invertido de flags para saber qué evento ocurrió
         self.tuplas_historia = {(int(v[0]), v[1]): k for k, v in c.FLAGS.items()}
 
+    def _log_episode_summary(self, reward, reason):
+        os.makedirs(config.LOG_DIR, exist_ok=True)
+        payload = {
+            "rank": self.rank,
+            "episode": self.episode_counter,
+            "steps": self.steps_count,
+            "reward": round(float(reward), 4),
+            "maps_discovered": len(self.episode_maps),
+            "total_maps_seen": len(self.speedrun_visited_maps),
+            "reason": reason,
+        }
+        try:
+            with open(self.metrics_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(payload) + "\n")
+        except Exception:
+            pass
+
     def reset(self, seed=None, options=None):
+        if hasattr(self, 'steps_count') and self.steps_count > 0:
+            self._log_episode_summary(self.total_speedrun_reward, "episode_end")
+            print(f"🏁 [Clon {self.rank}] FIN DEL EPISODIO | Pasos: {self.steps_count} | Puntuación Speedrun Final: {round(self.total_speedrun_reward, 2)}")
+
+        self.episode_counter += 1
+        self.episode_maps = set()
+
         # Limpiar coordenadas previas en el clon 0
         if self.rank == 0 and os.path.exists("coordinates"):
             for archivo in glob.glob("coordinates/*"):
@@ -75,9 +103,6 @@ class PokemonGoldEnv(gym.Env):
             path = os.path.join(config.STATES_DIR, config.CURRICULUM_STATES[config.CURRENT_STAGE])
             if os.path.exists(path):
                 with open(path, "rb") as f: self.pb.load_state(f)
-
-        if hasattr(self, 'steps_count') and self.steps_count > 0:
-            print(f"🏁 [Clon {self.rank}] FIN DEL EPISODIO | Pasos: {self.steps_count} | Puntuación Speedrun Final: {round(self.total_speedrun_reward, 2)}")
 
         # Reseteo de variables de control del speedrun
         self.steps_count = 0
@@ -134,6 +159,7 @@ class PokemonGoldEnv(gym.Env):
         r_mov, done_atasco = self.h_movement.procesar(x, y, self.last_speedrun_pos, current_speedrun_tile, self.speedrun_visited_tiles, map_name, en_combate)
         reward += r_mov
         if done_atasco:
+            self._log_episode_summary(-1.0, "stuck")
             return self._get_obs(), -1.0, False, True, {} # Termina el episodio por atasco
         
         # Pequeño control visual aquí en el orquestador al entrar/salir de combate
@@ -179,25 +205,40 @@ class PokemonGoldEnv(gym.Env):
         # 🌍 3. GESTIÓN DE MAPAS Y FLAGS DE HISTORIA (Delegado)
         if current_speedrun_map not in self.speedrun_visited_maps:
             self.speedrun_visited_maps.add(current_speedrun_map)
+            self.episode_maps.add(current_speedrun_map)
             reward += c.REWARD_NEW_MAP
             print(f"🌍 [Clon {self.rank}] ¡Mapa descubierto! -> {map_name}")
             if self.logger: self.logger.log_step({"evento": "NUEVO_MAPA", "mapa": map_name, "step": self.steps_count})
 
         reward += self.h_story.procesar(self.pb, self.ram, self.rewards, self.active_flags, self.tuplas_historia, self.steps_count)
 
+        transition_bonus = self.rewards.calcular_bonus_transicion(
+            self.last_speedrun_map,
+            current_speedrun_map,
+            self.last_speedrun_pos,
+            (x, y),
+        )
+        if transition_bonus > 0.0:
+            reward += transition_bonus
+            print(f"🚪 [Clon {self.rank}] Transición de mapa/puerta detectada (+{transition_bonus})")
+
         # 💀 CONDICIÓN DE MUERTE (Cortes de Episodio)
         party_count = self.pb.memory[0xDA22]
         if vida_actual_equipo <= 0 and party_count > 0:
             print(f"💀 [Clon {self.rank}] ¡Equipo debilitado! Reiniciando...")
             if self.logger: self.logger.log_step({"evento": "EQUIPO_DEBILITADO", "mapa": map_name, "step": self.steps_count})
+            self._log_episode_summary((reward + c.PENALTY_TEAM_FAINTED) / 10.0, "fainted")
             return self._get_obs(), (reward + c.PENALTY_TEAM_FAINTED) / 10.0, False, True, {}
 
         # Guardar estado para el siguiente step
         self.last_speedrun_pos, self.last_speedrun_map = (x, y), current_speedrun_map
         self.total_speedrun_reward += reward
 
+        done = self.steps_count >= config.MAX_STEPS_PER_EPISODE
+        if done:
+            self._log_episode_summary(reward, "max_steps")
         # Normalizamos la recompensa para Stable Baselines
-        return self._get_obs(), reward / 10.0, False, self.steps_count >= config.MAX_STEPS_PER_EPISODE, {}
+        return self._get_obs(), reward / 10.0, False, done, {}
 
     def _get_obs(self):
         img = self.pb.screen.ndarray

@@ -14,23 +14,36 @@ class StoryHandler:
         for f_id, val in current_flags.items():
             if val == 1 and active_flags.get(f_id, 0) == 0:
                 active_flags[f_id] = 1
-                
+
                 if f_id in tuplas_historia:
                     nombre_evento = tuplas_historia[f_id]
                     bonus = rewards.calcular_bonus_prisa_flag(step_count)
-                    reward += c.REWARD_FLAG_STORY + bonus 
+                    reward += c.REWARD_FLAG_STORY + bonus
                     nombre_archivo = f"best_speedrun_{nombre_evento}.state"
                     print(f"🌟 [Clon {self.rank}] ¡HIT HISTÓRICO! -> {nombre_evento}")
-                    if self.logger: self.logger.log_step({"evento": "LOGRO_HISTORIA", "flag": nombre_evento, "step": step_count})
+                    if self.logger:
+                        self.logger.log_step({"evento": "LOGRO_HISTORIA", "flag": nombre_evento, "step": step_count})
                 else:
-                    reward += c.REWARD_FLAG_UNKNOWN 
+                    reward += c.REWARD_FLAG_UNKNOWN
                     nombre_archivo = f"best_speedrun_0x{f_id[0]:X}_{f_id[1]}.state"
+
+                    if f_id in {(addr, bit) for addr, bit in c.FLAGS_CANDIDATES.values()}:
+                        print(f"🧪 [Clon {self.rank}] Trigger candidato detectado: 0x{f_id[0]:X}:{f_id[1]}")
+
+                    if f_id in c.RUNTIME_PROGRESS_FLAGS:
+                        nombre_evento = c.RUNTIME_PROGRESS_FLAGS[f_id]
+                        reward += c.REWARD_FLAG_STORY * 0.5
+                        print(f"🧭 [Clon {self.rank}] Progreso runtime detectado: {nombre_evento}")
+                        if self.logger:
+                            self.logger.log_step({"evento": "PROGRESO_RUNTIME", "flag": nombre_evento, "step": step_count})
 
                 # Guardado de Savestate
                 ruta_estado = os.path.join(config.STATES_DIR, nombre_archivo)
                 if not os.path.exists(ruta_estado):
                     try:
-                        with open(ruta_estado, "wb") as f: pb.save_state(f)
-                    except Exception: pass
-                    
+                        with open(ruta_estado, "wb") as f:
+                            pb.save_state(f)
+                    except Exception:
+                        pass
+
         return reward

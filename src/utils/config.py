@@ -19,13 +19,12 @@ MAX_STEPS_PER_EPISODE = 500000
 
 USE_CURRICULUM = True
 CURRICULUM_STATES = [
-    "inicio.state",                     
-    "best_speedrun_got_cyndaquil.state", 
+    "inicio.state",
+    "best_speedrun_got_cyndaquil.state",
     "ruta_29.state",
 ]
 
-
-CURRENT_STAGE = 2
+CURRENT_STAGE = 0
 
 TIME_PENALTY = 0.01
 STUCK_PENALTY = 0.5

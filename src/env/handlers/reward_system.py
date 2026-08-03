@@ -4,6 +4,19 @@ class RewardSystem:
     def __init__(self, rank=0):
         self.rank = rank
 
+    def calcular_bonus_transicion(self, previous_map, current_map, previous_pos, current_pos):
+        """Da un impulso extra cuando el agente cambia de zona o atraviesa puertas."""
+        if previous_map == current_map:
+            return 0.0
+
+        if previous_map != current_map:
+            return 1.5
+
+        if previous_pos != current_pos:
+            return 0.3
+
+        return 0.0
+
     def calcular_premio_curacion(self, curacion, max_vida_equipo):
         """Calcula el premio por curarse. Modificado para evitar granjeo."""
         if max_vida_equipo <= 0 or curacion <= 0:

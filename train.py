@@ -2,6 +2,19 @@ from src.agents.env_builder import build_vectorized_env
 from src.agents.agent_manager import AgentManager
 
 
+def shutdown_training(env, gestor_agente=None, model=None):
+    try:
+        if gestor_agente is not None and model is not None:
+            gestor_agente.save_model(model)
+        if env is not None:
+            env.close()
+    except (BrokenPipeError, EOFError, KeyboardInterrupt):
+        print("⚠️ Cierre del entorno interrumpido; se ha ignorado el error de shutdown.")
+    finally:
+        print("💾 Progreso guardado correctamente.")
+        print("👋 Sesión de entrenamiento finalizada.")
+
+
 def main():
     print("\n🚀 INICIO DEL ENTRENAMIENTO SPEEDRUN")
     print("================================")
@@ -25,10 +38,7 @@ def main():
     except KeyboardInterrupt:
         print("\n🛑 Entrenamiento detenido por el usuario. Guardando progreso...")
     finally:
-        gestor_agente.save_model(model)
-        env.close()
-        print("💾 Progreso guardado correctamente.")
-        print("👋 Sesión de entrenamiento finalizada.")
+        shutdown_training(env, gestor_agente=gestor_agente, model=model)
 
 
 if __name__ == "__main__":

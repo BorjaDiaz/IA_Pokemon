@@ -1,4 +1,5 @@
 import os
+import src.utils.config as config
 
 
 # ==========================================
@@ -35,6 +36,7 @@ REWARD_FLAG_UNKNOWN = 2.0           # Por activar un evento menor o desconocido
 FRAMES_STUCK_WARNING = 10           # Frames quietos antes de empezar a penalizar
 FRAMES_STUCK_MAX = 400              # Límite máximo antes de considerar que la IA está "en coma"
 MAX_STUCK_PENALTY = 0.5             # Castigo máximo por quedarse atascado en un rincón
+MAX_STEPS_PER_EPISODE = getattr(config, 'MAX_STEPS_PER_EPISODE', 500000)
 
 # ==========================================
 # MEMORIA BASE
@@ -62,6 +64,7 @@ FLAG_END   = 0xD8B6
 # FLAGS CONOCIDOS (HISTORIA)
 # ==========================================
 FLAGS = {
+    # Validado con los savestates disponibles de la ROM actual
     "got_cyndaquil": (0xD87F, 0),
     "got_totodile":  (0xD87F, 1),
     "got_chikorita": (0xD87F, 2),
@@ -69,10 +72,10 @@ FLAGS = {
     "has_pokemon_2": (0xD7BA, 5),
     "player_is_trainer": (0xD7BA, 2),
     "got_pokegear_1": (0xD88F, 7),
-    "got_pokegear_2": (0xD890, 0),
-    "rival_stole_pokemon": (0xD8A4, 2),
-    "got_pokedex": (0xD8A8, 5),
     "entered_route_29": (0xD8A2, 1),
+    "got_radio": (0xD81B, 5),
+
+    # Gimnasios y progreso principal
     "beat_falkner": (0xD8B0, 0),
     "beat_bugsy":   (0xD8B0, 1),
     "beat_whitney": (0xD8B0, 2),
@@ -81,6 +84,41 @@ FLAGS = {
     "beat_jasmine": (0xD8B0, 5),
     "beat_pryce":   (0xD8B0, 6),
     "beat_clair":   (0xD8B0, 7),
+}
+
+# Flags candidatos para validar en ejecución contra la ROM actual.
+# Algunos de estos bits han aparecido en los diffs entre save states del proyecto.
+FLAGS_CANDIDATES = {
+    "spoke_with_elm": (0xD8A2, 0),
+    "met_rival": (0xD8A4, 0),
+    "defeated_rival": (0xD8A4, 1),
+    "rival_stole_pokemon": (0xD8A4, 2),
+    "got_pokegear_2": (0xD890, 0),
+    "got_pokedex": (0xD8A8, 5),
+    "runtime_d7ba_4": (0xD7BA, 4),
+    "runtime_d7ba_2": (0xD7BA, 2),
+    "runtime_d7ba_3": (0xD7BA, 3),
+    "runtime_d7ba_5": (0xD7BA, 5),
+    "runtime_d81b_5": (0xD81B, 5),
+    "runtime_d87f_0": (0xD87F, 0),
+    "runtime_d87f_1": (0xD87F, 1),
+    "runtime_d87f_2": (0xD87F, 2),
+    "runtime_d88f_7": (0xD88F, 7),
+    "runtime_d8a2_1": (0xD8A2, 1),
+}
+
+# Mapa de eventos de progreso derivado de los diffs de save states.
+RUNTIME_PROGRESS_FLAGS = {
+    (0xD7BA, 2): "player_is_trainer",
+    (0xD7BA, 3): "has_pokemon_1",
+    (0xD7BA, 4): "runtime_d7ba_4",
+    (0xD7BA, 5): "has_pokemon_2",
+    (0xD81B, 5): "got_radio",
+    (0xD87F, 0): "got_cyndaquil",
+    (0xD87F, 1): "got_totodile",
+    (0xD87F, 2): "got_chikorita",
+    (0xD88F, 7): "got_pokegear_1",
+    (0xD8A2, 1): "entered_route_29",
 }
 
 # ==========================================
