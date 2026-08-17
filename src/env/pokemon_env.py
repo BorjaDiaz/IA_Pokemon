@@ -10,6 +10,7 @@ from pyboy.utils import WindowEvent
 import src.utils.config as config
 import src.utils.constantes as c
 from src.utils.logger import Logger
+from src.utils.frame_capturer import FrameCapturer
 from src.env.core.extractor_ram import RamExtractor
 from src.env.handlers.reward_system import RewardSystem
 
@@ -47,6 +48,8 @@ class PokemonGoldEnv(gym.Env):
         self.rewards = RewardSystem(rank=self.rank)
         self.gestor = c.GestorCombate(self.pb)
         self.logger = Logger(rank, config.LOG_DIR) if config.ENABLE_LOGS else None
+        # 📸 Frame capturer (solo para rank 0, cada 100 steps, limpia carpeta al iniciar)
+        self.capturer = FrameCapturer(capture_interval=100, clean_on_init=True) if self.rank == 0 else None
 
         # 🔌 Instanciación de los Handlers delegados
         self.h_combat = CombatHandler(self.rank, self.logger)
@@ -116,6 +119,10 @@ class PokemonGoldEnv(gym.Env):
         # Resetear también las vidas que guardan los handlers internamente
         self.h_combat.vida_enemigo_anterior = 999
         self.h_movement.steps_estancado = 0
+        
+        # 📸 Nuevo episodio en capturer
+        if self.capturer:
+            self.capturer.new_episode()
         
         return self._get_obs(), {}
 
@@ -237,6 +244,12 @@ class PokemonGoldEnv(gym.Env):
         done = self.steps_count >= config.MAX_STEPS_PER_EPISODE
         if done:
             self._log_episode_summary(reward, "max_steps")
+        
+        # 📸 Capturar frame cada 100 steps
+        if self.capturer:
+            img = self.pb.screen.ndarray[:,:,:3]
+            self.capturer.capture_frame(img, info={"mapa": map_name, "pos": (x, y)})
+        
         # Normalizamos la recompensa para Stable Baselines
         return self._get_obs(), reward / 10.0, False, done, {}
 
