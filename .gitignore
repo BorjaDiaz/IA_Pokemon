@@ -16,8 +16,11 @@ venv/
 .mypy_cache/
 .idea/
 .vscode/
+roms/
 coordinates/
 logs/
 ia/
+capturas_steps/
+visualizaciones/
 eventos_descubiertos.json
 mapas_descubiertos.json
