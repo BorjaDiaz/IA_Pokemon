@@ -300,14 +300,15 @@ class PokemonGoldEnv(gym.Env):
         gris = (rgb[:, :, 0] * 77 + rgb[:, :, 1] * 150 + rgb[:, :, 2] * 29) >> 8
         gris = (gris[0::2, 0::2] + gris[1::2, 0::2] + gris[0::2, 1::2] + gris[1::2, 1::2]) >> 2
 
-        # Casillas visibles ya pisadas en este episodio
-        x, y = self.ram.leer(c.ADDR_PLAYER_X), self.ram.leer(c.ADDR_PLAYER_Y)
-        grp, mid = self.ram.leer(c.ADDR_MAP_GRP), self.ram.leer(c.ADDR_MAP_ID)
+        # Casillas visibles ya pisadas en este episodio (vacío en combate: la pantalla no muestra el mapa)
         visitadas = np.zeros((CASILLAS_Y, CASILLAS_X), dtype=np.uint8)
-        for fila in range(CASILLAS_Y):
-            for col in range(CASILLAS_X):
-                if (grp, mid, x - JUGADOR_COL + col, y - JUGADOR_FILA + fila) in self.episode_tiles:
-                    visitadas[fila, col] = 255
+        if not self.ram.leer(c.ADDR_BATTLE_MODE):
+            x, y = self.ram.leer(c.ADDR_PLAYER_X), self.ram.leer(c.ADDR_PLAYER_Y)
+            grp, mid = self.ram.leer(c.ADDR_MAP_GRP), self.ram.leer(c.ADDR_MAP_ID)
+            for fila in range(CASILLAS_Y):
+                for col in range(CASILLAS_X):
+                    if (grp, mid, x - JUGADOR_COL + col, y - JUGADOR_FILA + fila) in self.episode_tiles:
+                        visitadas[fila, col] = 255
         exploracion = np.kron(visitadas, np.ones((8, 8), dtype=np.uint8))
 
         return np.stack([gris.astype(np.uint8), exploracion])

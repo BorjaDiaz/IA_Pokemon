@@ -53,6 +53,19 @@ class PokemonGoldEnvTests(unittest.TestCase):
             self.env.step(DERECHA)
             self.assertEqual(self.pos(), (x + i, y))
 
+    def test_exploration_channel_is_empty_in_battle(self):
+        import random
+        config.CURRENT_STAGE = 2  # ruta_29.state: hierba alta
+        self.env.reset()
+        rng = random.Random(1)
+        for _ in range(3000):
+            obs, *_ = self.env.step(rng.choice([0, 1, 2, DERECHA]))
+            if self.env.ram.leer(c.ADDR_BATTLE_MODE):
+                break
+        else:
+            self.fail("No hubo encuentro salvaje")
+        self.assertFalse(obs[1].any())
+
     def test_no_progress_terminates_episode(self):
         self.env.h_movement.max_steps_sin_progreso = 3
         resultados = [self.env.step(B) for _ in range(4)]
