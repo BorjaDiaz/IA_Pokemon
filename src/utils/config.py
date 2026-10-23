@@ -8,6 +8,14 @@ STATES_DIR = os.path.join(BASE_DIR, "state")
 LOG_DIR = os.path.join(BASE_DIR, "logs")
 IA_DIR = os.path.join(BASE_DIR, "ia")
 
+# Cada lanzamiento de train.py guarda sus recorridos, capturas, métricas y logs en runs/<fecha_hora>/.
+# train.py lo comunica a los clones con la variable de entorno POKEMON_RUN_DIR; sin ella (tests,
+# herramientas sueltas) se usa la carpeta actual.
+RUNS_DIR = os.path.join(BASE_DIR, "runs")
+RUN_DIR = os.environ.get("POKEMON_RUN_DIR", ".")
+# Mejor tiempo de partida conseguido para cada hito (lo usan los savestates best_speedrun_*)
+RECORDS_PATH = os.path.join(STATES_DIR, "records.json")
+
 NUM_CLONES = 12           # medido con GPU: 8 = 495 pasos/s, 12 = 581 (9,8 GB RAM), 16 = 593. Baja a 8 si el PC va lento
 SPEEDRUN_MODE = True
 VERBOSE = False           # True: imprime cada golpe, curación, mapa nuevo... (útil para depurar con 1 clon)

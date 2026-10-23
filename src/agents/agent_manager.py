@@ -24,10 +24,12 @@ class AgentManager:
         """Carga el modelo guardado (aplicando los hiperparámetros actuales de config.py) o crea uno nuevo.
         Si el guardado no es compatible (p. ej. cambió la observación), se aparta con otro nombre."""
         model = None
+        self.cargado = False  # True si se continúa un modelo guardado
         if os.path.exists(self.model_path):
             print("\n🧠 [AgentManager] Cargando cerebro existente...")
             try:
                 model = PPO.load(self.model_path, env=self.env, **self._hiperparametros())
+                self.cargado = True
             except ValueError as e:
                 apartado = self.model_path.replace(".zip", f"_incompatible_{time.strftime('%Y%m%d_%H%M%S')}.zip")
                 os.replace(self.model_path, apartado)

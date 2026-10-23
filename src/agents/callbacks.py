@@ -1,6 +1,23 @@
+import os
+
 from stable_baselines3.common.callbacks import BaseCallback
 
+import src.utils.config as config
 import src.utils.constantes as c
+
+STOP_FILE = os.path.join(config.BASE_DIR, "PARAR")
+
+
+class StopFileCallback(BaseCallback):
+    """Para el entrenamiento de forma ordenada (guardando el modelo) si existe el archivo PARAR
+    en la carpeta del proyecto. Sirve cuando no se puede pulsar Ctrl+C (p. ej. lanzado en segundo plano)."""
+
+    def _on_step(self):
+        if self.n_calls % 100 == 0 and os.path.exists(STOP_FILE):
+            os.remove(STOP_FILE)
+            print("\n🛑 Archivo PARAR encontrado: deteniendo el entrenamiento y guardando...")
+            return False
+        return True
 
 
 class SplitsCallback(BaseCallback):

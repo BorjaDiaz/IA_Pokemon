@@ -14,6 +14,13 @@ class RamExtractor:
         """Los 256 bytes de wEventFlags como array (bit b del byte i = flag (FLAG_START + i, b))."""
         return np.array(self.pb.memory[c.WRAM_BANK, c.FLAG_START:c.FLAG_END+1], dtype=np.uint8)
 
+    def leer_tiempo_juego(self):
+        """Tiempo de partida del juego en segundos (el de la ficha del entrenador): el reloj del speedrun."""
+        horas = (self.leer(c.ADDR_GAME_TIME_HOURS) << 8) | self.leer(c.ADDR_GAME_TIME_HOURS + 1)
+        minutos, segundos = self.leer(c.ADDR_GAME_TIME_MINUTES), self.leer(c.ADDR_GAME_TIME_SECONDS)
+        frames = self.leer(c.ADDR_GAME_TIME_FRAMES)
+        return horas * 3600 + minutos * 60 + segundos + frames / 60
+
     def leer_party_count(self):
         return self.leer(c.ADDR_PARTY_COUNT)
 

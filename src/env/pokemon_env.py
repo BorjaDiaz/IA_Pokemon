@@ -29,11 +29,13 @@ class PokemonGoldEnv(gym.Env):
         self.total_speedrun_reward = 0.0
         self.ultimo_tipo_combate = 0
         self.episode_counter = 0
-        self.metrics_path = os.path.join(config.LOG_DIR, "metrics.jsonl")
+        # Todo lo de esta ejecución va a su carpeta (runs/<fecha_hora>/ cuando se lanza con train.py)
+        self.metrics_path = os.path.join(config.RUN_DIR, "metrics.jsonl")
 
         # Cada clon empieza su propio archivo de coordenadas (mapa de calor) al arrancar
-        os.makedirs("coordinates", exist_ok=True)
-        self.coords_path = os.path.join("coordinates", f"coords_clon_{self.rank}.txt")
+        coords_dir = os.path.join(config.RUN_DIR, "coordinates")
+        os.makedirs(coords_dir, exist_ok=True)
+        self.coords_path = os.path.join(coords_dir, f"coords_clon_{self.rank}.txt")
         open(self.coords_path, "w").close()
         # Imagen de los mapas reconstruida con lo que ve este clon (se conserva entre entrenamientos)
         self.atlas = MapAtlas(rank)
@@ -64,9 +66,9 @@ class PokemonGoldEnv(gym.Env):
         self.ram = RamExtractor(self.pb)
         self.rewards = RewardSystem(rank=self.rank)
         self.gestor = c.GestorCombate(self.pb)
-        self.logger = Logger(rank, config.LOG_DIR) if config.ENABLE_LOGS else None
+        self.logger = Logger(rank, os.path.join(config.RUN_DIR, "logs")) if config.ENABLE_LOGS else None
         # 📸 Capturas por eventos: tira de pantallas al acabar cada episodio y una al conseguir un hito
-        self.capturer = FrameCapturer(rank)
+        self.capturer = FrameCapturer(rank, output_dir=os.path.join(config.RUN_DIR, "capturas"))
 
         # 🔌 Instanciación de los Handlers delegados
         self.h_combat = CombatHandler(self.rank, self.logger)
@@ -92,7 +94,6 @@ class PokemonGoldEnv(gym.Env):
         self.tuplas_historia = {(int(v[0]), v[1]): k for k, v in c.FLAGS.items()}
 
     def _log_episode_summary(self, reward, reason):
-        os.makedirs(config.LOG_DIR, exist_ok=True)
         payload = {
             "rank": self.rank,
             "episode": self.episode_counter,
@@ -102,6 +103,7 @@ class PokemonGoldEnv(gym.Env):
             "tiles_discovered": len(self.episode_tiles),
             "total_maps_seen": len(self.all_maps_seen),
             "reason": reason,
+            "tiempo_juego_s": round(self.ram.leer_tiempo_juego(), 1),
             "timestamp": round(time.time(), 1),
             "splits": self.splits,
         }

@@ -30,6 +30,10 @@ RAM = {
     "wScriptRunning": 0xD15F,
     "wPlayerMapX": 0xD20D,        # coordenadas del sprite del jugador (= wXCoord + 4)
     "wPlayerMapY": 0xD20E,
+    "wGameTimeHours": 0xD1EB,     # 2 bytes big endian, luego minutos, segundos y frames
+    "wGameTimeMinutes": 0xD1ED,
+    "wGameTimeSeconds": 0xD1EE,
+    "wGameTimeFrames": 0xD1EF,
     "wStatusFlags": 0xD571,       # bit 0 = Pokédex
     "wMoney": 0xD573,             # 3 bytes, BCD
     "wJohtoBadges": 0xD57C,       # bit 0 Céfiro ... bit 7 Dragón

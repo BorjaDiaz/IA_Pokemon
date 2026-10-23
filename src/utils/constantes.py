@@ -49,6 +49,10 @@ ADDR_PLAYER_X = rom_catalog.RAM["wXCoord"]
 ADDR_BATTLE_MODE = rom_catalog.RAM["wBattleMode"]  # 0 = Mapa, 1 = Salvaje, 2 = Entrenador
 ADDR_PARTY_COUNT = rom_catalog.RAM["wPartyCount"]
 ADDR_SCRIPT_RUNNING = rom_catalog.RAM["wScriptRunning"]  # != 0 durante escenas y diálogos
+ADDR_GAME_TIME_HOURS = rom_catalog.RAM["wGameTimeHours"]
+ADDR_GAME_TIME_MINUTES = rom_catalog.RAM["wGameTimeMinutes"]
+ADDR_GAME_TIME_SECONDS = rom_catalog.RAM["wGameTimeSeconds"]
+ADDR_GAME_TIME_FRAMES = rom_catalog.RAM["wGameTimeFrames"]
 
 # ==========================================
 # RANGO FLAGS

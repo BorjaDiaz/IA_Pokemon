@@ -1,14 +1,20 @@
 """Genera las visualizaciones del entrenamiento en visualizaciones/.
 
-- progreso.png: recompensa, mapas y baldosas por episodio de cada clon (logs/metrics.jsonl)
+Cada lanzamiento de train.py guarda sus datos en runs/<fecha_hora>/. Por defecto se usa la
+ejecución actualizada más recientemente.
+
+- progreso.png: recompensa, mapas y baldosas por episodio de cada clon
 - splits.png: pasos que tarda cada episodio en llegar a cada hito/mapa (si baja, va más rápido)
 - mapas/<MAPA>.png: imagen real del mapa (atlas que construyen los clones) con
   un mini-cuadro de color por clon en cada casilla visitada (más intenso = más visitas)
   y el recorrido del último episodio de cada clon como línea.
 
 Uso:
-    python visualizador.py                 # todos los episodios
-    python visualizador.py --episodios 5   # solo los 5 últimos episodios de cada clon
+    python visualizador.py                      # última ejecución, todos sus episodios
+    python visualizador.py --episodios 5        # solo los 5 últimos episodios de cada clon
+    python visualizador.py --listar             # ver las ejecuciones disponibles
+    python visualizador.py --run 2026-10-23     # una ejecución concreta (basta parte del nombre)
+    python visualizador.py --todas              # todas las ejecuciones juntas
 """
 import argparse
 import glob
@@ -24,7 +30,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageDraw
 
+import src.utils.config as config
 from src.utils.constantes import FLAGS, MAP_NAMES
+from src.env.handlers.story import cargar_records
 from src.utils.map_atlas import ATLAS_DIR, TILE, merge_atlases, ensure_region, new_entry
 
 OUTPUT_DIR = "visualizaciones"
@@ -38,23 +46,49 @@ def color(rank):
     return COLORES[rank % len(COLORES)]
 
 
-def _load_metrics():
+def fuentes_de_datos():
+    """Ejecuciones con datos, de la más antigua a la más reciente (por última modificación).
+
+    Incluye como "anterior" los datos de antes de existir runs/ (logs/metrics.jsonl y coordinates/).
+    """
+    fuentes = []
+    for d in glob.glob(os.path.join(config.RUNS_DIR, "*")):
+        if os.path.isdir(d):
+            fuentes.append({"nombre": os.path.basename(d), "metrics": os.path.join(d, "metrics.jsonl"),
+                            "coords": os.path.join(d, "coordinates")})
+    fuentes.append({"nombre": "anterior", "metrics": os.path.join(config.LOG_DIR, "metrics.jsonl"),
+                    "coords": os.path.join(config.BASE_DIR, "coordinates")})
+    for f in fuentes:
+        archivos = [f["metrics"]] + glob.glob(os.path.join(f["coords"], "*.txt"))
+        f["mtime"] = max((os.path.getmtime(a) for a in archivos if os.path.exists(a)), default=None)
+    return sorted((f for f in fuentes if f["mtime"]), key=lambda f: f["mtime"])
+
+
+def _load_metrics(fuentes):
+    """Métricas de las ejecuciones dadas. Los episodios se renumeran por clon en orden cronológico,
+    para que al juntar ejecuciones no se solapen (cada lanzamiento empieza en el episodio 1)."""
     rows = []
-    path = os.path.join("logs", "metrics.jsonl")
-    if os.path.exists(path):
-        with open(path, encoding="utf-8") as f:
-            for line in f:
-                try:
-                    rows.append(json.loads(line))
-                except ValueError:
-                    pass
+    for orden, fuente in enumerate(fuentes):
+        if os.path.exists(fuente["metrics"]):
+            with open(fuente["metrics"], encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        row = json.loads(line)
+                    except ValueError:
+                        continue
+                    row["_orden"] = (orden, row.get("timestamp", 0), row.get("episode", 0))
+                    rows.append(row)
+    contador = Counter()
+    for row in sorted(rows, key=lambda r: r["_orden"]):
+        contador[row.get("rank", 0)] += 1
+        row["episode"] = contador[row.get("rank", 0)]
     return rows
 
 
-def _load_coordinates():
+def _load_coordinates(coords_dir):
     """{rank: [(episodio, grp, mid, x, y), ...]} en orden de visita."""
     paths = {}
-    for path in glob.glob(os.path.join("coordinates", "coords_clon_*.txt")):
+    for path in glob.glob(os.path.join(coords_dir, "coords_clon_*.txt")):
         rank = int(re.search(r"coords_clon_(\d+)", path).group(1))
         puntos = []
         with open(path, encoding="utf-8") as f:
@@ -208,22 +242,26 @@ def render_map(mapa, entry, visitas, recorridos):
     return final.convert("RGB"), nombre
 
 
-def plot_maps(coords, ultimos_episodios=None):
+def plot_maps(coords_por_fuente, ultimos_episodios=None):
+    """coords_por_fuente: coordenadas de cada ejecución, de la más antigua a la más reciente.
+    Las visitas se suman; el recorrido dibujado es el último episodio de la ejecución más reciente."""
     atlas = merge_atlases(sorted(glob.glob(os.path.join(ATLAS_DIR, "clon*.npz"))))
 
     visitas = defaultdict(lambda: defaultdict(Counter))  # mapa -> rank -> Counter
     recorridos = defaultdict(dict)                        # mapa -> rank -> [(x, y)]
-    for rank, puntos in coords.items():
-        if not puntos:
-            continue
-        episodios = sorted({p[0] for p in puntos})
-        validos = set(episodios[-ultimos_episodios:]) if ultimos_episodios else set(episodios)
-        ultimo = episodios[-1]
-        for ep, grp, mid, x, y in puntos:
-            if ep in validos:
-                visitas[(grp, mid)][rank][(x, y)] += 1
-            if ep == ultimo:
-                recorridos[(grp, mid)].setdefault(rank, []).append((x, y))
+    for n_fuente, coords in enumerate(coords_por_fuente):
+        es_la_ultima = n_fuente == len(coords_por_fuente) - 1
+        for rank, puntos in coords.items():
+            if not puntos:
+                continue
+            episodios = sorted({p[0] for p in puntos})
+            validos = set(episodios[-ultimos_episodios:]) if ultimos_episodios else set(episodios)
+            ultimo = episodios[-1]
+            for ep, grp, mid, x, y in puntos:
+                if ep in validos:
+                    visitas[(grp, mid)][rank][(x, y)] += 1
+                if es_la_ultima and ep == ultimo:
+                    recorridos[(grp, mid)].setdefault(rank, []).append((x, y))
 
     os.makedirs(MAPS_DIR, exist_ok=True)
     for viejo in glob.glob(os.path.join(MAPS_DIR, "*.png")):
@@ -246,10 +284,29 @@ def plot_maps(coords, ultimos_episodios=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--episodios", type=int, default=None, help="usar solo los N últimos episodios de cada clon")
+    grupo = parser.add_mutually_exclusive_group()
+    grupo.add_argument("--run", help="ejecución concreta (basta parte del nombre, p. ej. 2026-10-23_14)")
+    grupo.add_argument("--todas", action="store_true", help="juntar todas las ejecuciones")
+    grupo.add_argument("--listar", action="store_true", help="listar las ejecuciones disponibles y salir")
     args = parser.parse_args()
 
+    fuentes = fuentes_de_datos()
+    if args.listar or not fuentes:
+        print("Ejecuciones con datos (de más antigua a más reciente):" if fuentes else "No hay datos de ninguna ejecución todavía.")
+        for f in fuentes:
+            n = sum(1 for _ in open(f["metrics"], encoding="utf-8")) if os.path.exists(f["metrics"]) else 0
+            print(f"   {f['nombre']:22s} {n:6d} episodios terminados")
+        return
+    if args.run:
+        fuentes = [f for f in fuentes if args.run in f["nombre"]]
+        if not fuentes:
+            raise SystemExit(f"No hay ninguna ejecución que contenga '{args.run}'. Usa --listar.")
+    if not args.todas:
+        fuentes = fuentes[-1:]
+    print(f"📂 Ejecución{'es' if len(fuentes) > 1 else ''}: {', '.join(f['nombre'] for f in fuentes)}")
+
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    metrics = _load_metrics()
+    metrics = _load_metrics(fuentes)
     print(f"✅ {plot_progress(metrics)}")
 
     splits = resumen_splits(metrics)
@@ -261,7 +318,14 @@ def main():
         cambio = f"({100 * (final - inicio) / inicio:+.0f}%)" if len(pasos) >= 20 else ""
         print(f"   {split:40s} {len(puntos):5d}/{total:<6d} {min(pasos):7d} {inicio:20.0f} {final:11.0f} {cambio}")
 
-    resumen = plot_maps(_load_coordinates(), args.episodios)
+    records = cargar_records()
+    if records:
+        print("🏆 Récords de tiempo de partida (savestates best_speedrun_*, todas las ejecuciones):")
+        for hito, r in sorted(records.items(), key=lambda kv: kv[1]["tiempo_juego_s"]):
+            minutos, segundos = divmod(r["tiempo_juego_s"], 60)
+            print(f"   {hito:40s} {int(minutos):3d}:{segundos:05.2f}  (clon {r['clon']}, {r['run']})")
+
+    resumen = plot_maps([_load_coordinates(f["coords"]) for f in fuentes], args.episodios)
     print(f"✅ {len(resumen)} mapas en {MAPS_DIR}/")
     for visitas_totales, nombre, casillas in resumen:
         por_clon = "  ".join(f"c{r}:{n}" for r, n in sorted(casillas.items()))
