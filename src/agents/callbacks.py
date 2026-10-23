@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 import sys
 
@@ -41,14 +42,27 @@ class AnalisisCallback(BaseCallback):
         return True
 
 
+def quitar_parar():
+    """Borra PARAR, sea un archivo o una carpeta (vacía o no). Si no se puede (p. ej. abierto en
+    otro programa), no pasa nada: la parada ya se ha hecho."""
+    try:
+        if os.path.isdir(STOP_FILE):
+            shutil.rmtree(STOP_FILE)
+        elif os.path.exists(STOP_FILE):
+            os.remove(STOP_FILE)
+    except OSError as e:
+        print(f"⚠️ No se pudo borrar {STOP_FILE} ({e}); bórralo a mano antes del próximo entrenamiento.")
+
+
 class StopFileCallback(BaseCallback):
-    """Para el entrenamiento de forma ordenada (guardando el modelo) si existe el archivo PARAR
-    en la carpeta del proyecto. Sirve cuando no se puede pulsar Ctrl+C (p. ej. lanzado en segundo plano)."""
+    """Para el entrenamiento de forma ordenada (guardando el modelo) si existe un archivo o una carpeta
+    llamado PARAR en la carpeta del proyecto. Sirve cuando no se puede pulsar Ctrl+C (p. ej. lanzado
+    en segundo plano)."""
 
     def _on_step(self):
         if self.n_calls % 100 == 0 and os.path.exists(STOP_FILE):
-            os.remove(STOP_FILE)
-            print("\n🛑 Archivo PARAR encontrado: deteniendo el entrenamiento y guardando...")
+            print("\n🛑 PARAR encontrado: deteniendo el entrenamiento y guardando...")
+            quitar_parar()
             return False
         return True
 

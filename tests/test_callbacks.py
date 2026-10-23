@@ -1,3 +1,4 @@
+import os
 import unittest
 from types import SimpleNamespace
 
@@ -49,6 +50,37 @@ class SplitsCallbackTests(unittest.TestCase):
     def test_maps_are_not_sent_to_tensorboard(self):
         valores = self.step({"splits": {"PLAYERS_HOUSE_1F": 120}})
         self.assertFalse(any("PLAYERS_HOUSE_1F" in k for k in valores))
+
+
+class StopFileCallbackTests(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from unittest import mock
+        from src.agents import callbacks
+        self.tmp = tempfile.TemporaryDirectory()
+        self.parar = os.path.join(self.tmp.name, "PARAR")
+        self.patch = mock.patch.object(callbacks, "STOP_FILE", self.parar)
+        self.patch.start()
+        self.callback = callbacks.StopFileCallback()
+        self.callback.n_calls = 100
+
+    def tearDown(self):
+        self.patch.stop()
+        self.tmp.cleanup()
+
+    def test_stops_with_a_parar_file(self):
+        open(self.parar, "w").close()
+        self.assertFalse(self.callback._on_step())
+        self.assertFalse(os.path.exists(self.parar))
+
+    def test_stops_with_a_parar_folder(self):
+        # Crear una carpeta desde el explorador es lo más rápido; antes os.remove fallaba con "Acceso denegado"
+        os.makedirs(self.parar)
+        self.assertFalse(self.callback._on_step())
+        self.assertFalse(os.path.exists(self.parar))
+
+    def test_keeps_training_without_parar(self):
+        self.assertTrue(self.callback._on_step())
 
 
 if __name__ == "__main__":

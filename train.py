@@ -5,7 +5,7 @@ import time
 
 from src.agents.env_builder import build_vectorized_env
 from src.agents.agent_manager import AgentManager
-from src.agents.callbacks import AnalisisCallback, SplitsCallback, StopFileCallback, STOP_FILE, lanzar_analisis
+from src.agents.callbacks import AnalisisCallback, SplitsCallback, StopFileCallback, STOP_FILE, lanzar_analisis, quitar_parar
 import src.utils.config as config
 
 
@@ -61,13 +61,15 @@ def guardar_info_run(run_dir, **extra):
 
 def main():
     run_dir = preparar_run()
+    # Un PARAR olvidado de una parada anterior pararía el entrenamiento nada más empezar
+    quitar_parar()
     if os.path.exists(STOP_FILE):
-        os.remove(STOP_FILE)  # uno olvidado de una parada anterior pararía el entrenamiento nada más empezar
+        raise SystemExit(f"Hay un PARAR que no se puede borrar ({STOP_FILE}). Bórralo y vuelve a lanzar.")
 
     print("\n🚀 INICIO DEL ENTRENAMIENTO SPEEDRUN")
     print("================================")
     print("Opciones:")
-    print("- Presiona Ctrl+C (o crea un archivo llamado PARAR en la carpeta del proyecto) para detener y guardar")
+    print("- Presiona Ctrl+C (o crea un archivo o carpeta llamado PARAR en la carpeta del proyecto) para detener y guardar")
     print("- El modelo se guardará automáticamente al finalizar")
     print(f"- Copias de seguridad cada {config.CHECKPOINT_FREQ:,} pasos en ia/checkpoints/")
     print(f"- Datos de esta ejecución en runs/{os.path.basename(run_dir)}/ (análisis y mapas en analisis/, "
