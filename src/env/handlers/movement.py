@@ -4,44 +4,37 @@ import src.utils.config as config
 class MovementHandler:
     def __init__(self, rank):
         self.rank = rank
-        self.steps_estancado = 0
-        self.max_steps_estancado = getattr(config, 'MAX_STEPS_STUCK', 600)
+        self.steps_sin_progreso = 0
+        self.max_steps_sin_progreso = config.MAX_STEPS_SIN_PROGRESO
 
-    def procesar(self, x, y, last_pos, curr_tile, visited_tiles, map_name, en_combate):
+    def procesar(self, x, y, last_pos, curr_tile, visited_tiles, map_name, en_combate, en_script):
         reward = 0.0
-        done_atasco = False
+        sin_progreso = False
 
-        if en_combate:
-            self.steps_estancado = 0
+        # En combate o en una escena/diálogo quedarse quieto es normal: ni penaliza ni cuenta
+        if en_combate or en_script:
             return 0.0, False
 
-        # 🚶‍♂️ Lógica de movimiento normal
         if (x, y) == last_pos:
-            self.steps_estancado += 1
-            reward -= 0.005
-        else:
-            self.steps_estancado = 0
+            reward += c.PENALTY_SAME_TILE
 
-        # 🗺️ Recompensa por explorar nuevos tiles
+        # 🗺️ Recompensa por explorar nuevos tiles (visited_tiles se vacía en cada episodio)
         if curr_tile not in visited_tiles:
             visited_tiles.add(curr_tile)
-            recompensa_tile = getattr(c, 'REWARD_NEW_TILE', 0.1)
-            reward += recompensa_tile
+            reward += c.REWARD_NEW_TILE
+            self.steps_sin_progreso = 0
         else:
-            reward -= 0.001
-
-        # Bonus extra para salir de la casa inicial y abrir la exploración
-        if map_name in {"PLAYERS_HOUSE_1F", "PLAYERS_HOUSE_2F"} and (x, y) != last_pos:
-            reward += 0.06
+            reward += c.PENALTY_REVISIT_TILE
+            self.steps_sin_progreso += 1
 
         # ⚠️ Alertas de atasco
-        if self.steps_estancado > 0 and self.steps_estancado % 50 == 0:
-            print(f"⚠️ [Clon {self.rank}] Lleva {self.steps_estancado} pasos en la misma baldosa...")
+        if self.steps_sin_progreso > 0 and self.steps_sin_progreso % 250 == 0:
+            print(f"⚠️ [Clon {self.rank}] Lleva {self.steps_sin_progreso} pasos sin pisar baldosas nuevas en {map_name}...")
 
-        # 💀 Penalización masiva por atasco definitivo
-        if self.steps_estancado >= self.max_steps_estancado:
-            print(f"🛑 [Clon {self.rank}] ATASCADO DEFINITIVAMENTE en {map_name}. Reiniciando...")
-            done_atasco = True
-            reward -= 10.0
+        # 💀 Corte del episodio si no avanza
+        if self.steps_sin_progreso >= self.max_steps_sin_progreso:
+            print(f"🛑 [Clon {self.rank}] SIN PROGRESO en {map_name}. Reiniciando...")
+            sin_progreso = True
+            reward += c.PENALTY_NO_PROGRESS
 
-        return reward, done_atasco
+        return reward, sin_progreso

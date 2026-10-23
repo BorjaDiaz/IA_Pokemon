@@ -1,4 +1,4 @@
-from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv
+from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv, VecFrameStack
 from stable_baselines3.common.monitor import Monitor
 from src.env.pokemon_env import PokemonGoldEnv
 import src.utils.config as config
@@ -10,10 +10,11 @@ def make_env(rank):
     return _init
 
 def build_vectorized_env():
-    """Crea los entornos en paralelo según la configuración."""
+    """Crea los entornos en paralelo según la configuración y apila los últimos frames."""
     if config.NUM_CLONES == 1:
         print("🌍 [EnvBuilder] Inicializando 1 entorno en modo Dummy (Ideal para debug)...")
-        return DummyVecEnv([make_env(0)])
+        env = DummyVecEnv([make_env(0)])
     else:
         print(f"🌍 [EnvBuilder] Inicializando {config.NUM_CLONES} entornos en paralelo (Subproc)...")
-        return SubprocVecEnv([make_env(i) for i in range(config.NUM_CLONES)])
+        env = SubprocVecEnv([make_env(i) for i in range(config.NUM_CLONES)])
+    return VecFrameStack(env, n_stack=config.FRAME_STACK, channels_order="first")

@@ -6,10 +6,15 @@ from src.utils import rom_catalog
 # 🏆 SISTEMA DE RECOMPENSAS Y PENALIZACIONES
 # ==========================================
 
-# Exploración
+# Valores antes de dividir entre 10 en PokemonGoldEnv.step
+
+# Exploración (baldosas y mapas cuentan una vez por episodio)
 REWARD_STEP = -0.005                 # Penalización por cada paso (para incentivar rapidez)
 REWARD_NEW_TILE = 0.05              # Por pisar una baldosa nueva
 REWARD_NEW_MAP = 5.0               # Por entrar a una zona/mapa nuevo
+PENALTY_SAME_TILE = -0.005          # Por quedarse en la misma baldosa fuera de combate y escenas
+PENALTY_REVISIT_TILE = -0.001       # Por volver a una baldosa ya pisada
+PENALTY_NO_PROGRESS = -10.0         # Al cortar el episodio por no avanzar
 
 # Supervivencia y Progreso
 REWARD_HEAL = 10.0
@@ -42,6 +47,7 @@ ADDR_PLAYER_X = rom_catalog.RAM["wXCoord"]
 # ==========================================
 ADDR_BATTLE_MODE = rom_catalog.RAM["wBattleMode"]  # 0 = Mapa, 1 = Salvaje, 2 = Entrenador
 ADDR_PARTY_COUNT = rom_catalog.RAM["wPartyCount"]
+ADDR_SCRIPT_RUNNING = rom_catalog.RAM["wScriptRunning"]  # != 0 durante escenas y diálogos
 
 # ==========================================
 # RANGO FLAGS

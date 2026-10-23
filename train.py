@@ -1,5 +1,6 @@
 from src.agents.env_builder import build_vectorized_env
 from src.agents.agent_manager import AgentManager
+import src.utils.config as config
 
 
 def shutdown_training(env, gestor_agente=None, model=None):
@@ -21,6 +22,8 @@ def main():
     print("Opciones:")
     print("- Presiona Ctrl+C para detener y guardar el progreso")
     print("- El modelo se guardará automáticamente al finalizar")
+    print(f"- Copias de seguridad cada {config.CHECKPOINT_FREQ:,} pasos en ia/checkpoints/")
+    print("- Gráficas: en otra terminal, tensorboard --logdir logs/tensorboard")
     print("================================")
 
     # 1. Preparamos el entorno virtual (clones)
@@ -34,7 +37,7 @@ def main():
 
     # 3. Bucle de entrenamiento con control explícito de parada/guardado
     try:
-        model.learn(total_timesteps=5_000_000)
+        model.learn(total_timesteps=config.TOTAL_TIMESTEPS, callback=gestor_agente.checkpoint_callback())
     except KeyboardInterrupt:
         print("\n🛑 Entrenamiento detenido por el usuario. Guardando progreso...")
     finally:

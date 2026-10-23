@@ -1,18 +1,20 @@
 import unittest
 
 from src.env.handlers.reward_system import RewardSystem
+import src.utils.constantes as c
 
 
 class RewardSystemTests(unittest.TestCase):
-    def test_transition_reward_is_positive_for_map_change(self):
+    def test_speed_bonus_is_capped_by_story_reward(self):
         rewards = RewardSystem(rank=0)
-        bonus = rewards.calcular_bonus_transicion((1, 1), (2, 2), (5, 5), (6, 6))
-        self.assertGreater(bonus, 0.0)
+        self.assertEqual(rewards.calcular_bonus_prisa_flag(0), c.REWARD_FLAG_STORY)
 
-    def test_transition_reward_is_zero_for_same_map(self):
+    def test_speed_bonus_decreases_with_steps(self):
         rewards = RewardSystem(rank=0)
-        bonus = rewards.calcular_bonus_transicion((1, 1), (1, 1), (5, 5), (6, 6))
-        self.assertEqual(bonus, 0.0)
+        early = rewards.calcular_bonus_prisa_flag(100)
+        late = rewards.calcular_bonus_prisa_flag(c.MAX_STEPS_PER_EPISODE // 2)
+        self.assertGreater(early, late)
+        self.assertEqual(rewards.calcular_bonus_prisa_flag(c.MAX_STEPS_PER_EPISODE * 2), 0.0)
 
 
 if __name__ == "__main__":

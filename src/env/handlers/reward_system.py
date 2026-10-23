@@ -4,12 +4,6 @@ class RewardSystem:
     def __init__(self, rank=0):
         self.rank = rank
 
-    def calcular_bonus_transicion(self, previous_map, current_map, previous_pos, current_pos):
-        """Da un impulso extra cuando el agente cambia de zona o atraviesa puertas."""
-        if previous_map == current_map:
-            return 0.0
-        return 1.5
-
     def calcular_premio_curacion(self, curacion, max_vida_equipo):
         """Calcula el premio por curarse. Modificado para evitar granjeo."""
         if max_vida_equipo <= 0 or curacion <= 0:
@@ -34,7 +28,6 @@ class RewardSystem:
         return c.PENALTY_COMBAT_DAMAGE_RECEIVED
 
     def calcular_bonus_prisa_flag(self, steps_actuales):
-        """Calcula el bonus por conseguir un objetivo de la historia rápidamente."""
-        distancia_al_limite = max(0, c.MAX_STEPS_PER_EPISODE - steps_actuales)
-        # Cuanto más rápido lo haga, más de este colchón se lleva
-        return distancia_al_limite / 1000.0
+        """Bonus por conseguir un hito rápido: hasta REWARD_FLAG_STORY si es al principio del episodio."""
+        fraccion_restante = max(0, c.MAX_STEPS_PER_EPISODE - steps_actuales) / c.MAX_STEPS_PER_EPISODE
+        return c.REWARD_FLAG_STORY * fraccion_restante
