@@ -1,127 +1,269 @@
-import json
-import os
+"""Genera las visualizaciones del entrenamiento en visualizaciones/.
+
+- progreso.png: recompensa, mapas y baldosas por episodio de cada clon (logs/metrics.jsonl)
+- splits.png: pasos que tarda cada episodio en llegar a cada hito/mapa (si baja, va más rápido)
+- mapas/<MAPA>.png: imagen real del mapa (atlas que construyen los clones) con
+  un mini-cuadro de color por clon en cada casilla visitada (más intenso = más visitas)
+  y el recorrido del último episodio de cada clon como línea.
+
+Uso:
+    python visualizador.py                 # todos los episodios
+    python visualizador.py --episodios 5   # solo los 5 últimos episodios de cada clon
+"""
+import argparse
 import glob
-from collections import defaultdict
+import json
+import math
+import os
+import re
+from collections import Counter, defaultdict
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image, ImageDraw
 
-from src.utils.constantes import MAP_NAMES
+from src.utils.constantes import FLAGS, MAP_NAMES
+from src.utils.map_atlas import ATLAS_DIR, TILE, merge_atlases, ensure_region, new_entry
 
-OUTPUT_DIR = os.path.join("visualizaciones")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+OUTPUT_DIR = "visualizaciones"
+MAPS_DIR = os.path.join(OUTPUT_DIR, "mapas")
+ESCALA = 2  # cada casilla de 16 px se dibuja a 32 px
+COLORES = [(230, 57, 70), (29, 120, 230), (46, 184, 92), (255, 159, 28), (155, 89, 214), (0, 200, 200)]
+
+
+def color(rank):
+    return COLORES[rank % len(COLORES)]
 
 
 def _load_metrics():
-    metrics_path = os.path.join("logs", "metrics.jsonl")
-    if not os.path.exists(metrics_path):
-        return []
-
     rows = []
-    with open(metrics_path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
+    path = os.path.join("logs", "metrics.jsonl")
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            for line in f:
                 try:
                     rows.append(json.loads(line))
-                except Exception:
+                except ValueError:
                     pass
     return rows
 
 
 def _load_coordinates():
-    points = []
-    zones = []
+    """{rank: [(episodio, grp, mid, x, y), ...]} en orden de visita."""
+    paths = {}
     for path in glob.glob(os.path.join("coordinates", "coords_clon_*.txt")):
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                for line in f:
-                    parts = line.strip().split(",")
-                    if len(parts) == 4:
-                        x, y, grp, mid = map(int, parts)
-                        points.append((x + mid * 150, y + grp * 150))
-                        zones.append((grp, mid))
-        except Exception:
-            pass
-    return points, zones
+        rank = int(re.search(r"coords_clon_(\d+)", path).group(1))
+        puntos = []
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                parts = line.strip().split(",")
+                if len(parts) == 5:
+                    puntos.append(tuple(int(p) for p in parts))
+        paths[rank] = puntos
+    return paths
 
 
-def plot_progress_and_heatmap():
+def plot_progress(metrics):
+    fig, axes = plt.subplots(3, 1, figsize=(10, 10), sharex=True, constrained_layout=True)
+    fig.suptitle("Progreso por episodio", fontsize=14, fontweight="bold")
+    if not metrics:
+        axes[0].text(0.5, 0.5, "No hay métricas aún. Ejecuta el entrenamiento.", ha="center", va="center", transform=axes[0].transAxes)
+    by_rank = defaultdict(list)
+    for row in metrics:
+        by_rank[row.get("rank", 0)].append(row)
+
+    marcadores = {"no_progress": "x", "fainted": "v", "max_steps": "o"}
+    for rank, rows in sorted(by_rank.items()):
+        rows.sort(key=lambda r: r.get("episode", 0))
+        eps = [r["episode"] for r in rows]
+        col = np.array(color(rank)) / 255
+        for ax, key in zip(axes, ("reward", "maps_discovered", "tiles_discovered")):
+            ax.plot(eps, [r.get(key, 0) for r in rows], color=col, linewidth=1, alpha=0.8, label=f"Clon {rank}")
+            for reason, marker in marcadores.items():
+                sel = [(r["episode"], r.get(key, 0)) for r in rows if r.get("reason") == reason]
+                if sel:
+                    ax.scatter(*zip(*sel), color=col, marker=marker, s=18)
+
+    for ax, title in zip(axes, ("Recompensa total", "Mapas distintos", "Baldosas distintas")):
+        ax.set_ylabel(title)
+        ax.grid(True, alpha=0.3)
+    axes[-1].set_xlabel("Episodio  (x = sin progreso, v = debilitado, o = límite de pasos)")
+    axes[-1].xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
+    if by_rank:
+        axes[0].legend(loc="best", fontsize=8)
+    path = os.path.join(OUTPUT_DIR, "progreso.png")
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    return path
+
+
+def resumen_splits(metrics):
+    """Splits de todos los episodios en orden cronológico (todos los clones juntos).
+
+    Devuelve [(split, [(n_episodio_global, pasos, rank), ...], total_episodios)], con los
+    hitos primero (en orden de la ruta) y después los mapas, ordenados por mediana de pasos.
+    """
+    episodios = sorted(metrics, key=lambda r: (r.get("timestamp", 0), r.get("episode", 0)))
+    puntos = defaultdict(list)
+    for i, row in enumerate(episodios, start=1):
+        for split, paso in row.get("splits", {}).items():
+            puntos[split].append((i, paso, row.get("rank", 0)))
+    hitos = [h for h in FLAGS if h in puntos]
+    # El mapa donde empieza el episodio siempre marca el paso 1: no dice nada
+    mapas = [s for s in puntos if s not in FLAGS and np.median([p[1] for p in puntos[s]]) > 1]
+    mapas.sort(key=lambda s: np.median([p[1] for p in puntos[s]]))
+    return [(s, puntos[s], len(episodios)) for s in hitos + mapas]
+
+
+def plot_splits(splits, max_paneles=12):
+    splits = splits[:max_paneles]
+    path = os.path.join(OUTPUT_DIR, "splits.png")
+    filas = max(1, math.ceil(len(splits) / 3))
+    fig, axes = plt.subplots(filas, 3, figsize=(15, 3.6 * filas), constrained_layout=True, squeeze=False)
+    fig.suptitle("Pasos hasta cada hito/mapa por episodio (más bajo = más rápido)", fontsize=14, fontweight="bold")
+    for ax in axes.flat[len(splits):]:
+        ax.axis("off")
+    if not splits:
+        axes[0][0].text(0.5, 0.5, "Aún no hay splits. Ejecuta el entrenamiento.", ha="center", va="center", transform=axes[0][0].transAxes)
+
+    for ax, (split, puntos, total) in zip(axes.flat, splits):
+        xs, ys = np.array([p[0] for p in puntos]), np.array([p[1] for p in puntos])
+        ax.scatter(xs, ys, c=[np.array(color(p[2])) / 255 for p in puntos], s=14, alpha=0.8)
+        ventana = min(15, len(ys))
+        mediana = [np.median(ys[max(0, i - ventana + 1):i + 1]) for i in range(len(ys))]
+        ax.plot(xs, mediana, color="black", linewidth=1.5, label=f"mediana (últimos {ventana})")
+        ax.plot(xs, np.minimum.accumulate(ys), color="crimson", linestyle="--", linewidth=1, label="récord")
+        tipo = "HITO" if split in FLAGS else "mapa"
+        ax.set_title(f"[{tipo}] {split}\n{len(puntos)}/{total} episodios ({100 * len(puntos) / total:.0f}%) · récord {ys.min()} pasos", fontsize=9)
+        ax.set_xlabel("Episodio terminado (todos los clones, en orden)", fontsize=8)
+        ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
+        ax.set_ylabel("Pasos", fontsize=8)
+        ax.grid(True, alpha=0.3)
+        ax.legend(fontsize=7, loc="upper right")
+    fig.savefig(path, dpi=130)
+    plt.close(fig)
+    return path
+
+
+def render_map(mapa, entry, visitas, recorridos):
+    """visitas: {rank: Counter((x, y))}; recorridos: {rank: [(x, y), ...]} del último episodio."""
+    ox, oy = entry["origin"]
+    h, w = entry["known"].shape
+
+    # Fondo: el mapa real oscurecido para que resalten los colores; casillas nunca vistas en gris
+    fondo = entry["img"].astype(np.float32) * 0.55 + 20
+    mask = np.kron(entry["known"], np.ones((TILE, TILE), dtype=bool))
+    fondo[~mask] = 45
+    img = Image.fromarray(fondo.astype(np.uint8)).resize((w * TILE * ESCALA, h * TILE * ESCALA), Image.NEAREST).convert("RGBA")
+
+    capa = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(capa)
+    t = TILE * ESCALA
+    ranks = sorted(visitas)
+    maximo = max((c for v in visitas.values() for c in v.values()), default=1)
+
+    # Mini-cuadros 3x2 dentro de cada casilla, uno por clon (posición fija por clon)
+    cw, ch = t // 3, t // 2
+    for rank in ranks:
+        slot = rank % 6
+        dx, dy = (slot % 3) * cw, (slot // 3) * ch
+        r, g, b = color(rank)
+        for (x, y), n in visitas[rank].items():
+            alpha = int(255 * (0.35 + 0.65 * math.log1p(n) / math.log1p(maximo)))
+            px, py = (x - ox) * t + dx, (y - oy) * t + dy
+            draw.rectangle([px + 1, py + 1, px + cw - 2, py + ch - 2], fill=(r, g, b, alpha))
+
+    # Recorrido del último episodio (se corta en saltos de más de una casilla: puertas, caídas)
+    for rank, puntos in recorridos.items():
+        tramos, tramo = [], []
+        for punto in puntos:
+            if tramo and abs(punto[0] - tramo[-1][0]) + abs(punto[1] - tramo[-1][1]) > 1:
+                tramos.append(tramo)
+                tramo = []
+            tramo.append(punto)
+        tramos.append(tramo)
+        for tramo in tramos:
+            if len(tramo) > 1:
+                draw.line([((px - ox) * t + t // 2, (py - oy) * t + t // 2) for px, py in tramo],
+                          fill=color(rank) + (255,), width=3)
+
+    img = Image.alpha_composite(img, capa)
+
+    # Leyenda
+    nombre = MAP_NAMES.get(mapa, f"Mapa {mapa[0]}-{mapa[1]}")
+    alto_leyenda = 22 + 18 * len(ranks)
+    final = Image.new("RGBA", (max(img.width, 360), img.height + alto_leyenda), (25, 25, 25, 255))
+    final.paste(img, (0, alto_leyenda))
+    d = ImageDraw.Draw(final)
+    d.text((6, 4), f"{nombre}  (grupo {mapa[0]}, mapa {mapa[1]})", fill=(255, 255, 255, 255))
+    for i, rank in enumerate(ranks):
+        y0 = 22 + 18 * i
+        d.rectangle([6, y0 + 2, 18, y0 + 12], fill=color(rank) + (255,))
+        d.text((24, y0), f"Clon {rank}: {len(visitas[rank])} casillas, {sum(visitas[rank].values())} visitas", fill=(230, 230, 230, 255))
+    return final.convert("RGB"), nombre
+
+
+def plot_maps(coords, ultimos_episodios=None):
+    atlas = merge_atlases(sorted(glob.glob(os.path.join(ATLAS_DIR, "clon*.npz"))))
+
+    visitas = defaultdict(lambda: defaultdict(Counter))  # mapa -> rank -> Counter
+    recorridos = defaultdict(dict)                        # mapa -> rank -> [(x, y)]
+    for rank, puntos in coords.items():
+        if not puntos:
+            continue
+        episodios = sorted({p[0] for p in puntos})
+        validos = set(episodios[-ultimos_episodios:]) if ultimos_episodios else set(episodios)
+        ultimo = episodios[-1]
+        for ep, grp, mid, x, y in puntos:
+            if ep in validos:
+                visitas[(grp, mid)][rank][(x, y)] += 1
+            if ep == ultimo:
+                recorridos[(grp, mid)].setdefault(rank, []).append((x, y))
+
+    os.makedirs(MAPS_DIR, exist_ok=True)
+    for viejo in glob.glob(os.path.join(MAPS_DIR, "*.png")):
+        os.remove(viejo)
+
+    resumen = []
+    for mapa, por_clon in visitas.items():
+        xs = [x for c in por_clon.values() for x, _ in c]
+        ys = [y for c in por_clon.values() for _, y in c]
+        # Asegurar que el lienzo cubre todas las casillas visitadas aunque el atlas no las tenga
+        if mapa not in atlas:
+            atlas[mapa] = new_entry(min(xs), min(ys), 1, 1)
+        entry = ensure_region(atlas, mapa, min(xs), min(ys), max(xs) - min(xs) + 1, max(ys) - min(ys) + 1)
+        img, nombre = render_map(mapa, entry, por_clon, recorridos.get(mapa, {}))
+        img.save(os.path.join(MAPS_DIR, f"{nombre}.png"))
+        resumen.append((sum(sum(c.values()) for c in por_clon.values()), nombre, {r: len(c) for r, c in por_clon.items()}))
+    return sorted(resumen, reverse=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--episodios", type=int, default=None, help="usar solo los N últimos episodios de cada clon")
+    args = parser.parse_args()
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     metrics = _load_metrics()
-    points, zones = _load_coordinates()
+    print(f"✅ {plot_progress(metrics)}")
 
-    fig, axes = plt.subplots(2, 1, figsize=(10, 10), constrained_layout=True)
-    fig.suptitle("Progreso de la IA y mapa de calor", fontsize=14, fontweight="bold")
+    splits = resumen_splits(metrics)
+    print(f"✅ {plot_splits(splits)}")
+    print(f"   {'split':40s} {'logrado':>12s} {'récord':>7s} {'mediana primeros 10':>20s} {'últimos 10':>11s}")
+    for split, puntos, total in splits:
+        pasos = [p[1] for p in puntos]
+        inicio, final = np.median(pasos[:10]), np.median(pasos[-10:])
+        cambio = f"({100 * (final - inicio) / inicio:+.0f}%)" if len(pasos) >= 20 else ""
+        print(f"   {split:40s} {len(puntos):5d}/{total:<6d} {min(pasos):7d} {inicio:20.0f} {final:11.0f} {cambio}")
 
-    if metrics:
-        by_rank = defaultdict(list)
-        for row in metrics:
-            by_rank[row.get("rank", 0)].append(row)
-
-        ax_metrics = axes[0]
-        for rank, rows in sorted(by_rank.items()):
-            rows = sorted(rows, key=lambda r: (r.get("episode", 0), r.get("steps", 0)))
-            episodes = [r.get("episode", 0) for r in rows]
-            rewards = [r.get("reward", 0.0) for r in rows]
-            ax_metrics.plot(episodes, rewards, marker="o", linewidth=1.2, alpha=0.9, label=f"Clone {rank}")
-
-        ax_metrics.set_title("Recompensa por episodio")
-        ax_metrics.set_xlabel("Episodio")
-        ax_metrics.set_ylabel("Recompensa")
-        ax_metrics.grid(True, alpha=0.3)
-        ax_metrics.legend(loc="best", fontsize=8)
-    else:
-        axes[0].text(0.5, 0.5, "No hay métricas aún. Ejecuta el entrenamiento para generar datos.",
-                     ha="center", va="center", transform=axes[0].transAxes)
-        axes[0].set_title("Recompensa por episodio")
-
-    ax_heatmap = axes[1]
-    if points:
-        xs = [p[0] for p in points]
-        ys = [p[1] for p in points]
-        min_x, max_x = min(xs) - 20, max(xs) + 20
-        min_y, max_y = min(ys) - 20, max(ys) + 20
-        heatmap, _, _ = np.histogram2d(xs, ys, bins=80, range=[[min_x, max_x], [min_y, max_y]])
-        heatmap = np.log1p(heatmap)
-        img = ax_heatmap.imshow(heatmap.T, extent=[min_x, max_x, max_y, min_y], origin="upper", cmap="inferno", aspect="auto")
-
-        zone_positions = defaultdict(list)
-        for point, zone in zip(points, zones):
-            zone_positions[zone].append(point)
-
-        for (grp, mid), zone_points in sorted(zone_positions.items()):
-            key = (grp, mid)
-            name = MAP_NAMES.get(key, f"Zona {grp}-{mid}")
-            x_center = np.mean([p[0] for p in zone_points])
-            y_center = np.mean([p[1] for p in zone_points])
-            ax_heatmap.text(
-                x_center,
-                y_center,
-                name,
-                color="white",
-                fontsize=6,
-                fontweight="bold",
-                ha="center",
-                va="center",
-                clip_on=True,
-                alpha=0.95,
-                bbox=dict(boxstyle="round,pad=0.15", facecolor="black", alpha=0.45, edgecolor="none"),
-            )
-
-        ax_heatmap.set_title("Mapa de calor de posiciones visitadas")
-        ax_heatmap.set_xlabel("X")
-        ax_heatmap.set_ylabel("Y")
-        fig.colorbar(img, ax=ax_heatmap, shrink=0.9)
-    else:
-        ax_heatmap.text(0.5, 0.5, "No hay coordenadas guardadas todavía.", ha="center", va="center", transform=ax_heatmap.transAxes)
-        ax_heatmap.set_title("Mapa de calor de posiciones visitadas")
-
-    output_path = os.path.join(OUTPUT_DIR, "progreso_y_mapa.png")
-    fig.savefig(output_path, dpi=220)
-    print(f"✅ Visualización guardada en {output_path}")
+    resumen = plot_maps(_load_coordinates(), args.episodios)
+    print(f"✅ {len(resumen)} mapas en {MAPS_DIR}/")
+    for visitas_totales, nombre, casillas in resumen:
+        por_clon = "  ".join(f"c{r}:{n}" for r, n in sorted(casillas.items()))
+        print(f"   {nombre:28s} {visitas_totales:7d} visitas | casillas por clon: {por_clon}")
 
 
 if __name__ == "__main__":
-    plot_progress_and_heatmap()
+    main()

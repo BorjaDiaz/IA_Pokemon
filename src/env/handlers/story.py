@@ -7,9 +7,11 @@ class StoryHandler:
     def __init__(self, rank, logger):
         self.rank = rank
         self.logger = logger
+        self.hitos_nuevos = []  # hitos conseguidos en el último procesar(), para las capturas
 
     def procesar(self, pb, ram, rewards, active_flags, tuplas_historia, step_count):
         reward = 0.0
+        self.hitos_nuevos = []
         current_flags = ram.get_all_flags()
 
         for f_id, val in current_flags.items():
@@ -19,6 +21,7 @@ class StoryHandler:
                 if f_id in tuplas_historia:
                     # Hito del speedrun: gran premio y savestate para el curriculum
                     nombre_evento = tuplas_historia[f_id]
+                    self.hitos_nuevos.append(nombre_evento)
                     bonus = rewards.calcular_bonus_prisa_flag(step_count)
                     reward += c.REWARD_FLAG_STORY + bonus
                     print(f"🌟 [Clon {self.rank}] ¡HIT HISTÓRICO! -> {nombre_evento}")

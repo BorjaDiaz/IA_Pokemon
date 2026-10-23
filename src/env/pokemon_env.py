@@ -2,6 +2,7 @@ import gymnasium as gym
 import numpy as np
 import os
 import json
+import time
 from gymnasium import spaces
 from pyboy import PyBoy
 from pyboy.utils import WindowEvent
@@ -10,6 +11,7 @@ import src.utils.config as config
 import src.utils.constantes as c
 from src.utils.logger import Logger
 from src.utils.frame_capturer import FrameCapturer
+from src.utils.map_atlas import MapAtlas
 from src.env.core.extractor_ram import RamExtractor
 from src.env.handlers.reward_system import RewardSystem
 
@@ -30,6 +32,8 @@ class PokemonGoldEnv(gym.Env):
         os.makedirs("coordinates", exist_ok=True)
         self.coords_path = os.path.join("coordinates", f"coords_clon_{self.rank}.txt")
         open(self.coords_path, "w").close()
+        # Imagen de los mapas reconstruida con lo que ve este clon (se conserva entre entrenamientos)
+        self.atlas = MapAtlas(rank)
 
         # 🧠 Exploración: las recompensas usan los conjuntos del episodio; all_maps_seen es solo para métricas
         self.last_speedrun_pos = (-1, -1)
@@ -37,6 +41,8 @@ class PokemonGoldEnv(gym.Env):
         self.episode_maps = set()
         self.episode_tiles = set()
         self.all_maps_seen = set()
+        # ⏱️ Splits: paso del episodio en que se llega por primera vez a cada mapa o hito
+        self.splits = {}
 
         # Trackeo de salud y niveles del equipo durante la partida
         self.vida_equipo_anterior = 999
@@ -56,8 +62,8 @@ class PokemonGoldEnv(gym.Env):
         self.rewards = RewardSystem(rank=self.rank)
         self.gestor = c.GestorCombate(self.pb)
         self.logger = Logger(rank, config.LOG_DIR) if config.ENABLE_LOGS else None
-        # 📸 Frame capturer (solo para rank 0, cada 100 steps, limpia carpeta al iniciar)
-        self.capturer = FrameCapturer(capture_interval=100, clean_on_init=True) if self.rank == 0 else None
+        # 📸 Capturas por eventos: tira de pantallas al acabar cada episodio y una al conseguir un hito
+        self.capturer = FrameCapturer(rank)
 
         # 🔌 Instanciación de los Handlers delegados
         self.h_combat = CombatHandler(self.rank, self.logger)
@@ -91,6 +97,8 @@ class PokemonGoldEnv(gym.Env):
             "tiles_discovered": len(self.episode_tiles),
             "total_maps_seen": len(self.all_maps_seen),
             "reason": reason,
+            "timestamp": round(time.time(), 1),
+            "splits": self.splits,
         }
         try:
             with open(self.metrics_path, "a", encoding="utf-8") as f:
@@ -102,12 +110,15 @@ class PokemonGoldEnv(gym.Env):
         self.episode_counter += 1
         self.episode_maps = set()
         self.episode_tiles = set()
+        self.splits = {}
 
         # Sistema de Curriculum Learning (Cargar partida avanzada)
         if config.USE_CURRICULUM:
             path = os.path.join(config.STATES_DIR, config.CURRICULUM_STATES[config.CURRENT_STAGE])
-            if os.path.exists(path):
-                with open(path, "rb") as f: self.pb.load_state(f)
+            # Sin el savestate el episodio seguiría donde acabó el anterior sin avisar
+            if not os.path.exists(path):
+                raise FileNotFoundError(f"No existe el savestate del curriculum: {path}")
+            with open(path, "rb") as f: self.pb.load_state(f)
 
         # Reseteo de variables de control del speedrun
         self.steps_count = 0
@@ -124,9 +135,7 @@ class PokemonGoldEnv(gym.Env):
         self.h_combat.vida_enemigo_anterior = 999
         self.h_movement.steps_sin_progreso = 0
         
-        # 📸 Nuevo episodio en capturer
-        if self.capturer:
-            self.capturer.new_episode()
+        self.capturer.new_episode()
         
         return self._get_obs(), {}
 
@@ -155,14 +164,16 @@ class PokemonGoldEnv(gym.Env):
         map_name = c.MAP_NAMES.get(current_speedrun_map, f"Mapa {grp}-{mid}")
 
         # Guardar coordenadas cada 5 pasos para el mapa de calor
-        if self.steps_count % 5 == 0:
+        # Registrar cada cambio de casilla para el mapa de calor (episodio,grupo,mapa,x,y)
+        if (x, y) != self.last_speedrun_pos or current_speedrun_map != self.last_speedrun_map:
             with open(self.coords_path, "a") as f:
-                f.write(f"{x},{y},{grp},{mid}\n")
+                f.write(f"{self.episode_counter},{grp},{mid},{x},{y}\n")
 
         # --- 💥 BLOQUE MOVIDO AQUÍ PARA QUE EXISTA 'en_combate' ---
         tipo_combate = self.ram.leer(c.ADDR_BATTLE_MODE)
         en_combate = tipo_combate > 0
         en_script = self.ram.leer(c.ADDR_SCRIPT_RUNNING) != 0
+        self.atlas.capture(self.pb, grp, mid, x, y, en_combate, en_script)
         vida_actual_equipo = self.ram.leer_vida_total_equipo()
         max_vida_equipo = self.ram.leer_max_vida_total_equipo()
         party_count = self.ram.leer_party_count()
@@ -224,11 +235,19 @@ class PokemonGoldEnv(gym.Env):
         if current_speedrun_map not in self.episode_maps:
             self.episode_maps.add(current_speedrun_map)
             self.all_maps_seen.add(current_speedrun_map)
+            self.splits[map_name] = self.steps_count
             reward += c.REWARD_NEW_MAP
             print(f"🌍 [Clon {self.rank}] ¡Mapa descubierto! -> {map_name}")
             if self.logger: self.logger.log_step({"evento": "NUEVO_MAPA", "mapa": map_name, "step": self.steps_count})
 
         reward += self.h_story.procesar(self.pb, self.ram, self.rewards, self.active_flags, self.tuplas_historia, self.steps_count)
+
+        # 📸 Capturas: pantalla en memoria cada pocos pasos y foto de cada hito
+        pantalla = self.pb.screen.ndarray[:, :, :3]
+        self.capturer.record(pantalla, self.steps_count)
+        for hito in self.h_story.hitos_nuevos:
+            self.splits[hito] = self.steps_count
+            self.capturer.milestone(pantalla, self.episode_counter, hito, map_name, (x, y), self.steps_count)
 
         # 💀 CONDICIÓN DE MUERTE
         debilitado = vida_actual_equipo <= 0 and party_count > 0
@@ -251,16 +270,19 @@ class PokemonGoldEnv(gym.Env):
             reason = "max_steps"
         else:
             reason = None
+        if reason or self.steps_count % 2048 == 0:
+            self.atlas.save()
         if reason:
             self._log_episode_summary(self.total_speedrun_reward, reason)
             print(f"🏁 [Clon {self.rank}] FIN DEL EPISODIO ({reason}) | Pasos: {self.steps_count} | Puntuación: {round(self.total_speedrun_reward, 2)}")
+            hitos = [f"{h} @ {p}" for h, p in self.splits.items() if h in c.FLAGS]
+            if hitos:
+                print(f"⏱️ [Clon {self.rank}] Hitos del episodio: {' | '.join(hitos)}")
+            self.capturer.episode_end(pantalla, self.episode_counter, reason, map_name, (x, y),
+                                      self.steps_count, self.total_speedrun_reward)
 
-        # 📸 Capturar frame cada 100 steps
-        if self.capturer:
-            img = self.pb.screen.ndarray[:,:,:3]
-            self.capturer.capture_frame(img, info={"mapa": map_name, "pos": (x, y)})
-        
-        return self._get_obs(), reward, False, reason is not None, {}
+        info = {"splits": dict(self.splits)} if reason else {}
+        return self._get_obs(), reward, False, reason is not None, info
 
     def _get_obs(self):
         rgb = self.pb.screen.ndarray[:, :, :3].astype(np.float32)
@@ -270,4 +292,5 @@ class PokemonGoldEnv(gym.Env):
         return gris.astype(np.uint8)[np.newaxis, :, :]
 
     def close(self):
+        self.atlas.save()
         self.pb.stop()

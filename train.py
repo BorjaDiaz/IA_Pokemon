@@ -1,5 +1,6 @@
 from src.agents.env_builder import build_vectorized_env
 from src.agents.agent_manager import AgentManager
+from src.agents.callbacks import SplitsCallback
 import src.utils.config as config
 
 
@@ -37,7 +38,8 @@ def main():
 
     # 3. Bucle de entrenamiento con control explícito de parada/guardado
     try:
-        model.learn(total_timesteps=config.TOTAL_TIMESTEPS, callback=gestor_agente.checkpoint_callback())
+        model.learn(total_timesteps=config.TOTAL_TIMESTEPS,
+                    callback=[gestor_agente.checkpoint_callback(), SplitsCallback()])
     except KeyboardInterrupt:
         print("\n🛑 Entrenamiento detenido por el usuario. Guardando progreso...")
     finally:
