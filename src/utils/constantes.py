@@ -1,4 +1,3 @@
-import os
 import src.utils.config as config
 
 
@@ -13,29 +12,19 @@ REWARD_NEW_MAP = 5.0               # Por entrar a una zona/mapa nuevo
 
 # Supervivencia y Progreso
 REWARD_HEAL = 10.0
-REWARD_HEAL_MAP = 20.0              # Curarse fuera de combate (Centros Pokémon, pociones)
 REWARD_LEVEL_UP = 15.0              # Multiplicador por cada nivel ganado en el equipo
 
 # Combate
-REWARD_COMBAT_DAMAGE_CAUSED = 2.0   # Por hacer daño válido a un enemigo
 REWARD_COMBAT_ENEMY_FAINTED = 10.0  # Por debilitar a un Pokémon rival
-REWARD_COMBAT_HEAL = 5.0            # Por curarse en medio de un combate
 PENALTY_COMBAT_DAMAGE_RECEIVED = -1.0 # Por recibir daño
 PENALTY_COMBAT_STEP = -0.05         # Penalización por paso en combate (para que no alargue batallas)
 PENALTY_TEAM_FAINTED = -15.0        # Game Over (equipo debilitado)
-REWARD_HEALTHY_TEAM = 0.02  # Pequeño bonus por estar sano
-HEALTHY_THRESHOLD = 0.70 
-REWARD_HEALTHY_STEP = 0.02   # 70% de la vida total
 REWARD_DAMAGE_MULT = 0.5
 
 # Historia (Flags)
 REWARD_FLAG_STORY = 100.0           # Por conseguir un objetivo clave de la historia
 REWARD_FLAG_UNKNOWN = 2.0           # Por activar un evento menor o desconocido
 
-# Umbrales de Tiempo / Estancamiento
-FRAMES_STUCK_WARNING = 10           # Frames quietos antes de empezar a penalizar
-FRAMES_STUCK_MAX = 400              # Límite máximo antes de considerar que la IA está "en coma"
-MAX_STUCK_PENALTY = 0.5             # Castigo máximo por quedarse atascado en un rincón
 MAX_STEPS_PER_EPISODE = getattr(config, 'MAX_STEPS_PER_EPISODE', 500000)
 
 # ==========================================
@@ -51,9 +40,6 @@ ADDR_PLAYER_X = 0xD20D
 # ==========================================
 
 ADDR_BATTLE_TYPE = 0xD11E # 0 = Mapa, 1 = Salvaje, 2 = Entrenador
-ADDR_PARTY_COUNT = 0xDC0F
-ADDR_PARTY_HP = 0xDA22
-ADDR_PARTY_LEVEL = 0xDA22
 # ==========================================
 # RANGO FLAGS
 # ==========================================
@@ -120,15 +106,6 @@ RUNTIME_PROGRESS_FLAGS = {
     (0xD88F, 7): "got_pokegear_1",
     (0xD8A2, 1): "entered_route_29",
 }
-
-# ==========================================
-# FLAGS SECUNDARIAS 
-# ==========================================
-FLAGS_SECONDARYS = {
-    "got_radio": (0xD81B, 5),
-    "gave_mystery_egg": (0xD8A9, 1),
-}
-
 
 # ==========================================
 # MEMORIA COMBATE: TU POKÉMON (LÍDER)
@@ -266,9 +243,6 @@ class GestorCombate:
         high = self.pb.memory[direccion]
         low = self.pb.memory[direccion + 1]
         return (high << 8) + low
-
-    def leer_vida_jugador(self):
-        return self.leer_stat_2bytes(ADDR_LIDER_HP_ACTUAL)
 
     def leer_vida_enemigo(self):
         return self.leer_stat_2bytes(ADDR_RIVAL_HP_ACTUAL)

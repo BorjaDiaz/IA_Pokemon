@@ -3,9 +3,6 @@ import os
 BASE_DIR = r"C:\Users\borja\Desktop\IA"
 ROM_PATH = os.path.join(BASE_DIR, "roms", "Pokemon_Oro.gbc")
 
-# El estado desde el que empezará la IA al abrir el programa
-STATE_PATH = os.path.join(BASE_DIR, "state", "inicio.state")
-
 # Aquí se guardarán los logros automáticos de la IA
 STATES_DIR = os.path.join(BASE_DIR, "state")
 LOG_DIR = os.path.join(BASE_DIR, "logs")
@@ -25,9 +22,3 @@ CURRICULUM_STATES = [
 ]
 
 CURRENT_STAGE = 0
-
-TIME_PENALTY = 0.01
-STUCK_PENALTY = 0.5
-MAX_STUCK = 25
-
-PATH_MEMORY_FILE = "best_path.json"

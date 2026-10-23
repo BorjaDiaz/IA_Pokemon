@@ -20,8 +20,8 @@ Entrenar un agente que:
 
 ## Estructura del proyecto
 
-- `main_entrenar.py`: entrada de entrenamiento principal
-- `train.py`: flujo modular de entrenamiento
+- `train.py`: entrada de entrenamiento
+- `visualizador.py`: gráficas de progreso y mapa de calor de coordenadas
 - `src/env/pokemon_env.py`: entorno Gymnasium para el juego
 - `src/agents/`: construcción del entorno vectorizado y gestión del modelo
 - `src/env/handlers/`: lógica de movimiento, combate y recompensas
@@ -73,13 +73,7 @@ roms/Pokemon_Oro.gbc
 
 ## Ejecutar el proyecto
 
-### Entrenamiento principal
-
-```bash
-python main_entrenar.py
-```
-
-### Entrenamiento modular
+### Entrenamiento
 
 ```bash
 python train.py

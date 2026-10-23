@@ -8,14 +8,7 @@ class RewardSystem:
         """Da un impulso extra cuando el agente cambia de zona o atraviesa puertas."""
         if previous_map == current_map:
             return 0.0
-
-        if previous_map != current_map:
-            return 1.5
-
-        if previous_pos != current_pos:
-            return 0.3
-
-        return 0.0
+        return 1.5
 
     def calcular_premio_curacion(self, curacion, max_vida_equipo):
         """Calcula el premio por curarse. Modificado para evitar granjeo."""
@@ -38,10 +31,6 @@ class RewardSystem:
         """Calcula una penalización proporcional por recibir daño."""
         if danio_recibido <= 0:
             return 0.0
-            
-        if hasattr(c, 'PENALTY_DAMAGE_MULT'):
-            return danio_recibido * c.PENALTY_DAMAGE_MULT
-            
         return c.PENALTY_COMBAT_DAMAGE_RECEIVED
 
     def calcular_bonus_prisa_flag(self, steps_actuales):
