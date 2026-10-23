@@ -35,6 +35,13 @@ CURRICULUM_STATES = [
 
 CURRENT_STAGE = 0
 
+# Salidas mezcladas: en cada episodio, con probabilidad PROB_SALIDA_INICIO se empieza en
+# CURRICULUM_STATES[CURRENT_STAGE]; si no, desde el savestate best_speedrun_<hito>.state del hito más
+# avanzado conseguido (o, a veces, de uno anterior). Practica lo nuevo sin olvidar el principio.
+SALIDAS_MEZCLADAS = True
+PROB_SALIDA_INICIO = 0.5
+PROB_HITO_MAS_AVANZADO = 0.6   # entre las salidas desde hitos, cuántas desde el más avanzado
+
 # ==========================================
 # ENTRENAMIENTO (PPO)
 # ==========================================

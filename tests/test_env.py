@@ -16,8 +16,9 @@ class PokemonGoldEnvTests(unittest.TestCase):
         self.cwd = os.getcwd()
         self.tmp = tempfile.TemporaryDirectory()
         os.chdir(self.tmp.name)
-        self.enable_logs, self.stage = config.ENABLE_LOGS, config.CURRENT_STAGE
+        self.enable_logs, self.stage, self.mezcladas = config.ENABLE_LOGS, config.CURRENT_STAGE, config.SALIDAS_MEZCLADAS
         config.ENABLE_LOGS, config.CURRENT_STAGE = False, 0  # inicio.state: habitación
+        config.SALIDAS_MEZCLADAS = False  # tests deterministas: siempre la misma salida
 
         from src.env.pokemon_env import PokemonGoldEnv
         self.env = PokemonGoldEnv(rank=0)
@@ -26,7 +27,7 @@ class PokemonGoldEnvTests(unittest.TestCase):
 
     def tearDown(self):
         self.env.close()
-        config.ENABLE_LOGS, config.CURRENT_STAGE = self.enable_logs, self.stage
+        config.ENABLE_LOGS, config.CURRENT_STAGE, config.SALIDAS_MEZCLADAS = self.enable_logs, self.stage, self.mezcladas
         os.chdir(self.cwd)
         self.tmp.cleanup()
 

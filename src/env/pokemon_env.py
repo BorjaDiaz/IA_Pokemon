@@ -2,6 +2,7 @@ import gymnasium as gym
 import numpy as np
 import os
 import json
+import random
 import time
 from gymnasium import spaces
 from pyboy import PyBoy
@@ -57,6 +58,9 @@ class PokemonGoldEnv(gym.Env):
         self.splits = {}
         self.combates = nuevas_estadisticas_combate()
         self.combate_actual = None
+        # Generador propio para elegir la salida de cada episodio (distinto en cada clon)
+        self.rng = random.Random(time.time_ns() + rank)
+        self.salida = config.CURRICULUM_STATES[config.CURRENT_STAGE]
 
         # Trackeo de salud y niveles del equipo durante la partida
         self.vida_equipo_anterior = 999
@@ -114,6 +118,7 @@ class PokemonGoldEnv(gym.Env):
             "reason": reason,
             "tiempo_juego_s": round(self.ram.leer_tiempo_juego(), 1),
             "timestamp": round(time.time(), 1),
+            "salida": self.salida,
             "splits": self.splits,
             "combates": self.combates,
         }
@@ -132,8 +137,9 @@ class PokemonGoldEnv(gym.Env):
         self.combate_actual = None
 
         # Sistema de Curriculum Learning (Cargar partida avanzada)
+        self.salida = self._elegir_salida()
         if config.USE_CURRICULUM:
-            path = os.path.join(config.STATES_DIR, config.CURRICULUM_STATES[config.CURRENT_STAGE])
+            path = os.path.join(config.STATES_DIR, self.salida)
             # Sin el savestate el episodio seguiría donde acabó el anterior sin avisar
             if not os.path.exists(path):
                 raise FileNotFoundError(f"No existe el savestate del curriculum: {path}")
@@ -313,8 +319,22 @@ class PokemonGoldEnv(gym.Env):
 
         terminated = reason in ("fainted", "no_progress")
         truncated = reason == "max_steps"
-        info = {"splits": dict(self.splits), "combates": self.combates} if reason else {}
+        info = {"splits": dict(self.splits), "combates": self.combates, "salida": self.salida} if reason else {}
         return self._get_obs(), reward, terminated, truncated, info
+
+    def _elegir_salida(self):
+        """Savestate desde el que empieza el episodio (ver SALIDAS_MEZCLADAS en config.py)."""
+        base = config.CURRICULUM_STATES[config.CURRENT_STAGE]
+        if not config.SALIDAS_MEZCLADAS:
+            return base
+        # Hitos conseguidos hasta ahora por cualquier clon, en orden de la ruta (se revisa en cada episodio)
+        hitos = [f"best_speedrun_{h}.state" for h in c.FLAGS
+                 if os.path.exists(os.path.join(config.STATES_DIR, f"best_speedrun_{h}.state"))]
+        if not hitos or self.rng.random() < config.PROB_SALIDA_INICIO:
+            return base
+        if len(hitos) == 1 or self.rng.random() < config.PROB_HITO_MAS_AVANZADO:
+            return hitos[-1]
+        return self.rng.choice(hitos[:-1])
 
     def _cerrar_combate(self, resultado):
         combate, self.combate_actual = self.combate_actual, None

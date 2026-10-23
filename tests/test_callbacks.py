@@ -35,6 +35,17 @@ class SplitsCallbackTests(unittest.TestCase):
         self.assertEqual(valores["combate/entrenador_perdido"], 1)
         self.assertEqual(valores["combate/pasos_en_combate"], 120)
 
+    def test_episodes_from_a_milestone_are_logged_apart(self):
+        hito = "EVENT_GOT_A_POKEMON_FROM_ELM"
+        valores = self.step(
+            {"splits": {hito: 500}, "salida": "inicio.state"},
+            {"splits": {"ROUTE_29": 80}, "salida": f"best_speedrun_{hito}.state"},
+        )
+        self.assertEqual(valores[f"splits/{hito}"], 500)
+        self.assertEqual(valores[f"exito/{hito}"], 1.0)  # solo cuenta el episodio que empezó en el inicio
+        self.assertEqual(valores[f"desde_{hito}/exito/{hito}"], 0.0)
+        self.assertEqual(valores["salidas/desde_base"], 0.5)
+
     def test_maps_are_not_sent_to_tensorboard(self):
         valores = self.step({"splits": {"PLAYERS_HOUSE_1F": 120}})
         self.assertFalse(any("PLAYERS_HOUSE_1F" in k for k in valores))

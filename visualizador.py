@@ -165,7 +165,7 @@ def plot_splits(splits, max_paneles=12):
     path = os.path.join(OUTPUT_DIR, "splits.png")
     filas = max(1, math.ceil(len(splits) / 3))
     fig, axes = plt.subplots(filas, 3, figsize=(15, 3.6 * filas), constrained_layout=True, squeeze=False)
-    fig.suptitle("Pasos hasta cada hito/mapa por episodio (más bajo = más rápido)", fontsize=14, fontweight="bold")
+    fig.suptitle("Pasos desde el inicio hasta cada hito/mapa por episodio (más bajo = más rápido)", fontsize=14, fontweight="bold")
     for ax in axes.flat[len(splits):]:
         ax.axis("off")
     if not splits:
@@ -336,6 +336,24 @@ def _ini_fin(serie, n=3):
     return float(np.mean(valores[:n])), float(np.mean(valores[-n:]))
 
 
+def salida_base():
+    return config.CURRICULUM_STATES[config.CURRENT_STAGE]
+
+
+def por_salida(metrics):
+    """{salida: episodios}, con la salida base primero (los episodios antiguos no la registran: base)."""
+    grupos = defaultdict(list)
+    for r in metrics:
+        grupos[r.get("salida") or salida_base()].append(r)
+    return dict(sorted(grupos.items(), key=lambda kv: kv[0] != salida_base()))
+
+
+def nombre_salida(salida):
+    if salida == salida_base():
+        return f"el inicio ({salida})"
+    return "el hito " + salida.replace("best_speedrun_", "").replace(".state", "")
+
+
 def generar_resumen(fuentes, metrics, splits, mapas):
     L = []
     nombres = ", ".join(f["nombre"] for f in fuentes)
@@ -376,18 +394,24 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         L.append(f"  Duración media:   {len_ini:.0f} → {len_fin:.0f} pasos")
     L.append("")
 
-    # Hitos y mapas
-    L.append("HITOS Y MAPAS (en qué paso del episodio se llega; más bajo = más rápido)")
-    L.append(f"  {'':38s} {'episodios':>12s} {'récord':>7s} {'mediana 1ºs 10':>15s} {'últimos 10':>11s}")
-    for split, puntos, total in splits:
-        pasos = [p[1] for p in puntos]
-        ini, fin = np.median(pasos[:10]), np.median(pasos[-10:])
-        cambio = f"{100 * (fin - ini) / ini:+.0f}%" if len(pasos) >= 20 else "(pocos datos)"
-        tipo = "★" if split in FLAGS else " "
-        L.append(f" {tipo}{split:38s} {len(puntos):4d} ({100 * len(puntos) / total:3.0f}%) {min(pasos):7d} {ini:15.0f} {fin:11.0f}  {cambio}")
-    L.append("  ★ = hito del speedrun")
-    L.append("")
-    L.extend(estado_tramos(metrics))
+    # Hitos y mapas, por separado según desde dónde empieza el episodio (salidas mezcladas):
+    # los pasos solo son comparables entre episodios con la misma salida
+    grupos = por_salida(metrics)
+    if len(grupos) > 1:
+        L.append("SALIDAS: " + " · ".join(f"{nombre_salida(s)} {len(g)} ({100 * len(g) / n:.0f}%)" for s, g in grupos.items()))
+        L.append("")
+    for salida, grupo in grupos.items():
+        L.append(f"HITOS Y MAPAS desde {nombre_salida(salida)} (en qué paso del episodio se llega; más bajo = más rápido)")
+        L.append(f"  {'':38s} {'episodios':>12s} {'récord':>7s} {'mediana 1ºs 10':>15s} {'últimos 10':>11s}")
+        for split, puntos, total in resumen_splits(grupo):
+            pasos = [p[1] for p in puntos]
+            ini, fin = np.median(pasos[:10]), np.median(pasos[-10:])
+            cambio = f"{100 * (fin - ini) / ini:+.0f}%" if len(pasos) >= 20 else "(pocos datos)"
+            tipo = "★" if split in FLAGS else " "
+            L.append(f" {tipo}{split:38s} {len(puntos):4d} ({100 * len(puntos) / total:3.0f}%) {min(pasos):7d} {ini:15.0f} {fin:11.0f}  {cambio}")
+        L.append("  ★ = hito del speedrun")
+        L.append("")
+        L.extend(estado_tramos(grupo))
 
     # Combates
     con_datos = [r for r in metrics if "combates" in r]
@@ -544,7 +568,8 @@ def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     metrics = _load_metrics(fuentes)
-    splits = resumen_splits(metrics)
+    # splits.png: solo episodios que empiezan en el inicio (los demás no son comparables en pasos)
+    splits = resumen_splits(por_salida(metrics).get(salida_base(), []))
     plot_progress(metrics)
     plot_splits(splits)
     mapas = plot_maps([_load_coordinates(f["coords"]) for f in fuentes], args.episodios)
