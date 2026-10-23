@@ -97,6 +97,27 @@ class PokemonGoldEnvTests(unittest.TestCase):
         finally:
             config.CURRICULUM_STATES = estados
 
+    def test_starting_at_a_milestone_does_not_reward_going_back(self):
+        estado = "best_speedrun_EVENT_GOT_A_POKEMON_FROM_ELM.state"
+        from src.env.handlers.story import cargar_records
+        previos = cargar_records().get("EVENT_GOT_A_POKEMON_FROM_ELM", {}).get("mapas_previos")
+        if not previos or not os.path.exists(os.path.join(config.STATES_DIR, estado)):
+            self.skipTest("No hay récord con mapas previos todavía")
+        estados = config.CURRICULUM_STATES
+        config.CURRICULUM_STATES = [estado]
+        try:
+            self.env.reset()
+            self.assertEqual(self.env.mapas_previos, {tuple(m) for m in previos})
+            self.assertTrue(self.env.mapas_previos <= self.env.episode_maps)
+            # Moverse por el laboratorio (mapa previo) no suma casillas nuevas
+            for accion in [1, 1, 2, 2, 3, 3, 0]:
+                self.env.step(accion)
+            mapa = (self.env.ram.leer(c.ADDR_MAP_GRP), self.env.ram.leer(c.ADDR_MAP_ID))
+            if mapa in self.env.mapas_previos:
+                self.assertFalse(any(t[:2] == mapa for t in self.env.episode_tiles))
+        finally:
+            config.CURRICULUM_STATES = estados
+
     def test_no_progress_terminates_episode(self):
         self.env.h_movement.max_steps_sin_progreso = 3
         resultados = [self.env.step(B) for _ in range(4)]

@@ -18,7 +18,7 @@ from src.env.handlers.reward_system import RewardSystem
 
 from src.env.handlers.combat import CombatHandler
 from src.env.handlers.movement import MovementHandler
-from src.env.handlers.story import StoryHandler
+from src.env.handlers.story import StoryHandler, cargar_records
 
 # Pantalla de 10 x 9 casillas de 16 px; en la observación (72 x 80) cada casilla ocupa 8 x 8 px
 CASILLAS_X, CASILLAS_Y, JUGADOR_COL, JUGADOR_FILA = 10, 9, 4, 4
@@ -61,6 +61,7 @@ class PokemonGoldEnv(gym.Env):
         # Generador propio para elegir la salida de cada episodio (distinto en cada clon)
         self.rng = random.Random(time.time_ns() + rank)
         self.salida = config.CURRICULUM_STATES[config.CURRENT_STAGE]
+        self.mapas_previos = set()
 
         # Trackeo de salud y niveles del equipo durante la partida
         self.vida_equipo_anterior = 999
@@ -138,6 +139,11 @@ class PokemonGoldEnv(gym.Env):
 
         # Sistema de Curriculum Learning (Cargar partida avanzada)
         self.salida = self._elegir_salida()
+        # Si se empieza en un hito, los mapas recorridos para llegar a él ya cuentan como visitados:
+        # volver a casa no debe dar recompensa de exploración
+        self.mapas_previos = self._mapas_previos(self.salida)
+        self.episode_maps = set(self.mapas_previos)
+        self.h_story.mapas_episodio = self.episode_maps
         if config.USE_CURRICULUM:
             path = os.path.join(config.STATES_DIR, self.salida)
             # Sin el savestate el episodio seguiría donde acabó el anterior sin avisar
@@ -221,7 +227,8 @@ class PokemonGoldEnv(gym.Env):
 
         # 🗺️ 1. GESTIÓN DE MOVIMIENTO Y ATASCOS (Delegado)
         r_mov, sin_progreso = self.h_movement.procesar(
-            x, y, self.last_speedrun_pos, current_speedrun_tile, self.episode_tiles, map_name, en_combate, en_script
+            x, y, self.last_speedrun_pos, current_speedrun_tile, self.episode_tiles, map_name, en_combate, en_script,
+            explorable=current_speedrun_map not in self.mapas_previos
         )
         reward += r_mov
 
@@ -335,6 +342,14 @@ class PokemonGoldEnv(gym.Env):
         if len(hitos) == 1 or self.rng.random() < config.PROB_HITO_MAS_AVANZADO:
             return hitos[-1]
         return self.rng.choice(hitos[:-1])
+
+    def _mapas_previos(self, salida):
+        """Mapas recorridos para llegar al hito de la salida (guardados con su récord en records.json)."""
+        if not salida.startswith("best_speedrun_"):
+            return set()
+        hito = salida[len("best_speedrun_"):-len(".state")]
+        record = cargar_records().get(hito, {})
+        return {tuple(m) for m in record.get("mapas_previos", [])}
 
     def _cerrar_combate(self, resultado):
         combate, self.combate_actual = self.combate_actual, None

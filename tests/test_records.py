@@ -50,6 +50,11 @@ class RecordsTests(unittest.TestCase):
         self.assertEqual(self.record()["tiempo_juego_s"], 300.0)
         self.assertEqual(self.record()["clon"], 3)
 
+    def test_record_keeps_the_maps_visited_before_the_milestone(self):
+        self.handler.mapas_episodio = {(24, 7), (24, 5)}
+        self.conseguir(300.0, b"x")
+        self.assertEqual(self.record()["mapas_previos"], [[24, 5], [24, 7]])
+
     def test_slower_time_does_not_replace_record(self):
         self.conseguir(300.0, b"rapido")
         self.conseguir(450.0, b"lento")

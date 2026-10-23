@@ -4,8 +4,9 @@ from src.env.handlers.movement import MovementHandler
 import src.utils.constantes as c
 
 
-def paso(handler, visited, pos=(1, 1), last_pos=(1, 1), en_combate=False, en_script=False):
-    return handler.procesar(pos[0], pos[1], last_pos, (24, 7) + pos, visited, "PLAYERS_HOUSE_2F", en_combate, en_script)
+def paso(handler, visited, pos=(1, 1), last_pos=(1, 1), en_combate=False, en_script=False, explorable=True):
+    return handler.procesar(pos[0], pos[1], last_pos, (24, 7) + pos, visited, "PLAYERS_HOUSE_2F", en_combate, en_script,
+                            explorable=explorable)
 
 
 class MovementHandlerTests(unittest.TestCase):
@@ -24,6 +25,15 @@ class MovementHandlerTests(unittest.TestCase):
         reward, sin_progreso = paso(handler, visited, en_script=True)
         self.assertTrue(sin_progreso)
         self.assertEqual(reward, c.PENALTY_NO_PROGRESS)
+
+    def test_maps_before_the_start_milestone_are_not_explorable(self):
+        # Empezando en un hito, volver a casa no da recompensa de exploración ni reinicia el contador
+        handler, visited = MovementHandler(rank=0), set()
+        handler.steps_sin_progreso = 10
+        reward, _ = paso(handler, visited, pos=(2, 1), explorable=False)
+        self.assertLess(reward, 0)
+        self.assertEqual(visited, set())
+        self.assertEqual(handler.steps_sin_progreso, 11)
 
     def test_game_events_reset_no_progress_counter(self):
         handler, visited = MovementHandler(rank=0), {(24, 7, 1, 1)}

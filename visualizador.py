@@ -190,19 +190,45 @@ def plot_splits(splits, max_paneles=12):
     return path
 
 
-def exportar_atlas():
-    """Guarda en visualizaciones/atlas/<MAPA>.png el fondo de cada mapa descubierto por los clones
-    (todas las ejecuciones juntas, sin recorridos). Las zonas que nadie ha visto salen en gris."""
+def orden_ruta(metrics):
+    """{mapa: posición en la ruta} según la mediana del paso en que se llega desde el inicio.
+    Para mapas que solo se alcanzan empezando en un hito, se suma lo que cuesta llegar a ese hito
+    desde el inicio, para colocarlos en su sitio de la ruta."""
+    grupos = por_salida(metrics)
+    mediana = lambda grupo, nombre: float(np.median([r["splits"][nombre] for r in grupo if nombre in r.get("splits", {})]))
+    base = grupos.get(salida_base(), [])
+    posicion = {n: mediana(base, n) for n in {n for r in base for n in r.get("splits", {})}}
+    for salida, grupo in grupos.items():
+        hito = salida.replace("best_speedrun_", "").replace(".state", "")
+        if salida == salida_base() or hito not in posicion:
+            continue
+        for n in {n for r in grupo for n in r.get("splits", {})} - set(posicion):
+            posicion[n] = posicion[hito] + mediana(grupo, n)
+    return posicion
+
+
+def numerar(nombres, orden):
+    """{nombre: "NN_nombre"}: numerados en el orden de la ruta; los que no tienen posición, al final."""
+    orden = orden or {}
+    ordenados = sorted(nombres, key=lambda n: (orden.get(n, float("inf")), n))
+    return {n: f"{i:02d}_{n}" for i, n in enumerate(ordenados, start=1)}
+
+
+def exportar_atlas(orden=None):
+    """Guarda en visualizaciones/atlas/NN_<MAPA>.png el fondo de cada mapa descubierto por los clones
+    (todas las ejecuciones juntas, sin recorridos), numerados en el orden de la ruta.
+    Las zonas que nadie ha visto salen en gris."""
     atlas = merge_atlases(sorted(glob.glob(os.path.join(ATLAS_DIR, "clon*.npz"))))
     for viejo in glob.glob(os.path.join(ATLAS_DIR, "*.png")):
         os.remove(viejo)
+    nombres = {mapa: MAP_NAMES.get(mapa, f"Mapa {mapa[0]}-{mapa[1]}") for mapa in atlas}
+    archivos = numerar(nombres.values(), orden)
     for mapa, entry in atlas.items():
         img = entry["img"].copy()
         img[~np.kron(entry["known"], np.ones((TILE, TILE), dtype=bool))] = 45
         h, w = entry["known"].shape
-        nombre = MAP_NAMES.get(mapa, f"Mapa {mapa[0]}-{mapa[1]}")
         Image.fromarray(img).resize((w * TILE * ESCALA, h * TILE * ESCALA), Image.NEAREST).save(
-            os.path.join(ATLAS_DIR, f"{nombre}.png"))
+            os.path.join(ATLAS_DIR, f"{archivos[nombres[mapa]]}.png"))
     return len(atlas)
 
 
@@ -266,7 +292,7 @@ def render_map(mapa, entry, visitas, recorridos):
     return final.convert("RGB"), nombre
 
 
-def plot_maps(coords_por_fuente, ultimos_episodios=None):
+def plot_maps(coords_por_fuente, ultimos_episodios=None, orden=None):
     """coords_por_fuente: coordenadas de cada ejecución, de la más antigua a la más reciente.
     Las visitas se suman; el recorrido dibujado es el último episodio de la ejecución más reciente."""
     atlas = merge_atlases(sorted(glob.glob(os.path.join(ATLAS_DIR, "clon*.npz"))))
@@ -291,6 +317,7 @@ def plot_maps(coords_por_fuente, ultimos_episodios=None):
     for viejo in glob.glob(os.path.join(MAPS_DIR, "*.png")):
         os.remove(viejo)
 
+    archivos = numerar([MAP_NAMES.get(m, f"Mapa {m[0]}-{m[1]}") for m in visitas], orden)
     resumen = []
     for mapa, por_clon in visitas.items():
         xs = [x for c in por_clon.values() for x, _ in c]
@@ -300,9 +327,11 @@ def plot_maps(coords_por_fuente, ultimos_episodios=None):
             atlas[mapa] = new_entry(min(xs), min(ys), 1, 1)
         entry = ensure_region(atlas, mapa, min(xs), min(ys), max(xs) - min(xs) + 1, max(ys) - min(ys) + 1)
         img, nombre = render_map(mapa, entry, por_clon, recorridos.get(mapa, {}))
-        img.save(os.path.join(MAPS_DIR, f"{nombre}.png"))
-        resumen.append((sum(sum(c.values()) for c in por_clon.values()), nombre, {r: len(c) for r, c in por_clon.items()}))
-    return sorted(resumen, reverse=True)
+        img.save(os.path.join(MAPS_DIR, f"{archivos[nombre]}.png"))
+        resumen.append((archivos[nombre], sum(sum(c.values()) for c in por_clon.values()), nombre,
+                        {r: len(c) for r, c in por_clon.items()}))
+    # En el orden de la ruta (el mismo que la numeración de los archivos)
+    return [r[1:] for r in sorted(resumen)]
 
 
 def _info_run(fuentes):
@@ -386,12 +415,16 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         razones = Counter(r.get("reason") for r in metrics)
         nombres_razon = {"no_progress": "sin progreso", "fainted": "debilitado", "max_steps": "límite de pasos"}
         L.append("  Cómo terminan: " + " · ".join(f"{nombres_razon.get(k, k)} {100 * v / n:.0f}%" for k, v in razones.most_common()))
-        ordenados = sorted(metrics, key=lambda r: r["_orden"])
-        k = max(1, n // 5)
-        rec_ini = np.mean([r["reward"] for r in ordenados[:k]]); rec_fin = np.mean([r["reward"] for r in ordenados[-k:]])
-        len_ini = np.mean([r["steps"] for r in ordenados[:k]]); len_fin = np.mean([r["steps"] for r in ordenados[-k:]])
-        L.append(f"  Recompensa media: primer 20% de episodios {rec_ini:.2f} → último 20% {rec_fin:.2f}  {_flecha(rec_fin - rec_ini, 0.1)}")
-        L.append(f"  Duración media:   {len_ini:.0f} → {len_fin:.0f} pasos")
+        # Por salida: los episodios que empiezan en un hito no cobran ese hito, así que sus
+        # recompensas no son comparables con las de los que empiezan en el inicio
+        for salida, grupo in por_salida(metrics).items():
+            ordenados = sorted(grupo, key=lambda r: r["_orden"])
+            k = max(1, len(ordenados) // 5)
+            rec_ini = np.mean([r["reward"] for r in ordenados[:k]]); rec_fin = np.mean([r["reward"] for r in ordenados[-k:]])
+            len_ini = np.mean([r["steps"] for r in ordenados[:k]]); len_fin = np.mean([r["steps"] for r in ordenados[-k:]])
+            L.append(f"  Desde {nombre_salida(salida)} ({len(grupo)} episodios):")
+            L.append(f"    Recompensa media: primer 20% {rec_ini:.2f} → último 20% {rec_fin:.2f}  {_flecha(rec_fin - rec_ini, 0.1)}")
+            L.append(f"    Duración media:   {len_ini:.0f} → {len_fin:.0f} pasos")
     L.append("")
 
     # Hitos y mapas, por separado según desde dónde empieza el episodio (salidas mezcladas):
@@ -443,8 +476,10 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         def linea(tag, texto):
             if tag in tb and tb[tag]:
                 L.append("  " + texto(tb[tag]))
-        linea("rollout/ep_rew_mean", lambda s: f"Recompensa por episodio: {_ini_fin(s)[0]:.2f} → {_ini_fin(s)[1]:.2f}  "
-              f"{_flecha(_ini_fin(s)[1] - _ini_fin(s)[0], 0.1)}")
+        varias_salidas = len(por_salida(metrics)) > 1
+        linea("rollout/ep_rew_mean", lambda s: f"Recompensa por episodio: {_ini_fin(s)[0]:.2f} → {_ini_fin(s)[1]:.2f}  " + (
+              "➖ mezcla episodios de distintas salidas: mira la recompensa por salida en EPISODIOS"
+              if varias_salidas else _flecha(_ini_fin(s)[1] - _ini_fin(s)[0], 0.1)))
         linea("train/explained_variance", lambda s: _valora(f"Predicción de la recompensa (explained_variance): {_ini_fin(s)[1]:.2f}",
               _ini_fin(s)[1], [(0.6, "✅ buena"), (0.3, "➖ regular"), (-9, "⚠️ mala: la red aún no entiende qué da puntos")]))
         linea("train/approx_kl", lambda s: _valora(f"Tamaño de cada actualización (approx_kl): {np.mean([v for _, v in s]):.3f}",
@@ -468,9 +503,9 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         L.append("")
 
     # Mapas
-    L.append(f"MAPAS VISITADOS: {len(mapas)}")
-    for visitas_totales, nombre, casillas in mapas:
-        L.append(f"  {nombre:28s} {visitas_totales:7d} visitas · {len(casillas):2d} clones lo pisaron")
+    L.append(f"MAPAS VISITADOS: {len(mapas)} (en el orden de la ruta, como los archivos de mapas/)")
+    for i, (visitas_totales, nombre, casillas) in enumerate(mapas, start=1):
+        L.append(f"  {i:02d} {nombre:34s} {visitas_totales:7d} visitas · {len(casillas):2d} clones lo pisaron")
     return "\n".join(L) + "\n"
 
 
@@ -572,14 +607,15 @@ def main():
     splits = resumen_splits(por_salida(metrics).get(salida_base(), []))
     plot_progress(metrics)
     plot_splits(splits)
-    mapas = plot_maps([_load_coordinates(f["coords"]) for f in fuentes], args.episodios)
+    orden = orden_ruta(metrics)
+    mapas = plot_maps([_load_coordinates(f["coords"]) for f in fuentes], args.episodios, orden)
 
     texto = generar_resumen(fuentes, metrics, splits, mapas)
     with open(os.path.join(OUTPUT_DIR, "resumen.txt"), "w", encoding="utf-8") as f:
         f.write(texto)
     print(texto)
     print(f"📁 Todo guardado en {OUTPUT_DIR}/ (resumen.txt, progreso.png, splits.png, mapas/)")
-    print(f"🗺️ {exportar_atlas()} mapas limpios (lo descubierto entre todas las ejecuciones) en {ATLAS_DIR}/")
+    print(f"🗺️ {exportar_atlas(orden)} mapas limpios (lo descubierto entre todas las ejecuciones) en {ATLAS_DIR}/")
 
 
 if __name__ == "__main__":

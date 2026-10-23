@@ -11,10 +11,12 @@ class MovementHandler:
         """Algo nuevo ha pasado en la partida (p. ej. un evento del juego): reinicia el contador."""
         self.steps_sin_progreso = 0
 
-    def procesar(self, x, y, last_pos, curr_tile, visited_tiles, map_name, en_combate, en_script):
+    def procesar(self, x, y, last_pos, curr_tile, visited_tiles, map_name, en_combate, en_script, explorable=True):
         """El contador de pasos sin progreso avanza en todos los pasos, también en diálogos y combates:
         si se pausara en ellos, repetir un diálogo sin fin evitaría el corte del episodio.
-        Lo reinicia una casilla nueva o registrar_progreso() (eventos nuevos del juego)."""
+        Lo reinicia una casilla nueva o registrar_progreso() (eventos nuevos del juego).
+        explorable=False: mapa ya recorrido antes del hito desde el que empezó el episodio; sus casillas
+        no cuentan como nuevas (volver atrás no es progreso)."""
         reward = 0.0
         sin_progreso = False
         self.steps_sin_progreso += 1
@@ -25,7 +27,7 @@ class MovementHandler:
                 reward += c.PENALTY_SAME_TILE
 
             # 🗺️ Recompensa por explorar nuevos tiles (visited_tiles se vacía en cada episodio)
-            if curr_tile not in visited_tiles:
+            if explorable and curr_tile not in visited_tiles:
                 visited_tiles.add(curr_tile)
                 reward += c.REWARD_NEW_TILE
                 self.steps_sin_progreso = 0

@@ -12,6 +12,9 @@ class StoryHandler:
         self.logger = logger
         self.hitos_nuevos = []  # hitos conseguidos en el último procesar(), para las capturas
         self.hubo_progreso = False  # algún evento nuevo (no temporal) en el último procesar()
+        # Mapas (grupo, número) recorridos en el episodio; el entorno lo asigna. Se guarda con cada récord
+        # para que los episodios que empiezan en ese hito no cobren por volver a ellos
+        self.mapas_episodio = set()
 
     def procesar(self, pb, ram, rewards, active_flags, tuplas_historia, step_count):
         """active_flags: bytes de flags ya vistos en el episodio (se actualiza en el sitio)."""
@@ -72,6 +75,7 @@ class StoryHandler:
             # Releer justo antes de escribir: otro clon puede haber batido el récord mientras tanto
             records = cargar_records()
             records[hito] = {"tiempo_juego_s": round(tiempo, 2), "pasos": step_count, "clon": self.rank,
+                             "mapas_previos": sorted([int(g), int(m)] for g, m in self.mapas_episodio),
                              "run": os.path.basename(os.path.abspath(config.RUN_DIR)),
                              "fecha": time.strftime("%Y-%m-%d %H:%M:%S")}
             tmp = config.RECORDS_PATH + f".tmp{self.rank}"
