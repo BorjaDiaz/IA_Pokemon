@@ -26,6 +26,7 @@ Entrenar un agente que:
 - `src/agents/`: construcción del entorno vectorizado y gestión del modelo
 - `src/env/handlers/`: lógica de movimiento, combate y recompensas
 - `src/utils/`: configuración y constantes del proyecto
+- `tools/build_rom_catalog.py`: genera `data/rom_catalog.json` (event flags y mapas de la ROM)
 - `state/`: estados guardados del juego
 - `roms/`: ROMs del juego
 - `logs/`: logs de entrenamiento

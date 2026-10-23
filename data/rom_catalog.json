@@ -1,0 +1,7846 @@
+{
+ "rom": "POKEMON_GLDAAUS",
+ "ram": {
+  "wEnemyMonSpecies": "0xD0EF",
+  "wEnemyMonLevel": "0xD0FC",
+  "wEnemyMonStatus": "0xD0FD",
+  "wEnemyMonHP": "0xD0FF",
+  "wEnemyMonMaxHP": "0xD101",
+  "wEnemyMonType1": "0xD10D",
+  "wEnemyMonType2": "0xD10E",
+  "wBattleMode": "0xD116",
+  "wBattleType": "0xD119",
+  "wScriptRunning": "0xD15F",
+  "wPlayerMapX": "0xD20D",
+  "wPlayerMapY": "0xD20E",
+  "wStatusFlags": "0xD571",
+  "wMoney": "0xD573",
+  "wJohtoBadges": "0xD57C",
+  "wKantoBadges": "0xD57D",
+  "wPokegearFlags": "0xD67C",
+  "wEventFlags": "0xD7B7",
+  "wMapGroup": "0xDA00",
+  "wMapNumber": "0xDA01",
+  "wYCoord": "0xDA02",
+  "wXCoord": "0xDA03",
+  "wPartyCount": "0xDA22",
+  "wPartyMons": "0xDA2A",
+  "wPokedexCaught": "0xDBE4"
+ },
+ "johto_badges": {
+  "ZEPHYR": [
+   "0xD57C",
+   0
+  ],
+  "HIVE": [
+   "0xD57C",
+   1
+  ],
+  "PLAIN": [
+   "0xD57C",
+   2
+  ],
+  "FOG": [
+   "0xD57C",
+   3
+  ],
+  "MINERAL": [
+   "0xD57C",
+   4
+  ],
+  "STORM": [
+   "0xD57C",
+   5
+  ],
+  "GLACIER": [
+   "0xD57C",
+   6
+  ],
+  "RISING": [
+   "0xD57C",
+   7
+  ]
+ },
+ "event_flags": {
+  "EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1": {
+   "addr": "0xD7B7",
+   "bit": 0,
+   "index": 0,
+   "kind": "temporal"
+  },
+  "EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2": {
+   "addr": "0xD7B7",
+   "bit": 1,
+   "index": 1,
+   "kind": "temporal"
+  },
+  "EVENT_TEMPORARY_UNTIL_MAP_RELOAD_3": {
+   "addr": "0xD7B7",
+   "bit": 2,
+   "index": 2,
+   "kind": "temporal"
+  },
+  "EVENT_TEMPORARY_UNTIL_MAP_RELOAD_4": {
+   "addr": "0xD7B7",
+   "bit": 3,
+   "index": 3,
+   "kind": "temporal"
+  },
+  "EVENT_TEMPORARY_UNTIL_MAP_RELOAD_5": {
+   "addr": "0xD7B7",
+   "bit": 4,
+   "index": 4,
+   "kind": "temporal"
+  },
+  "EVENT_TEMPORARY_UNTIL_MAP_RELOAD_6": {
+   "addr": "0xD7B7",
+   "bit": 5,
+   "index": 5,
+   "kind": "temporal"
+  },
+  "EVENT_TEMPORARY_UNTIL_MAP_RELOAD_7": {
+   "addr": "0xD7B7",
+   "bit": 6,
+   "index": 6,
+   "kind": "temporal"
+  },
+  "EVENT_TEMPORARY_UNTIL_MAP_RELOAD_8": {
+   "addr": "0xD7B7",
+   "bit": 7,
+   "index": 7,
+   "kind": "temporal"
+  },
+  "EVENT_GOT_TM31_MUD_SLAP": {
+   "addr": "0xD7B8",
+   "bit": 0,
+   "index": 8,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM49_FURY_CUTTER": {
+   "addr": "0xD7B8",
+   "bit": 1,
+   "index": 9,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM01_DYNAMICPUNCH": {
+   "addr": "0xD7B8",
+   "bit": 2,
+   "index": 10,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM45_ATTRACT": {
+   "addr": "0xD7B8",
+   "bit": 3,
+   "index": 11,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM30_SHADOW_BALL": {
+   "addr": "0xD7B8",
+   "bit": 4,
+   "index": 12,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM23_IRON_TAIL": {
+   "addr": "0xD7B8",
+   "bit": 5,
+   "index": 13,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM16_ICY_WIND": {
+   "addr": "0xD7B8",
+   "bit": 6,
+   "index": 14,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM24_DRAGONBREATH": {
+   "addr": "0xD7B8",
+   "bit": 7,
+   "index": 15,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HM01_CUT": {
+   "addr": "0xD7B9",
+   "bit": 0,
+   "index": 16,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HM02_FLY": {
+   "addr": "0xD7B9",
+   "bit": 1,
+   "index": 17,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HM03_SURF": {
+   "addr": "0xD7B9",
+   "bit": 2,
+   "index": 18,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HM04_STRENGTH": {
+   "addr": "0xD7B9",
+   "bit": 3,
+   "index": 19,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HM05_FLASH": {
+   "addr": "0xD7B9",
+   "bit": 4,
+   "index": 20,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HM06_WHIRLPOOL": {
+   "addr": "0xD7B9",
+   "bit": 5,
+   "index": 21,
+   "kind": "historia"
+  },
+  "EVENT_GOT_OLD_ROD": {
+   "addr": "0xD7B9",
+   "bit": 7,
+   "index": 23,
+   "kind": "historia"
+  },
+  "EVENT_GOT_GOOD_ROD": {
+   "addr": "0xD7BA",
+   "bit": 0,
+   "index": 24,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SUPER_ROD": {
+   "addr": "0xD7BA",
+   "bit": 1,
+   "index": 25,
+   "kind": "historia"
+  },
+  "EVENT_GOT_A_POKEMON_FROM_ELM": {
+   "addr": "0xD7BA",
+   "bit": 2,
+   "index": 26,
+   "kind": "historia"
+  },
+  "EVENT_GOT_CYNDAQUIL_FROM_ELM": {
+   "addr": "0xD7BA",
+   "bit": 3,
+   "index": 27,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TOTODILE_FROM_ELM": {
+   "addr": "0xD7BA",
+   "bit": 4,
+   "index": 28,
+   "kind": "historia"
+  },
+  "EVENT_GOT_CHIKORITA_FROM_ELM": {
+   "addr": "0xD7BA",
+   "bit": 5,
+   "index": 29,
+   "kind": "historia"
+  },
+  "EVENT_GOT_MYSTERY_EGG_FROM_MR_POKEMON": {
+   "addr": "0xD7BA",
+   "bit": 6,
+   "index": 30,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_MYSTERY_EGG_TO_ELM": {
+   "addr": "0xD7BA",
+   "bit": 7,
+   "index": 31,
+   "kind": "historia"
+  },
+  "EVENT_JASMINE_RETURNED_TO_GYM": {
+   "addr": "0xD7BB",
+   "bit": 0,
+   "index": 32,
+   "kind": "historia"
+  },
+  "EVENT_CLEARED_RADIO_TOWER": {
+   "addr": "0xD7BB",
+   "bit": 1,
+   "index": 33,
+   "kind": "historia"
+  },
+  "EVENT_CLEARED_ROCKET_HIDEOUT": {
+   "addr": "0xD7BB",
+   "bit": 2,
+   "index": 34,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SECRETPOTION_FROM_PHARMACY": {
+   "addr": "0xD7BB",
+   "bit": 3,
+   "index": 35,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SS_TICKET_FROM_ELM": {
+   "addr": "0xD7BB",
+   "bit": 4,
+   "index": 36,
+   "kind": "historia"
+  },
+  "EVENT_USED_THE_CARD_KEY_IN_THE_RADIO_TOWER": {
+   "addr": "0xD7BB",
+   "bit": 5,
+   "index": 37,
+   "kind": "historia"
+  },
+  "EVENT_REFUSED_TO_HELP_LANCE_AT_LAKE_OF_RAGE": {
+   "addr": "0xD7BB",
+   "bit": 6,
+   "index": 38,
+   "kind": "historia"
+  },
+  "EVENT_GOT_BERRY_FROM_ROUTE_30_HOUSE": {
+   "addr": "0xD7BB",
+   "bit": 7,
+   "index": 39,
+   "kind": "historia"
+  },
+  "EVENT_MADE_WHITNEY_CRY": {
+   "addr": "0xD7BC",
+   "bit": 0,
+   "index": 40,
+   "kind": "historia"
+  },
+  "EVENT_HERDED_FARFETCHD": {
+   "addr": "0xD7BC",
+   "bit": 1,
+   "index": 41,
+   "kind": "historia"
+  },
+  "EVENT_FOUGHT_SUDOWOODO": {
+   "addr": "0xD7BC",
+   "bit": 2,
+   "index": 42,
+   "kind": "historia"
+  },
+  "EVENT_CLEARED_SLOWPOKE_WELL": {
+   "addr": "0xD7BC",
+   "bit": 3,
+   "index": 43,
+   "kind": "historia"
+  },
+  "EVENT_REFUSED_TO_TAKE_EGG_FROM_ELMS_AIDE": {
+   "addr": "0xD7BC",
+   "bit": 4,
+   "index": 44,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TOGEPI_EGG_FROM_ELMS_AIDE": {
+   "addr": "0xD7BC",
+   "bit": 5,
+   "index": 45,
+   "kind": "historia"
+  },
+  "EVENT_MADE_UNOWN_APPEAR_IN_RUINS": {
+   "addr": "0xD7BC",
+   "bit": 6,
+   "index": 46,
+   "kind": "historia"
+  },
+  "EVENT_FAST_SHIP_DESTINATION_OLIVINE": {
+   "addr": "0xD7BC",
+   "bit": 7,
+   "index": 47,
+   "kind": "historia"
+  },
+  "EVENT_FAST_SHIP_FIRST_TIME": {
+   "addr": "0xD7BD",
+   "bit": 0,
+   "index": 48,
+   "kind": "historia"
+  },
+  "EVENT_FAST_SHIP_HAS_ARRIVED": {
+   "addr": "0xD7BD",
+   "bit": 1,
+   "index": 49,
+   "kind": "historia"
+  },
+  "EVENT_FAST_SHIP_FOUND_GIRL": {
+   "addr": "0xD7BD",
+   "bit": 2,
+   "index": 50,
+   "kind": "historia"
+  },
+  "EVENT_FAST_SHIP_LAZY_SAILOR": {
+   "addr": "0xD7BD",
+   "bit": 3,
+   "index": 51,
+   "kind": "historia"
+  },
+  "EVENT_FAST_SHIP_INFORMED_ABOUT_LAZY_SAILOR": {
+   "addr": "0xD7BD",
+   "bit": 4,
+   "index": 52,
+   "kind": "historia"
+  },
+  "EVENT_KURT_GAVE_YOU_LURE_BALL": {
+   "addr": "0xD7BD",
+   "bit": 5,
+   "index": 53,
+   "kind": "historia"
+  },
+  "EVENT_INITIALIZED_EVENTS": {
+   "addr": "0xD7BD",
+   "bit": 6,
+   "index": 54,
+   "kind": "historia"
+  },
+  "EVENT_JASMINE_EXPLAINED_AMPHYS_SICKNESS": {
+   "addr": "0xD7BD",
+   "bit": 7,
+   "index": 55,
+   "kind": "historia"
+  },
+  "EVENT_LAKE_OF_RAGE_EXPLAINED_WEIRD_MAGIKARP": {
+   "addr": "0xD7BE",
+   "bit": 0,
+   "index": 56,
+   "kind": "historia"
+  },
+  "EVENT_LAKE_OF_RAGE_ASKED_FOR_MAGIKARP": {
+   "addr": "0xD7BE",
+   "bit": 1,
+   "index": 57,
+   "kind": "historia"
+  },
+  "EVENT_LAKE_OF_RAGE_ETHER_ON_STANDBY": {
+   "addr": "0xD7BE",
+   "bit": 2,
+   "index": 58,
+   "kind": "historia"
+  },
+  "EVENT_HEALED_MOOMOO": {
+   "addr": "0xD7BE",
+   "bit": 5,
+   "index": 61,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM13_SNORE_FROM_MOOMOO_FARM": {
+   "addr": "0xD7BE",
+   "bit": 6,
+   "index": 62,
+   "kind": "historia"
+  },
+  "EVENT_TALKED_TO_FARMER_ABOUT_MOOMOO": {
+   "addr": "0xD7BE",
+   "bit": 7,
+   "index": 63,
+   "kind": "historia"
+  },
+  "EVENT_TALKED_TO_MOM_AFTER_MYSTERY_EGG_QUEST": {
+   "addr": "0xD7BF",
+   "bit": 0,
+   "index": 64,
+   "kind": "historia"
+  },
+  "EVENT_DUDE_TALKED_TO_YOU": {
+   "addr": "0xD7BF",
+   "bit": 1,
+   "index": 65,
+   "kind": "historia"
+  },
+  "EVENT_LEARNED_TO_CATCH_POKEMON": {
+   "addr": "0xD7BF",
+   "bit": 2,
+   "index": 66,
+   "kind": "historia"
+  },
+  "EVENT_ELM_CALLED_ABOUT_STOLEN_POKEMON": {
+   "addr": "0xD7BF",
+   "bit": 3,
+   "index": 67,
+   "kind": "historia"
+  },
+  "EVENT_BEAT_ELITE_FOUR": {
+   "addr": "0xD7BF",
+   "bit": 4,
+   "index": 68,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SHUCKIE": {
+   "addr": "0xD7BF",
+   "bit": 5,
+   "index": 69,
+   "kind": "historia"
+  },
+  "EVENT_MANIA_TOOK_SHUCKIE_OR_LET_YOU_KEEP_HIM": {
+   "addr": "0xD7BF",
+   "bit": 6,
+   "index": 70,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SUNNY_DAY_FROM_RADIO_TOWER": {
+   "addr": "0xD7BF",
+   "bit": 7,
+   "index": 71,
+   "kind": "historia"
+  },
+  "EVENT_GOT_PINK_BOW_FROM_MARY": {
+   "addr": "0xD7C0",
+   "bit": 0,
+   "index": 72,
+   "kind": "historia"
+  },
+  "EVENT_USED_BASEMENT_KEY": {
+   "addr": "0xD7C0",
+   "bit": 1,
+   "index": 73,
+   "kind": "historia"
+  },
+  "EVENT_RECEIVED_CARD_KEY": {
+   "addr": "0xD7C0",
+   "bit": 2,
+   "index": 74,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM08_ROCK_SMASH": {
+   "addr": "0xD7C0",
+   "bit": 3,
+   "index": 75,
+   "kind": "historia"
+  },
+  "EVENT_LANCE_HEALED_YOU_IN_TEAM_ROCKET_BASE": {
+   "addr": "0xD7C0",
+   "bit": 4,
+   "index": 76,
+   "kind": "historia"
+  },
+  "EVENT_GOT_MYSTIC_WATER_IN_CHERRYGROVE": {
+   "addr": "0xD7C0",
+   "bit": 5,
+   "index": 77,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM05_ROAR": {
+   "addr": "0xD7C0",
+   "bit": 6,
+   "index": 78,
+   "kind": "historia"
+  },
+  "EVENT_GOT_EEVEE": {
+   "addr": "0xD7C0",
+   "bit": 7,
+   "index": 79,
+   "kind": "historia"
+  },
+  "EVENT_GOT_KENYA": {
+   "addr": "0xD7C1",
+   "bit": 0,
+   "index": 80,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_KENYA": {
+   "addr": "0xD7C1",
+   "bit": 1,
+   "index": 81,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HP_UP_FROM_RANDY": {
+   "addr": "0xD7C1",
+   "bit": 2,
+   "index": 82,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM50_NIGHTMARE": {
+   "addr": "0xD7C1",
+   "bit": 3,
+   "index": 83,
+   "kind": "historia"
+  },
+  "EVENT_TOGEPI_HATCHED": {
+   "addr": "0xD7C1",
+   "bit": 4,
+   "index": 84,
+   "kind": "historia"
+  },
+  "EVENT_SHOWED_TOGEPI_TO_ELM": {
+   "addr": "0xD7C1",
+   "bit": 5,
+   "index": 85,
+   "kind": "historia"
+  },
+  "EVENT_GOT_EVERSTONE_FROM_ELM": {
+   "addr": "0xD7C1",
+   "bit": 6,
+   "index": 86,
+   "kind": "historia"
+  },
+  "EVENT_GOT_QUICK_CLAW": {
+   "addr": "0xD7C1",
+   "bit": 7,
+   "index": 87,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM10_HIDDEN_POWER": {
+   "addr": "0xD7C2",
+   "bit": 0,
+   "index": 88,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM36_SLUDGE_BOMB": {
+   "addr": "0xD7C2",
+   "bit": 1,
+   "index": 89,
+   "kind": "historia"
+  },
+  "EVENT_GOT_ITEMFINDER": {
+   "addr": "0xD7C2",
+   "bit": 2,
+   "index": 90,
+   "kind": "historia"
+  },
+  "EVENT_GOT_BICYCLE": {
+   "addr": "0xD7C2",
+   "bit": 3,
+   "index": 91,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SQUIRTBOTTLE": {
+   "addr": "0xD7C2",
+   "bit": 4,
+   "index": 92,
+   "kind": "historia"
+  },
+  "EVENT_GOT_MIRACLE_SEED_IN_ROUTE_32": {
+   "addr": "0xD7C2",
+   "bit": 5,
+   "index": 93,
+   "kind": "historia"
+  },
+  "EVENT_GOT_CHARCOAL_IN_CHARCOAL_KILN": {
+   "addr": "0xD7C2",
+   "bit": 6,
+   "index": 94,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM02_HEADBUTT": {
+   "addr": "0xD7C2",
+   "bit": 7,
+   "index": 95,
+   "kind": "historia"
+  },
+  "EVENT_DECIDED_TO_HELP_LANCE": {
+   "addr": "0xD7C3",
+   "bit": 0,
+   "index": 96,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TYROGUE_FROM_KIYO": {
+   "addr": "0xD7C3",
+   "bit": 1,
+   "index": 97,
+   "kind": "historia"
+  },
+  "EVENT_MET_FRIEDA_OF_FRIDAY": {
+   "addr": "0xD7C3",
+   "bit": 2,
+   "index": 98,
+   "kind": "historia"
+  },
+  "EVENT_GOT_POISON_BARB_FROM_FRIEDA": {
+   "addr": "0xD7C3",
+   "bit": 3,
+   "index": 99,
+   "kind": "historia"
+  },
+  "EVENT_MET_TUSCANY_OF_TUESDAY": {
+   "addr": "0xD7C3",
+   "bit": 4,
+   "index": 100,
+   "kind": "historia"
+  },
+  "EVENT_GOT_PINK_BOW_FROM_TUSCANY": {
+   "addr": "0xD7C3",
+   "bit": 5,
+   "index": 101,
+   "kind": "historia"
+  },
+  "EVENT_MET_ARTHUR_OF_THURSDAY": {
+   "addr": "0xD7C3",
+   "bit": 6,
+   "index": 102,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HARD_STONE_FROM_ARTHUR": {
+   "addr": "0xD7C3",
+   "bit": 7,
+   "index": 103,
+   "kind": "historia"
+  },
+  "EVENT_MET_SUNNY_OF_SUNDAY": {
+   "addr": "0xD7C4",
+   "bit": 0,
+   "index": 104,
+   "kind": "historia"
+  },
+  "EVENT_GOT_MAGNET_FROM_SUNNY": {
+   "addr": "0xD7C4",
+   "bit": 1,
+   "index": 105,
+   "kind": "historia"
+  },
+  "EVENT_MET_WESLEY_OF_WEDNESDAY": {
+   "addr": "0xD7C4",
+   "bit": 2,
+   "index": 106,
+   "kind": "historia"
+  },
+  "EVENT_GOT_BLACKBELT_FROM_WESLEY": {
+   "addr": "0xD7C4",
+   "bit": 3,
+   "index": 107,
+   "kind": "historia"
+  },
+  "EVENT_MET_SANTOS_OF_SATURDAY": {
+   "addr": "0xD7C4",
+   "bit": 4,
+   "index": 108,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SPELL_TAG_FROM_SANTOS": {
+   "addr": "0xD7C4",
+   "bit": 5,
+   "index": 109,
+   "kind": "historia"
+  },
+  "EVENT_MET_MONICA_OF_MONDAY": {
+   "addr": "0xD7C4",
+   "bit": 6,
+   "index": 110,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SHARP_BEAK_FROM_MONICA": {
+   "addr": "0xD7C4",
+   "bit": 7,
+   "index": 111,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SOFT_SAND_FROM_KATE": {
+   "addr": "0xD7C5",
+   "bit": 0,
+   "index": 112,
+   "kind": "historia"
+  },
+  "EVENT_GOT_METAL_COAT_FROM_GRANDPA_ON_SS_AQUA": {
+   "addr": "0xD7C5",
+   "bit": 1,
+   "index": 113,
+   "kind": "historia"
+  },
+  "EVENT_GOT_BLACKGLASSES_IN_DARK_CAVE": {
+   "addr": "0xD7C5",
+   "bit": 2,
+   "index": 114,
+   "kind": "historia"
+  },
+  "EVENT_GOT_KINGS_ROCK_IN_SLOWPOKE_WELL": {
+   "addr": "0xD7C5",
+   "bit": 3,
+   "index": 115,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM47_STEEL_WING": {
+   "addr": "0xD7C5",
+   "bit": 4,
+   "index": 116,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM37_SANDSTORM": {
+   "addr": "0xD7C5",
+   "bit": 5,
+   "index": 117,
+   "kind": "historia"
+  },
+  "EVENT_FIRST_TIME_BANKING_WITH_MOM": {
+   "addr": "0xD7C5",
+   "bit": 6,
+   "index": 118,
+   "kind": "historia"
+  },
+  "EVENT_TOLD_ELM_ABOUT_TOGEPI_OVER_THE_PHONE": {
+   "addr": "0xD7C5",
+   "bit": 7,
+   "index": 119,
+   "kind": "historia"
+  },
+  "EVENT_GOT_RAINBOW_WING": {
+   "addr": "0xD7C6",
+   "bit": 0,
+   "index": 120,
+   "kind": "historia"
+  },
+  "EVENT_GOT_SILVER_WING": {
+   "addr": "0xD7C6",
+   "bit": 1,
+   "index": 121,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM12_SWEET_SCENT": {
+   "addr": "0xD7C6",
+   "bit": 2,
+   "index": 122,
+   "kind": "historia"
+  },
+  "EVENT_RELEASED_THE_BEASTS": {
+   "addr": "0xD7C6",
+   "bit": 3,
+   "index": 123,
+   "kind": "historia"
+  },
+  "EVENT_GOT_MASTER_BALL_FROM_ELM": {
+   "addr": "0xD7C6",
+   "bit": 4,
+   "index": 124,
+   "kind": "historia"
+  },
+  "EVENT_TIN_TOWER_4F_HIDDEN_MAX_POTION": {
+   "addr": "0xD7C6",
+   "bit": 5,
+   "index": 125,
+   "kind": "historia"
+  },
+  "EVENT_TIN_TOWER_5F_HIDDEN_FULL_RESTORE": {
+   "addr": "0xD7C6",
+   "bit": 6,
+   "index": 126,
+   "kind": "historia"
+  },
+  "EVENT_TIN_TOWER_5F_HIDDEN_CARBOS": {
+   "addr": "0xD7C6",
+   "bit": 7,
+   "index": 127,
+   "kind": "historia"
+  },
+  "EVENT_BURNED_TOWER_1F_HIDDEN_ETHER": {
+   "addr": "0xD7C7",
+   "bit": 0,
+   "index": 128,
+   "kind": "historia"
+  },
+  "EVENT_BURNED_TOWER_B1F_HIDDEN_ULTRA_BALL": {
+   "addr": "0xD7C7",
+   "bit": 1,
+   "index": 129,
+   "kind": "historia"
+  },
+  "EVENT_BURNED_TOWER_B1F_HIDDEN_BURN_HEAL": {
+   "addr": "0xD7C7",
+   "bit": 2,
+   "index": 130,
+   "kind": "historia"
+  },
+  "EVENT_BURNED_TOWER_B1F_HIDDEN_NUGGET": {
+   "addr": "0xD7C7",
+   "bit": 3,
+   "index": 131,
+   "kind": "historia"
+  },
+  "EVENT_NATIONAL_PARK_HIDDEN_FULL_HEAL": {
+   "addr": "0xD7C7",
+   "bit": 4,
+   "index": 132,
+   "kind": "historia"
+  },
+  "EVENT_OLIVINE_LIGHTHOUSE_5F_HIDDEN_HYPER_POTION": {
+   "addr": "0xD7C7",
+   "bit": 5,
+   "index": 133,
+   "kind": "historia"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B1F_HIDDEN_REVIVE": {
+   "addr": "0xD7C7",
+   "bit": 6,
+   "index": 134,
+   "kind": "historia"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_HIDDEN_FULL_HEAL": {
+   "addr": "0xD7C7",
+   "bit": 7,
+   "index": 135,
+   "kind": "historia"
+  },
+  "EVENT_ILEX_FOREST_HIDDEN_ETHER": {
+   "addr": "0xD7C8",
+   "bit": 0,
+   "index": 136,
+   "kind": "historia"
+  },
+  "EVENT_ILEX_FOREST_HIDDEN_SUPER_POTION": {
+   "addr": "0xD7C8",
+   "bit": 1,
+   "index": 137,
+   "kind": "historia"
+  },
+  "EVENT_ILEX_FOREST_HIDDEN_FULL_HEAL": {
+   "addr": "0xD7C8",
+   "bit": 2,
+   "index": 138,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_HIDDEN_PARLYZ_HEAL": {
+   "addr": "0xD7C8",
+   "bit": 3,
+   "index": 139,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_HIDDEN_SUPER_POTION": {
+   "addr": "0xD7C8",
+   "bit": 4,
+   "index": 140,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_HIDDEN_ANTIDOTE": {
+   "addr": "0xD7C8",
+   "bit": 5,
+   "index": 141,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES_HIDDEN_MAX_POTION": {
+   "addr": "0xD7C8",
+   "bit": 6,
+   "index": 142,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES_HIDDEN_REVIVE": {
+   "addr": "0xD7C8",
+   "bit": 7,
+   "index": 143,
+   "kind": "historia"
+  },
+  "EVENT_MOUNT_MORTAR_1F_OUTSIDE_HIDDEN_HYPER_POTION": {
+   "addr": "0xD7C9",
+   "bit": 0,
+   "index": 144,
+   "kind": "historia"
+  },
+  "EVENT_MOUNT_MORTAR_1F_INSIDE_HIDDEN_MAX_REPEL": {
+   "addr": "0xD7C9",
+   "bit": 1,
+   "index": 145,
+   "kind": "historia"
+  },
+  "EVENT_MOUNT_MORTAR_2F_INSIDE_HIDDEN_FULL_RESTORE": {
+   "addr": "0xD7C9",
+   "bit": 2,
+   "index": 146,
+   "kind": "historia"
+  },
+  "EVENT_MOUNT_MORTAR_B1F_HIDDEN_MAX_REVIVE": {
+   "addr": "0xD7C9",
+   "bit": 3,
+   "index": 147,
+   "kind": "historia"
+  },
+  "EVENT_ICE_PATH_B1F_HIDDEN_MAX_POTION": {
+   "addr": "0xD7C9",
+   "bit": 4,
+   "index": 148,
+   "kind": "historia"
+  },
+  "EVENT_ICE_PATH_B2F_MAHOGANY_SIDE_HIDDEN_CARBOS": {
+   "addr": "0xD7C9",
+   "bit": 5,
+   "index": 149,
+   "kind": "historia"
+  },
+  "EVENT_ICE_PATH_B2F_BLACKTHORN_SIDE_HIDDEN_ICE_HEAL": {
+   "addr": "0xD7C9",
+   "bit": 6,
+   "index": 150,
+   "kind": "historia"
+  },
+  "EVENT_WHIRL_ISLAND_B1F_HIDDEN_RARE_CANDY": {
+   "addr": "0xD7C9",
+   "bit": 7,
+   "index": 151,
+   "kind": "historia"
+  },
+  "EVENT_WHIRL_ISLAND_B1F_HIDDEN_ULTRA_BALL": {
+   "addr": "0xD7CA",
+   "bit": 0,
+   "index": 152,
+   "kind": "historia"
+  },
+  "EVENT_WHIRL_ISLAND_B1F_HIDDEN_FULL_RESTORE": {
+   "addr": "0xD7CA",
+   "bit": 1,
+   "index": 153,
+   "kind": "historia"
+  },
+  "EVENT_SILVER_CAVE_ROOM_1_HIDDEN_DIRE_HIT": {
+   "addr": "0xD7CA",
+   "bit": 2,
+   "index": 154,
+   "kind": "historia"
+  },
+  "EVENT_SILVER_CAVE_ROOM_1_HIDDEN_ULTRA_BALL": {
+   "addr": "0xD7CA",
+   "bit": 3,
+   "index": 155,
+   "kind": "historia"
+  },
+  "EVENT_SILVER_CAVE_ROOM_2_HIDDEN_MAX_POTION": {
+   "addr": "0xD7CA",
+   "bit": 4,
+   "index": 156,
+   "kind": "historia"
+  },
+  "EVENT_DARK_CAVE_VIOLET_ENTRANCE_HIDDEN_ELIXER": {
+   "addr": "0xD7CA",
+   "bit": 5,
+   "index": 157,
+   "kind": "historia"
+  },
+  "EVENT_VICTORY_ROAD_HIDDEN_MAX_POTION": {
+   "addr": "0xD7CA",
+   "bit": 6,
+   "index": 158,
+   "kind": "historia"
+  },
+  "EVENT_VICTORY_ROAD_HIDDEN_FULL_HEAL": {
+   "addr": "0xD7CA",
+   "bit": 7,
+   "index": 159,
+   "kind": "historia"
+  },
+  "EVENT_DRAGONS_DEN_B1F_HIDDEN_REVIVE": {
+   "addr": "0xD7CB",
+   "bit": 0,
+   "index": 160,
+   "kind": "historia"
+  },
+  "EVENT_DRAGONS_DEN_B1F_HIDDEN_MAX_POTION": {
+   "addr": "0xD7CB",
+   "bit": 1,
+   "index": 161,
+   "kind": "historia"
+  },
+  "EVENT_DRAGONS_DEN_B1F_HIDDEN_MAX_ELIXER": {
+   "addr": "0xD7CB",
+   "bit": 2,
+   "index": 162,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_28_HIDDEN_RARE_CANDY": {
+   "addr": "0xD7CB",
+   "bit": 3,
+   "index": 163,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_30_HIDDEN_POTION": {
+   "addr": "0xD7CB",
+   "bit": 4,
+   "index": 164,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_32_HIDDEN_GREAT_BALL": {
+   "addr": "0xD7CB",
+   "bit": 5,
+   "index": 165,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_32_HIDDEN_SUPER_POTION": {
+   "addr": "0xD7CB",
+   "bit": 6,
+   "index": 166,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_34_HIDDEN_RARE_CANDY": {
+   "addr": "0xD7CB",
+   "bit": 7,
+   "index": 167,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_34_HIDDEN_SUPER_POTION": {
+   "addr": "0xD7CC",
+   "bit": 0,
+   "index": 168,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_37_HIDDEN_ETHER": {
+   "addr": "0xD7CC",
+   "bit": 1,
+   "index": 169,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_39_HIDDEN_NUGGET": {
+   "addr": "0xD7CC",
+   "bit": 2,
+   "index": 170,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_40_HIDDEN_HYPER_POTION": {
+   "addr": "0xD7CC",
+   "bit": 3,
+   "index": 171,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_41_HIDDEN_MAX_ETHER": {
+   "addr": "0xD7CC",
+   "bit": 4,
+   "index": 172,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_42_HIDDEN_MAX_POTION": {
+   "addr": "0xD7CC",
+   "bit": 5,
+   "index": 173,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_44_HIDDEN_ELIXER": {
+   "addr": "0xD7CC",
+   "bit": 6,
+   "index": 174,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_45_HIDDEN_PP_UP": {
+   "addr": "0xD7CC",
+   "bit": 7,
+   "index": 175,
+   "kind": "historia"
+  },
+  "EVENT_VIOLET_CITY_HIDDEN_HYPER_POTION": {
+   "addr": "0xD7CD",
+   "bit": 0,
+   "index": 176,
+   "kind": "historia"
+  },
+  "EVENT_AZALEA_TOWN_HIDDEN_FULL_HEAL": {
+   "addr": "0xD7CD",
+   "bit": 1,
+   "index": 177,
+   "kind": "historia"
+  },
+  "EVENT_CIANWOOD_CITY_HIDDEN_REVIVE": {
+   "addr": "0xD7CD",
+   "bit": 2,
+   "index": 178,
+   "kind": "historia"
+  },
+  "EVENT_CIANWOOD_CITY_HIDDEN_MAX_ETHER": {
+   "addr": "0xD7CD",
+   "bit": 3,
+   "index": 179,
+   "kind": "historia"
+  },
+  "EVENT_ECRUTEAK_CITY_HIDDEN_HYPER_POTION": {
+   "addr": "0xD7CD",
+   "bit": 4,
+   "index": 180,
+   "kind": "historia"
+  },
+  "EVENT_LAKE_OF_RAGE_HIDDEN_FULL_RESTORE": {
+   "addr": "0xD7CD",
+   "bit": 5,
+   "index": 181,
+   "kind": "historia"
+  },
+  "EVENT_LAKE_OF_RAGE_HIDDEN_RARE_CANDY": {
+   "addr": "0xD7CD",
+   "bit": 6,
+   "index": 182,
+   "kind": "historia"
+  },
+  "EVENT_LAKE_OF_RAGE_HIDDEN_MAX_POTION": {
+   "addr": "0xD7CD",
+   "bit": 7,
+   "index": 183,
+   "kind": "historia"
+  },
+  "EVENT_SILVER_CAVE_OUTSIDE_HIDDEN_FULL_RESTORE": {
+   "addr": "0xD7CE",
+   "bit": 0,
+   "index": 184,
+   "kind": "historia"
+  },
+  "EVENT_GOT_NUGGET_FROM_GUY": {
+   "addr": "0xD7D0",
+   "bit": 0,
+   "index": 200,
+   "kind": "historia"
+  },
+  "EVENT_RETURNED_MACHINE_PART": {
+   "addr": "0xD7D0",
+   "bit": 1,
+   "index": 201,
+   "kind": "historia"
+  },
+  "EVENT_MET_MANAGER_AT_POWER_PLANT": {
+   "addr": "0xD7D0",
+   "bit": 2,
+   "index": 202,
+   "kind": "historia"
+  },
+  "EVENT_MET_ROCKET_GRUNT_AT_CERULEAN_GYM": {
+   "addr": "0xD7D0",
+   "bit": 3,
+   "index": 203,
+   "kind": "historia"
+  },
+  "EVENT_MET_REDS_MOM": {
+   "addr": "0xD7D0",
+   "bit": 4,
+   "index": 204,
+   "kind": "historia"
+  },
+  "EVENT_RESTORED_POWER_TO_KANTO": {
+   "addr": "0xD7D0",
+   "bit": 5,
+   "index": 205,
+   "kind": "historia"
+  },
+  "EVENT_GOT_COINS_FROM_GAMBLER_AT_CELADON": {
+   "addr": "0xD7D0",
+   "bit": 6,
+   "index": 206,
+   "kind": "historia"
+  },
+  "EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM": {
+   "addr": "0xD7D0",
+   "bit": 7,
+   "index": 207,
+   "kind": "historia"
+  },
+  "EVENT_RETURNED_LOST_ITEM_TO_COPYCAT": {
+   "addr": "0xD7D1",
+   "bit": 0,
+   "index": 208,
+   "kind": "historia"
+  },
+  "EVENT_GOT_PASS_FROM_COPYCAT": {
+   "addr": "0xD7D1",
+   "bit": 1,
+   "index": 209,
+   "kind": "historia"
+  },
+  "EVENT_GOT_LOST_ITEM_FROM_FAN_CLUB": {
+   "addr": "0xD7D1",
+   "bit": 2,
+   "index": 210,
+   "kind": "historia"
+  },
+  "EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT_BUT_BAG_WAS_FULL": {
+   "addr": "0xD7D1",
+   "bit": 3,
+   "index": 211,
+   "kind": "historia"
+  },
+  "EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT": {
+   "addr": "0xD7D1",
+   "bit": 4,
+   "index": 212,
+   "kind": "historia"
+  },
+  "EVENT_TALKED_TO_SEAFOAM_GYM_GUIDE_ONCE": {
+   "addr": "0xD7D1",
+   "bit": 5,
+   "index": 213,
+   "kind": "historia"
+  },
+  "EVENT_ENABLE_DIPLOMA_PRINTING": {
+   "addr": "0xD7D1",
+   "bit": 6,
+   "index": 214,
+   "kind": "historia"
+  },
+  "EVENT_CINNABAR_ROCKS_CLEARED": {
+   "addr": "0xD7D1",
+   "bit": 7,
+   "index": 215,
+   "kind": "historia"
+  },
+  "EVENT_CLEARED_NUGGET_BRIDGE": {
+   "addr": "0xD7D2",
+   "bit": 0,
+   "index": 216,
+   "kind": "historia"
+  },
+  "EVENT_TALKED_TO_WARDENS_GRANDDAUGHTER": {
+   "addr": "0xD7D2",
+   "bit": 1,
+   "index": 217,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM03_CURSE": {
+   "addr": "0xD7D2",
+   "bit": 2,
+   "index": 218,
+   "kind": "historia"
+  },
+  "EVENT_GOT_CLEANSE_TAG": {
+   "addr": "0xD7D2",
+   "bit": 3,
+   "index": 219,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM19_GIGA_DRAIN": {
+   "addr": "0xD7D2",
+   "bit": 4,
+   "index": 220,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM06_TOXIC": {
+   "addr": "0xD7D2",
+   "bit": 5,
+   "index": 221,
+   "kind": "historia"
+  },
+  "EVENT_GOT_UP_GRADE": {
+   "addr": "0xD7D2",
+   "bit": 6,
+   "index": 222,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM07_ZAP_CANNON": {
+   "addr": "0xD7D2",
+   "bit": 7,
+   "index": 223,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM42_DREAM_EATER": {
+   "addr": "0xD7D3",
+   "bit": 0,
+   "index": 224,
+   "kind": "historia"
+  },
+  "EVENT_TALKED_TO_OAK_IN_KANTO": {
+   "addr": "0xD7D3",
+   "bit": 1,
+   "index": 225,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HP_UP_FROM_VERMILION_GUY": {
+   "addr": "0xD7D3",
+   "bit": 2,
+   "index": 226,
+   "kind": "historia"
+  },
+  "EVENT_GOT_TM29_PSYCHIC": {
+   "addr": "0xD7D3",
+   "bit": 3,
+   "index": 227,
+   "kind": "historia"
+  },
+  "EVENT_DIGLETTS_CAVE_HIDDEN_MAX_REVIVE": {
+   "addr": "0xD7D3",
+   "bit": 4,
+   "index": 228,
+   "kind": "historia"
+  },
+  "EVENT_UNDERGROUND_PATH_HIDDEN_FULL_RESTORE": {
+   "addr": "0xD7D3",
+   "bit": 5,
+   "index": 229,
+   "kind": "historia"
+  },
+  "EVENT_UNDERGROUND_PATH_HIDDEN_X_SPECIAL": {
+   "addr": "0xD7D3",
+   "bit": 6,
+   "index": 230,
+   "kind": "historia"
+  },
+  "EVENT_ROCK_TUNNEL_1F_HIDDEN_X_ACCURACY": {
+   "addr": "0xD7D3",
+   "bit": 7,
+   "index": 231,
+   "kind": "historia"
+  },
+  "EVENT_ROCK_TUNNEL_1F_HIDDEN_X_DEFEND": {
+   "addr": "0xD7D4",
+   "bit": 0,
+   "index": 232,
+   "kind": "historia"
+  },
+  "EVENT_ROCK_TUNNEL_B1F_HIDDEN_MAX_POTION": {
+   "addr": "0xD7D4",
+   "bit": 1,
+   "index": 233,
+   "kind": "historia"
+  },
+  "EVENT_OLIVINE_PORT_HIDDEN_PROTEIN": {
+   "addr": "0xD7D4",
+   "bit": 2,
+   "index": 234,
+   "kind": "historia"
+  },
+  "EVENT_VERMILION_PORT_HIDDEN_IRON": {
+   "addr": "0xD7D4",
+   "bit": 3,
+   "index": 235,
+   "kind": "historia"
+  },
+  "EVENT_MOUNT_MOON_SQUARE_HIDDEN_MOON_STONE": {
+   "addr": "0xD7D4",
+   "bit": 4,
+   "index": 236,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_2_HIDDEN_MAX_ETHER": {
+   "addr": "0xD7D4",
+   "bit": 5,
+   "index": 237,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_2_HIDDEN_FULL_HEAL": {
+   "addr": "0xD7D4",
+   "bit": 6,
+   "index": 238,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_2_HIDDEN_FULL_RESTORE": {
+   "addr": "0xD7D4",
+   "bit": 7,
+   "index": 239,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_2_HIDDEN_REVIVE": {
+   "addr": "0xD7D5",
+   "bit": 0,
+   "index": 240,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_4_HIDDEN_ULTRA_BALL": {
+   "addr": "0xD7D5",
+   "bit": 1,
+   "index": 241,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_9_HIDDEN_ETHER": {
+   "addr": "0xD7D5",
+   "bit": 2,
+   "index": 242,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_12_HIDDEN_ELIXER": {
+   "addr": "0xD7D5",
+   "bit": 3,
+   "index": 243,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_13_HIDDEN_CALCIUM": {
+   "addr": "0xD7D5",
+   "bit": 4,
+   "index": 244,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_11_HIDDEN_REVIVE": {
+   "addr": "0xD7D5",
+   "bit": 5,
+   "index": 245,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_17_HIDDEN_MAX_ETHER": {
+   "addr": "0xD7D5",
+   "bit": 6,
+   "index": 246,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_17_HIDDEN_MAX_ELIXER": {
+   "addr": "0xD7D5",
+   "bit": 7,
+   "index": 247,
+   "kind": "historia"
+  },
+  "EVENT_ROUTE_25_HIDDEN_POTION": {
+   "addr": "0xD7D6",
+   "bit": 0,
+   "index": 248,
+   "kind": "historia"
+  },
+  "EVENT_FOUND_LEFTOVERS_IN_CELADON_CAFE": {
+   "addr": "0xD7D6",
+   "bit": 1,
+   "index": 249,
+   "kind": "historia"
+  },
+  "EVENT_FOUND_BERSERK_GENE_IN_CERULEAN_CITY": {
+   "addr": "0xD7D6",
+   "bit": 2,
+   "index": 250,
+   "kind": "historia"
+  },
+  "EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM": {
+   "addr": "0xD7D6",
+   "bit": 3,
+   "index": 251,
+   "kind": "historia"
+  },
+  "EVENT_VERMILION_CITY_HIDDEN_FULL_HEAL": {
+   "addr": "0xD7D6",
+   "bit": 4,
+   "index": 252,
+   "kind": "historia"
+  },
+  "EVENT_CELADON_CITY_HIDDEN_PP_UP": {
+   "addr": "0xD7D6",
+   "bit": 5,
+   "index": 253,
+   "kind": "historia"
+  },
+  "EVENT_CINNABAR_ISLAND_HIDDEN_RARE_CANDY": {
+   "addr": "0xD7D6",
+   "bit": 6,
+   "index": 254,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_KURT_RED_APRICORN": {
+   "addr": "0xD802",
+   "bit": 0,
+   "index": 600,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_KURT_BLU_APRICORN": {
+   "addr": "0xD802",
+   "bit": 1,
+   "index": 601,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_KURT_YLW_APRICORN": {
+   "addr": "0xD802",
+   "bit": 2,
+   "index": 602,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_KURT_GRN_APRICORN": {
+   "addr": "0xD802",
+   "bit": 3,
+   "index": 603,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_KURT_WHT_APRICORN": {
+   "addr": "0xD802",
+   "bit": 4,
+   "index": 604,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_KURT_BLK_APRICORN": {
+   "addr": "0xD802",
+   "bit": 5,
+   "index": 605,
+   "kind": "historia"
+  },
+  "EVENT_GAVE_KURT_PNK_APRICORN": {
+   "addr": "0xD802",
+   "bit": 6,
+   "index": 606,
+   "kind": "historia"
+  },
+  "EVENT_JACK_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD802",
+   "bit": 7,
+   "index": 607,
+   "kind": "historia"
+  },
+  "EVENT_JACK_READY_FOR_REMATCH": {
+   "addr": "0xD803",
+   "bit": 0,
+   "index": 608,
+   "kind": "historia"
+  },
+  "EVENT_BEVERLY_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD803",
+   "bit": 1,
+   "index": 609,
+   "kind": "historia"
+  },
+  "EVENT_BEVERLY_READY_FOR_REMATCH": {
+   "addr": "0xD803",
+   "bit": 2,
+   "index": 610,
+   "kind": "historia"
+  },
+  "EVENT_HUEY_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD803",
+   "bit": 3,
+   "index": 611,
+   "kind": "historia"
+  },
+  "EVENT_HUEY_READY_FOR_REMATCH": {
+   "addr": "0xD803",
+   "bit": 4,
+   "index": 612,
+   "kind": "historia"
+  },
+  "EVENT_GOT_PROTEIN_FROM_HUEY": {
+   "addr": "0xD803",
+   "bit": 5,
+   "index": 613,
+   "kind": "historia"
+  },
+  "EVENT_GOT_HP_UP_FROM_JOEY": {
+   "addr": "0xD803",
+   "bit": 6,
+   "index": 614,
+   "kind": "historia"
+  },
+  "EVENT_GOT_CARBOS_FROM_VANCE": {
+   "addr": "0xD803",
+   "bit": 7,
+   "index": 615,
+   "kind": "historia"
+  },
+  "EVENT_GOT_IRON_FROM_PARRY": {
+   "addr": "0xD804",
+   "bit": 0,
+   "index": 616,
+   "kind": "historia"
+  },
+  "EVENT_GOT_CALCIUM_FROM_ERIN": {
+   "addr": "0xD804",
+   "bit": 1,
+   "index": 617,
+   "kind": "historia"
+  },
+  "EVENT_KENJI_ON_BREAK": {
+   "addr": "0xD804",
+   "bit": 2,
+   "index": 618,
+   "kind": "historia"
+  },
+  "EVENT_GAVEN_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD804",
+   "bit": 3,
+   "index": 619,
+   "kind": "historia"
+  },
+  "EVENT_GAVEN_READY_FOR_REMATCH": {
+   "addr": "0xD804",
+   "bit": 4,
+   "index": 620,
+   "kind": "historia"
+  },
+  "EVENT_BETH_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD804",
+   "bit": 5,
+   "index": 621,
+   "kind": "historia"
+  },
+  "EVENT_BETH_READY_FOR_REMATCH": {
+   "addr": "0xD804",
+   "bit": 6,
+   "index": 622,
+   "kind": "historia"
+  },
+  "EVENT_JOSE_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD804",
+   "bit": 7,
+   "index": 623,
+   "kind": "historia"
+  },
+  "EVENT_JOSE_READY_FOR_REMATCH": {
+   "addr": "0xD805",
+   "bit": 0,
+   "index": 624,
+   "kind": "historia"
+  },
+  "EVENT_REENA_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD805",
+   "bit": 1,
+   "index": 625,
+   "kind": "historia"
+  },
+  "EVENT_REENA_READY_FOR_REMATCH": {
+   "addr": "0xD805",
+   "bit": 2,
+   "index": 626,
+   "kind": "historia"
+  },
+  "EVENT_JOEY_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD805",
+   "bit": 3,
+   "index": 627,
+   "kind": "historia"
+  },
+  "EVENT_JOEY_READY_FOR_REMATCH": {
+   "addr": "0xD805",
+   "bit": 4,
+   "index": 628,
+   "kind": "historia"
+  },
+  "EVENT_WADE_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD805",
+   "bit": 5,
+   "index": 629,
+   "kind": "historia"
+  },
+  "EVENT_WADE_READY_FOR_REMATCH": {
+   "addr": "0xD805",
+   "bit": 6,
+   "index": 630,
+   "kind": "historia"
+  },
+  "EVENT_RALPH_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD805",
+   "bit": 7,
+   "index": 631,
+   "kind": "historia"
+  },
+  "EVENT_RALPH_READY_FOR_REMATCH": {
+   "addr": "0xD806",
+   "bit": 0,
+   "index": 632,
+   "kind": "historia"
+  },
+  "EVENT_LIZ_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD806",
+   "bit": 1,
+   "index": 633,
+   "kind": "historia"
+  },
+  "EVENT_LIZ_READY_FOR_REMATCH": {
+   "addr": "0xD806",
+   "bit": 2,
+   "index": 634,
+   "kind": "historia"
+  },
+  "EVENT_ANTHONY_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD806",
+   "bit": 3,
+   "index": 635,
+   "kind": "historia"
+  },
+  "EVENT_ANTHONY_READY_FOR_REMATCH": {
+   "addr": "0xD806",
+   "bit": 4,
+   "index": 636,
+   "kind": "historia"
+  },
+  "EVENT_TODD_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD806",
+   "bit": 5,
+   "index": 637,
+   "kind": "historia"
+  },
+  "EVENT_TODD_READY_FOR_REMATCH": {
+   "addr": "0xD806",
+   "bit": 6,
+   "index": 638,
+   "kind": "historia"
+  },
+  "EVENT_GINA_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD806",
+   "bit": 7,
+   "index": 639,
+   "kind": "historia"
+  },
+  "EVENT_GINA_READY_FOR_REMATCH": {
+   "addr": "0xD807",
+   "bit": 0,
+   "index": 640,
+   "kind": "historia"
+  },
+  "EVENT_IRWIN_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD807",
+   "bit": 1,
+   "index": 641,
+   "kind": "historia"
+  },
+  "EVENT_IRWIN_READY_FOR_REMATCH": {
+   "addr": "0xD807",
+   "bit": 2,
+   "index": 642,
+   "kind": "historia"
+  },
+  "EVENT_ARNIE_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD807",
+   "bit": 3,
+   "index": 643,
+   "kind": "historia"
+  },
+  "EVENT_ARNIE_READY_FOR_REMATCH": {
+   "addr": "0xD807",
+   "bit": 4,
+   "index": 644,
+   "kind": "historia"
+  },
+  "EVENT_ALAN_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD807",
+   "bit": 5,
+   "index": 645,
+   "kind": "historia"
+  },
+  "EVENT_ALAN_READY_FOR_REMATCH": {
+   "addr": "0xD807",
+   "bit": 6,
+   "index": 646,
+   "kind": "historia"
+  },
+  "EVENT_DANA_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD808",
+   "bit": 1,
+   "index": 649,
+   "kind": "historia"
+  },
+  "EVENT_DANA_READY_FOR_REMATCH": {
+   "addr": "0xD808",
+   "bit": 2,
+   "index": 650,
+   "kind": "historia"
+  },
+  "EVENT_CHAD_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD808",
+   "bit": 3,
+   "index": 651,
+   "kind": "historia"
+  },
+  "EVENT_CHAD_READY_FOR_REMATCH": {
+   "addr": "0xD808",
+   "bit": 4,
+   "index": 652,
+   "kind": "historia"
+  },
+  "EVENT_DEREK_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD808",
+   "bit": 5,
+   "index": 653,
+   "kind": "historia"
+  },
+  "EVENT_DEREK_READY_FOR_REMATCH": {
+   "addr": "0xD808",
+   "bit": 6,
+   "index": 654,
+   "kind": "historia"
+  },
+  "EVENT_CHRIS_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD808",
+   "bit": 7,
+   "index": 655,
+   "kind": "historia"
+  },
+  "EVENT_CHRIS_READY_FOR_REMATCH": {
+   "addr": "0xD809",
+   "bit": 0,
+   "index": 656,
+   "kind": "historia"
+  },
+  "EVENT_BRENT_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD809",
+   "bit": 1,
+   "index": 657,
+   "kind": "historia"
+  },
+  "EVENT_BRENT_READY_FOR_REMATCH": {
+   "addr": "0xD809",
+   "bit": 2,
+   "index": 658,
+   "kind": "historia"
+  },
+  "EVENT_TIFFANY_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD809",
+   "bit": 3,
+   "index": 659,
+   "kind": "historia"
+  },
+  "EVENT_TIFFANY_READY_FOR_REMATCH": {
+   "addr": "0xD809",
+   "bit": 4,
+   "index": 660,
+   "kind": "historia"
+  },
+  "EVENT_VANCE_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD809",
+   "bit": 5,
+   "index": 661,
+   "kind": "historia"
+  },
+  "EVENT_VANCE_READY_FOR_REMATCH": {
+   "addr": "0xD809",
+   "bit": 6,
+   "index": 662,
+   "kind": "historia"
+  },
+  "EVENT_WILTON_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD809",
+   "bit": 7,
+   "index": 663,
+   "kind": "historia"
+  },
+  "EVENT_WILTON_READY_FOR_REMATCH": {
+   "addr": "0xD80A",
+   "bit": 0,
+   "index": 664,
+   "kind": "historia"
+  },
+  "EVENT_KENJI_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD80A",
+   "bit": 1,
+   "index": 665,
+   "kind": "historia"
+  },
+  "EVENT_KENJI_READY_FOR_REMATCH": {
+   "addr": "0xD80A",
+   "bit": 2,
+   "index": 666,
+   "kind": "historia"
+  },
+  "EVENT_PARRY_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD80A",
+   "bit": 3,
+   "index": 667,
+   "kind": "historia"
+  },
+  "EVENT_PARRY_READY_FOR_REMATCH": {
+   "addr": "0xD80A",
+   "bit": 4,
+   "index": 668,
+   "kind": "historia"
+  },
+  "EVENT_ERIN_ASKED_FOR_PHONE_NUMBER": {
+   "addr": "0xD80A",
+   "bit": 5,
+   "index": 669,
+   "kind": "historia"
+  },
+  "EVENT_ERIN_READY_FOR_REMATCH": {
+   "addr": "0xD80A",
+   "bit": 6,
+   "index": 670,
+   "kind": "historia"
+  },
+  "EVENT_SOLVED_HO_OH_PUZZLE": {
+   "addr": "0xD80B",
+   "bit": 0,
+   "index": 672,
+   "kind": "historia"
+  },
+  "EVENT_SOLVED_KABUTO_PUZZLE": {
+   "addr": "0xD80B",
+   "bit": 1,
+   "index": 673,
+   "kind": "historia"
+  },
+  "EVENT_SOLVED_OMANYTE_PUZZLE": {
+   "addr": "0xD80B",
+   "bit": 2,
+   "index": 674,
+   "kind": "historia"
+  },
+  "EVENT_SOLVED_AERODACTYL_PUZZLE": {
+   "addr": "0xD80B",
+   "bit": 3,
+   "index": 675,
+   "kind": "historia"
+  },
+  "EVENT_DECO_BED_1": {
+   "addr": "0xD80B",
+   "bit": 4,
+   "index": 676,
+   "kind": "historia"
+  },
+  "EVENT_DECO_BED_2": {
+   "addr": "0xD80B",
+   "bit": 5,
+   "index": 677,
+   "kind": "historia"
+  },
+  "EVENT_DECO_BED_3": {
+   "addr": "0xD80B",
+   "bit": 6,
+   "index": 678,
+   "kind": "historia"
+  },
+  "EVENT_DECO_BED_4": {
+   "addr": "0xD80B",
+   "bit": 7,
+   "index": 679,
+   "kind": "historia"
+  },
+  "EVENT_DECO_CARPET_1": {
+   "addr": "0xD80C",
+   "bit": 0,
+   "index": 680,
+   "kind": "historia"
+  },
+  "EVENT_DECO_CARPET_2": {
+   "addr": "0xD80C",
+   "bit": 1,
+   "index": 681,
+   "kind": "historia"
+  },
+  "EVENT_DECO_CARPET_3": {
+   "addr": "0xD80C",
+   "bit": 2,
+   "index": 682,
+   "kind": "historia"
+  },
+  "EVENT_DECO_CARPET_4": {
+   "addr": "0xD80C",
+   "bit": 3,
+   "index": 683,
+   "kind": "historia"
+  },
+  "EVENT_DECO_PLANT_1": {
+   "addr": "0xD80C",
+   "bit": 4,
+   "index": 684,
+   "kind": "historia"
+  },
+  "EVENT_DECO_PLANT_2": {
+   "addr": "0xD80C",
+   "bit": 5,
+   "index": 685,
+   "kind": "historia"
+  },
+  "EVENT_DECO_PLANT_3": {
+   "addr": "0xD80C",
+   "bit": 6,
+   "index": 686,
+   "kind": "historia"
+  },
+  "EVENT_DECO_POSTER_1": {
+   "addr": "0xD80C",
+   "bit": 7,
+   "index": 687,
+   "kind": "historia"
+  },
+  "EVENT_DECO_POSTER_2": {
+   "addr": "0xD80D",
+   "bit": 0,
+   "index": 688,
+   "kind": "historia"
+  },
+  "EVENT_DECO_POSTER_3": {
+   "addr": "0xD80D",
+   "bit": 1,
+   "index": 689,
+   "kind": "historia"
+  },
+  "EVENT_DECO_POSTER_4": {
+   "addr": "0xD80D",
+   "bit": 2,
+   "index": 690,
+   "kind": "historia"
+  },
+  "EVENT_DECO_FAMICOM": {
+   "addr": "0xD80D",
+   "bit": 3,
+   "index": 691,
+   "kind": "historia"
+  },
+  "EVENT_DECO_SNES": {
+   "addr": "0xD80D",
+   "bit": 4,
+   "index": 692,
+   "kind": "historia"
+  },
+  "EVENT_DECO_N64": {
+   "addr": "0xD80D",
+   "bit": 5,
+   "index": 693,
+   "kind": "historia"
+  },
+  "EVENT_DECO_VIRTUAL_BOY": {
+   "addr": "0xD80D",
+   "bit": 6,
+   "index": 694,
+   "kind": "historia"
+  },
+  "EVENT_DECO_PIKACHU_DOLL": {
+   "addr": "0xD80D",
+   "bit": 7,
+   "index": 695,
+   "kind": "historia"
+  },
+  "EVENT_DECO_SURFING_PIKACHU_DOLL": {
+   "addr": "0xD80E",
+   "bit": 0,
+   "index": 696,
+   "kind": "historia"
+  },
+  "EVENT_DECO_CLEFAIRY_DOLL": {
+   "addr": "0xD80E",
+   "bit": 1,
+   "index": 697,
+   "kind": "historia"
+  },
+  "EVENT_DECO_JIGGLYPUFF_DOLL": {
+   "addr": "0xD80E",
+   "bit": 2,
+   "index": 698,
+   "kind": "historia"
+  },
+  "EVENT_DECO_BULBASAUR_DOLL": {
+   "addr": "0xD80E",
+   "bit": 3,
+   "index": 699,
+   "kind": "historia"
+  },
+  "EVENT_DECO_CHARMANDER_DOLL": {
+   "addr": "0xD80E",
+   "bit": 4,
+   "index": 700,
+   "kind": "historia"
+  },
+  "EVENT_DECO_SQUIRTLE_DOLL": {
+   "addr": "0xD80E",
+   "bit": 5,
+   "index": 701,
+   "kind": "historia"
+  },
+  "EVENT_DECO_POLIWAG_DOLL": {
+   "addr": "0xD80E",
+   "bit": 6,
+   "index": 702,
+   "kind": "historia"
+  },
+  "EVENT_DECO_DIGLETT_DOLL": {
+   "addr": "0xD80E",
+   "bit": 7,
+   "index": 703,
+   "kind": "historia"
+  },
+  "EVENT_DECO_STARYU_DOLL": {
+   "addr": "0xD80F",
+   "bit": 0,
+   "index": 704,
+   "kind": "historia"
+  },
+  "EVENT_DECO_MAGIKARP_DOLL": {
+   "addr": "0xD80F",
+   "bit": 1,
+   "index": 705,
+   "kind": "historia"
+  },
+  "EVENT_DECO_ODDISH_DOLL": {
+   "addr": "0xD80F",
+   "bit": 2,
+   "index": 706,
+   "kind": "historia"
+  },
+  "EVENT_DECO_GENGAR_DOLL": {
+   "addr": "0xD80F",
+   "bit": 3,
+   "index": 707,
+   "kind": "historia"
+  },
+  "EVENT_DECO_SHELLDER_DOLL": {
+   "addr": "0xD80F",
+   "bit": 4,
+   "index": 708,
+   "kind": "historia"
+  },
+  "EVENT_DECO_GRIMER_DOLL": {
+   "addr": "0xD80F",
+   "bit": 5,
+   "index": 709,
+   "kind": "historia"
+  },
+  "EVENT_DECO_VOLTORB_DOLL": {
+   "addr": "0xD80F",
+   "bit": 6,
+   "index": 710,
+   "kind": "historia"
+  },
+  "EVENT_DECO_WEEDLE_DOLL": {
+   "addr": "0xD80F",
+   "bit": 7,
+   "index": 711,
+   "kind": "historia"
+  },
+  "EVENT_DECO_UNOWN_DOLL": {
+   "addr": "0xD810",
+   "bit": 0,
+   "index": 712,
+   "kind": "historia"
+  },
+  "EVENT_DECO_GEODUDE_DOLL": {
+   "addr": "0xD810",
+   "bit": 1,
+   "index": 713,
+   "kind": "historia"
+  },
+  "EVENT_DECO_MACHOP_DOLL": {
+   "addr": "0xD810",
+   "bit": 2,
+   "index": 714,
+   "kind": "historia"
+  },
+  "EVENT_DECO_TENTACOOL_DOLL": {
+   "addr": "0xD810",
+   "bit": 3,
+   "index": 715,
+   "kind": "historia"
+  },
+  "EVENT_PLAYERS_ROOM_POSTER": {
+   "addr": "0xD810",
+   "bit": 4,
+   "index": 716,
+   "kind": "historia"
+  },
+  "EVENT_DECO_GOLD_TROPHY": {
+   "addr": "0xD810",
+   "bit": 5,
+   "index": 717,
+   "kind": "historia"
+  },
+  "EVENT_DECO_SILVER_TROPHY": {
+   "addr": "0xD810",
+   "bit": 6,
+   "index": 718,
+   "kind": "historia"
+  },
+  "EVENT_DECO_BIG_SNORLAX_DOLL": {
+   "addr": "0xD810",
+   "bit": 7,
+   "index": 719,
+   "kind": "historia"
+  },
+  "EVENT_DECO_BIG_ONIX_DOLL": {
+   "addr": "0xD811",
+   "bit": 0,
+   "index": 720,
+   "kind": "historia"
+  },
+  "EVENT_DECO_BIG_LAPRAS_DOLL": {
+   "addr": "0xD811",
+   "bit": 1,
+   "index": 721,
+   "kind": "historia"
+  },
+  "EVENT_WARPED_FROM_ROUTE_35_NATIONAL_PARK_GATE": {
+   "addr": "0xD811",
+   "bit": 2,
+   "index": 722,
+   "kind": "historia"
+  },
+  "EVENT_SWITCH_1": {
+   "addr": "0xD811",
+   "bit": 3,
+   "index": 723,
+   "kind": "historia"
+  },
+  "EVENT_SWITCH_2": {
+   "addr": "0xD811",
+   "bit": 4,
+   "index": 724,
+   "kind": "historia"
+  },
+  "EVENT_SWITCH_3": {
+   "addr": "0xD811",
+   "bit": 5,
+   "index": 725,
+   "kind": "historia"
+  },
+  "EVENT_EMERGENCY_SWITCH": {
+   "addr": "0xD811",
+   "bit": 6,
+   "index": 726,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_1_OPEN": {
+   "addr": "0xD811",
+   "bit": 7,
+   "index": 727,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_2_OPEN": {
+   "addr": "0xD812",
+   "bit": 0,
+   "index": 728,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_3_OPEN": {
+   "addr": "0xD812",
+   "bit": 1,
+   "index": 729,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_4_OPEN": {
+   "addr": "0xD812",
+   "bit": 2,
+   "index": 730,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_5_OPEN": {
+   "addr": "0xD812",
+   "bit": 3,
+   "index": 731,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_6_OPEN": {
+   "addr": "0xD812",
+   "bit": 4,
+   "index": 732,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_7_OPEN": {
+   "addr": "0xD812",
+   "bit": 5,
+   "index": 733,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_8_OPEN": {
+   "addr": "0xD812",
+   "bit": 6,
+   "index": 734,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_9_OPEN": {
+   "addr": "0xD812",
+   "bit": 7,
+   "index": 735,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_10_OPEN": {
+   "addr": "0xD813",
+   "bit": 0,
+   "index": 736,
+   "kind": "historia"
+  },
+  "EVENT_DOOR_11_OPEN": {
+   "addr": "0xD813",
+   "bit": 1,
+   "index": 737,
+   "kind": "historia"
+  },
+  "EVENT_UNCOVERED_STAIRCASE_IN_MAHOGANY_MART": {
+   "addr": "0xD813",
+   "bit": 2,
+   "index": 738,
+   "kind": "historia"
+  },
+  "EVENT_TURNED_OFF_SECURITY_CAMERAS": {
+   "addr": "0xD813",
+   "bit": 3,
+   "index": 739,
+   "kind": "historia"
+  },
+  "EVENT_SECURITY_CAMERA_1": {
+   "addr": "0xD813",
+   "bit": 4,
+   "index": 740,
+   "kind": "historia"
+  },
+  "EVENT_SECURITY_CAMERA_2": {
+   "addr": "0xD813",
+   "bit": 5,
+   "index": 741,
+   "kind": "historia"
+  },
+  "EVENT_SECURITY_CAMERA_3": {
+   "addr": "0xD813",
+   "bit": 6,
+   "index": 742,
+   "kind": "historia"
+  },
+  "EVENT_SECURITY_CAMERA_4": {
+   "addr": "0xD813",
+   "bit": 7,
+   "index": 743,
+   "kind": "historia"
+  },
+  "EVENT_SECURITY_CAMERA_5": {
+   "addr": "0xD814",
+   "bit": 0,
+   "index": 744,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_1": {
+   "addr": "0xD814",
+   "bit": 1,
+   "index": 745,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_2": {
+   "addr": "0xD814",
+   "bit": 2,
+   "index": 746,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_3": {
+   "addr": "0xD814",
+   "bit": 3,
+   "index": 747,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_4": {
+   "addr": "0xD814",
+   "bit": 4,
+   "index": 748,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_5": {
+   "addr": "0xD814",
+   "bit": 5,
+   "index": 749,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_6": {
+   "addr": "0xD814",
+   "bit": 6,
+   "index": 750,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_7": {
+   "addr": "0xD814",
+   "bit": 7,
+   "index": 751,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_8": {
+   "addr": "0xD815",
+   "bit": 0,
+   "index": 752,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_9": {
+   "addr": "0xD815",
+   "bit": 1,
+   "index": 753,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_10": {
+   "addr": "0xD815",
+   "bit": 2,
+   "index": 754,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_11": {
+   "addr": "0xD815",
+   "bit": 3,
+   "index": 755,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_12": {
+   "addr": "0xD815",
+   "bit": 4,
+   "index": 756,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_13": {
+   "addr": "0xD815",
+   "bit": 5,
+   "index": 757,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_14": {
+   "addr": "0xD815",
+   "bit": 6,
+   "index": 758,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_15": {
+   "addr": "0xD815",
+   "bit": 7,
+   "index": 759,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_16": {
+   "addr": "0xD816",
+   "bit": 0,
+   "index": 760,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_17": {
+   "addr": "0xD816",
+   "bit": 1,
+   "index": 761,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_18": {
+   "addr": "0xD816",
+   "bit": 2,
+   "index": 762,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_19": {
+   "addr": "0xD816",
+   "bit": 3,
+   "index": 763,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_20": {
+   "addr": "0xD816",
+   "bit": 4,
+   "index": 764,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_21": {
+   "addr": "0xD816",
+   "bit": 5,
+   "index": 765,
+   "kind": "historia"
+  },
+  "EVENT_EXPLODING_TRAP_22": {
+   "addr": "0xD816",
+   "bit": 6,
+   "index": 766,
+   "kind": "historia"
+  },
+  "EVENT_LEARNED_HAIL_GIOVANNI": {
+   "addr": "0xD816",
+   "bit": 7,
+   "index": 767,
+   "kind": "historia"
+  },
+  "EVENT_OPENED_DOOR_TO_ROCKET_HIDEOUT_TRANSMITTER": {
+   "addr": "0xD817",
+   "bit": 0,
+   "index": 768,
+   "kind": "historia"
+  },
+  "EVENT_LEARNED_SLOWPOKETAIL": {
+   "addr": "0xD817",
+   "bit": 1,
+   "index": 769,
+   "kind": "historia"
+  },
+  "EVENT_LEARNED_RATICATE_TAIL": {
+   "addr": "0xD817",
+   "bit": 2,
+   "index": 770,
+   "kind": "historia"
+  },
+  "EVENT_OPENED_DOOR_TO_GIOVANNIS_OFFICE": {
+   "addr": "0xD817",
+   "bit": 3,
+   "index": 771,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_DEPT_STORE_B1F_LAYOUT_1": {
+   "addr": "0xD817",
+   "bit": 4,
+   "index": 772,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_DEPT_STORE_B1F_LAYOUT_2": {
+   "addr": "0xD817",
+   "bit": 5,
+   "index": 773,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_DEPT_STORE_B1F_LAYOUT_3": {
+   "addr": "0xD817",
+   "bit": 6,
+   "index": 774,
+   "kind": "historia"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_WAREHOUSE_BLOCKED_OFF": {
+   "addr": "0xD817",
+   "bit": 7,
+   "index": 775,
+   "kind": "historia"
+  },
+  "EVENT_LEFT_MONS_WITH_CONTEST_OFFICER": {
+   "addr": "0xD818",
+   "bit": 0,
+   "index": 776,
+   "kind": "historia"
+  },
+  "EVENT_WILLS_ROOM_ENTRANCE_CLOSED": {
+   "addr": "0xD818",
+   "bit": 1,
+   "index": 777,
+   "kind": "historia"
+  },
+  "EVENT_WILLS_ROOM_EXIT_OPEN": {
+   "addr": "0xD818",
+   "bit": 2,
+   "index": 778,
+   "kind": "historia"
+  },
+  "EVENT_KOGAS_ROOM_ENTRANCE_CLOSED": {
+   "addr": "0xD818",
+   "bit": 3,
+   "index": 779,
+   "kind": "historia"
+  },
+  "EVENT_KOGAS_ROOM_EXIT_OPEN": {
+   "addr": "0xD818",
+   "bit": 4,
+   "index": 780,
+   "kind": "historia"
+  },
+  "EVENT_BRUNOS_ROOM_ENTRANCE_CLOSED": {
+   "addr": "0xD818",
+   "bit": 5,
+   "index": 781,
+   "kind": "historia"
+  },
+  "EVENT_BRUNOS_ROOM_EXIT_OPEN": {
+   "addr": "0xD818",
+   "bit": 6,
+   "index": 782,
+   "kind": "historia"
+  },
+  "EVENT_KARENS_ROOM_ENTRANCE_CLOSED": {
+   "addr": "0xD818",
+   "bit": 7,
+   "index": 783,
+   "kind": "historia"
+  },
+  "EVENT_KARENS_ROOM_EXIT_OPEN": {
+   "addr": "0xD819",
+   "bit": 0,
+   "index": 784,
+   "kind": "historia"
+  },
+  "EVENT_LANCES_ROOM_ENTRANCE_CLOSED": {
+   "addr": "0xD819",
+   "bit": 1,
+   "index": 785,
+   "kind": "historia"
+  },
+  "EVENT_LANCES_ROOM_EXIT_OPEN": {
+   "addr": "0xD819",
+   "bit": 2,
+   "index": 786,
+   "kind": "historia"
+  },
+  "EVENT_CONTEST_OFFICER_HAS_SUN_STONE": {
+   "addr": "0xD819",
+   "bit": 3,
+   "index": 787,
+   "kind": "historia"
+  },
+  "EVENT_CONTEST_OFFICER_HAS_EVERSTONE": {
+   "addr": "0xD819",
+   "bit": 4,
+   "index": 788,
+   "kind": "historia"
+  },
+  "EVENT_CONTEST_OFFICER_HAS_GOLD_BERRY": {
+   "addr": "0xD819",
+   "bit": 5,
+   "index": 789,
+   "kind": "historia"
+  },
+  "EVENT_CONTEST_OFFICER_HAS_BERRY": {
+   "addr": "0xD819",
+   "bit": 6,
+   "index": 790,
+   "kind": "historia"
+  },
+  "EVENT_FOUGHT_HO_OH": {
+   "addr": "0xD819",
+   "bit": 7,
+   "index": 791,
+   "kind": "historia"
+  },
+  "EVENT_FOUGHT_LUGIA": {
+   "addr": "0xD81A",
+   "bit": 0,
+   "index": 792,
+   "kind": "historia"
+  },
+  "EVENT_BEAT_RIVAL_IN_MT_MOON": {
+   "addr": "0xD81A",
+   "bit": 1,
+   "index": 793,
+   "kind": "historia"
+  },
+  "EVENT_MET_BILLS_GRANDPA": {
+   "addr": "0xD81A",
+   "bit": 2,
+   "index": 794,
+   "kind": "historia"
+  },
+  "EVENT_SHOWED_LICKITUNG_TO_BILLS_GRANDPA": {
+   "addr": "0xD81A",
+   "bit": 3,
+   "index": 795,
+   "kind": "historia"
+  },
+  "EVENT_SHOWED_ODDISH_TO_BILLS_GRANDPA": {
+   "addr": "0xD81A",
+   "bit": 4,
+   "index": 796,
+   "kind": "historia"
+  },
+  "EVENT_SHOWED_STARYU_TO_BILLS_GRANDPA": {
+   "addr": "0xD81A",
+   "bit": 5,
+   "index": 797,
+   "kind": "historia"
+  },
+  "EVENT_SHOWED_GROWLITHE_VULPIX_TO_BILLS_GRANDPA": {
+   "addr": "0xD81A",
+   "bit": 6,
+   "index": 798,
+   "kind": "historia"
+  },
+  "EVENT_SHOWED_PICHU_TO_BILLS_GRANDPA": {
+   "addr": "0xD81A",
+   "bit": 7,
+   "index": 799,
+   "kind": "historia"
+  },
+  "EVENT_GOT_EVERSTONE_FROM_BILLS_GRANDPA": {
+   "addr": "0xD81B",
+   "bit": 0,
+   "index": 800,
+   "kind": "historia"
+  },
+  "EVENT_GOT_LEAF_STONE_FROM_BILLS_GRANDPA": {
+   "addr": "0xD81B",
+   "bit": 1,
+   "index": 801,
+   "kind": "historia"
+  },
+  "EVENT_GOT_WATER_STONE_FROM_BILLS_GRANDPA": {
+   "addr": "0xD81B",
+   "bit": 2,
+   "index": 802,
+   "kind": "historia"
+  },
+  "EVENT_GOT_FIRE_STONE_FROM_BILLS_GRANDPA": {
+   "addr": "0xD81B",
+   "bit": 3,
+   "index": 803,
+   "kind": "historia"
+  },
+  "EVENT_GOT_THUNDERSTONE_FROM_BILLS_GRANDPA": {
+   "addr": "0xD81B",
+   "bit": 4,
+   "index": 804,
+   "kind": "historia"
+  },
+  "EVENT_LISTENED_TO_INITIAL_RADIO": {
+   "addr": "0xD81B",
+   "bit": 5,
+   "index": 805,
+   "kind": "historia"
+  },
+  "EVENT_BEAT_SWIMMERF_ELAINE": {
+   "addr": "0xD834",
+   "bit": 0,
+   "index": 1000,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_PAULA": {
+   "addr": "0xD834",
+   "bit": 1,
+   "index": 1001,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_KAYLEE": {
+   "addr": "0xD834",
+   "bit": 2,
+   "index": 1002,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_SUSIE": {
+   "addr": "0xD834",
+   "bit": 3,
+   "index": 1003,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_DENISE": {
+   "addr": "0xD834",
+   "bit": 4,
+   "index": 1004,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_KARA": {
+   "addr": "0xD834",
+   "bit": 5,
+   "index": 1005,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_WENDY": {
+   "addr": "0xD834",
+   "bit": 6,
+   "index": 1006,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_LISA": {
+   "addr": "0xD834",
+   "bit": 7,
+   "index": 1007,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_JILL": {
+   "addr": "0xD835",
+   "bit": 0,
+   "index": 1008,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_MARY": {
+   "addr": "0xD835",
+   "bit": 1,
+   "index": 1009,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_KATIE": {
+   "addr": "0xD835",
+   "bit": 2,
+   "index": 1010,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_DAWN": {
+   "addr": "0xD835",
+   "bit": 3,
+   "index": 1011,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_TARA": {
+   "addr": "0xD835",
+   "bit": 4,
+   "index": 1012,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_NICOLE": {
+   "addr": "0xD835",
+   "bit": 5,
+   "index": 1013,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_LORI": {
+   "addr": "0xD835",
+   "bit": 6,
+   "index": 1014,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_JODY": {
+   "addr": "0xD835",
+   "bit": 7,
+   "index": 1015,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_NIKKI": {
+   "addr": "0xD836",
+   "bit": 0,
+   "index": 1016,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_DIANA": {
+   "addr": "0xD836",
+   "bit": 1,
+   "index": 1017,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERF_BRIANA": {
+   "addr": "0xD836",
+   "bit": 2,
+   "index": 1018,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_ROD": {
+   "addr": "0xD836",
+   "bit": 3,
+   "index": 1019,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_ABE": {
+   "addr": "0xD836",
+   "bit": 4,
+   "index": 1020,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_BRYAN": {
+   "addr": "0xD836",
+   "bit": 5,
+   "index": 1021,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_THEO": {
+   "addr": "0xD836",
+   "bit": 6,
+   "index": 1022,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_TOBY": {
+   "addr": "0xD836",
+   "bit": 7,
+   "index": 1023,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_DENIS": {
+   "addr": "0xD837",
+   "bit": 0,
+   "index": 1024,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_VANCE": {
+   "addr": "0xD837",
+   "bit": 1,
+   "index": 1025,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_HANK": {
+   "addr": "0xD837",
+   "bit": 2,
+   "index": 1026,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_ROY": {
+   "addr": "0xD837",
+   "bit": 3,
+   "index": 1027,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_BORIS": {
+   "addr": "0xD837",
+   "bit": 4,
+   "index": 1028,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_BOB": {
+   "addr": "0xD837",
+   "bit": 5,
+   "index": 1029,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_JOSE": {
+   "addr": "0xD837",
+   "bit": 6,
+   "index": 1030,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_PETER": {
+   "addr": "0xD837",
+   "bit": 7,
+   "index": 1031,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_JOSE2": {
+   "addr": "0xD838",
+   "bit": 0,
+   "index": 1032,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_PERRY": {
+   "addr": "0xD838",
+   "bit": 1,
+   "index": 1033,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_BRET": {
+   "addr": "0xD838",
+   "bit": 2,
+   "index": 1034,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_JOSE3": {
+   "addr": "0xD838",
+   "bit": 3,
+   "index": 1035,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_VANCE2": {
+   "addr": "0xD838",
+   "bit": 4,
+   "index": 1036,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIRD_KEEPER_VANCE3": {
+   "addr": "0xD838",
+   "bit": 5,
+   "index": 1037,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BOARDER_RONALD": {
+   "addr": "0xD838",
+   "bit": 6,
+   "index": 1038,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BOARDER_BRAD": {
+   "addr": "0xD838",
+   "bit": 7,
+   "index": 1039,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BOARDER_DOUGLAS": {
+   "addr": "0xD839",
+   "bit": 0,
+   "index": 1040,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_CHOW": {
+   "addr": "0xD839",
+   "bit": 1,
+   "index": 1041,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_NICO": {
+   "addr": "0xD839",
+   "bit": 2,
+   "index": 1042,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_JIN": {
+   "addr": "0xD839",
+   "bit": 3,
+   "index": 1043,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_TROY": {
+   "addr": "0xD839",
+   "bit": 4,
+   "index": 1044,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_JEFFREY": {
+   "addr": "0xD839",
+   "bit": 5,
+   "index": 1045,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_PING": {
+   "addr": "0xD839",
+   "bit": 6,
+   "index": 1046,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_EDMOND": {
+   "addr": "0xD839",
+   "bit": 7,
+   "index": 1047,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_NEAL": {
+   "addr": "0xD83A",
+   "bit": 0,
+   "index": 1048,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAGE_LI": {
+   "addr": "0xD83A",
+   "bit": 1,
+   "index": 1049,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_ROLAND": {
+   "addr": "0xD83A",
+   "bit": 2,
+   "index": 1050,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_TODD": {
+   "addr": "0xD83A",
+   "bit": 3,
+   "index": 1051,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_IVAN": {
+   "addr": "0xD83A",
+   "bit": 4,
+   "index": 1052,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_ELLIOT": {
+   "addr": "0xD83A",
+   "bit": 5,
+   "index": 1053,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_BARRY": {
+   "addr": "0xD83A",
+   "bit": 6,
+   "index": 1054,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_LLOYD": {
+   "addr": "0xD83A",
+   "bit": 7,
+   "index": 1055,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_DEAN": {
+   "addr": "0xD83B",
+   "bit": 0,
+   "index": 1056,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_SID": {
+   "addr": "0xD83B",
+   "bit": 1,
+   "index": 1057,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_HERVEY": {
+   "addr": "0xD83B",
+   "bit": 2,
+   "index": 1058,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_DALE": {
+   "addr": "0xD83B",
+   "bit": 3,
+   "index": 1059,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_TED": {
+   "addr": "0xD83B",
+   "bit": 4,
+   "index": 1060,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_TODD2": {
+   "addr": "0xD83B",
+   "bit": 5,
+   "index": 1061,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_TODD3": {
+   "addr": "0xD83B",
+   "bit": 6,
+   "index": 1062,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_THOMAS": {
+   "addr": "0xD83B",
+   "bit": 7,
+   "index": 1063,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_LEROY": {
+   "addr": "0xD83C",
+   "bit": 0,
+   "index": 1064,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_DAVID": {
+   "addr": "0xD83C",
+   "bit": 1,
+   "index": 1065,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_JOHN": {
+   "addr": "0xD83C",
+   "bit": 2,
+   "index": 1066,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_JERRY": {
+   "addr": "0xD83C",
+   "bit": 3,
+   "index": 1067,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CAMPER_SPENCER": {
+   "addr": "0xD83C",
+   "bit": 4,
+   "index": 1068,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BURGLAR_DUNCAN": {
+   "addr": "0xD83C",
+   "bit": 5,
+   "index": 1069,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BURGLAR_EDDIE": {
+   "addr": "0xD83C",
+   "bit": 6,
+   "index": 1070,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BURGLAR_COREY": {
+   "addr": "0xD83C",
+   "bit": 7,
+   "index": 1071,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_BENNY": {
+   "addr": "0xD83D",
+   "bit": 1,
+   "index": 1073,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_KAZU": {
+   "addr": "0xD83D",
+   "bit": 2,
+   "index": 1074,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_DWAYNE": {
+   "addr": "0xD83D",
+   "bit": 3,
+   "index": 1075,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_HARRIS": {
+   "addr": "0xD83D",
+   "bit": 4,
+   "index": 1076,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_ZEKE": {
+   "addr": "0xD83D",
+   "bit": 5,
+   "index": 1077,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_CHARLES": {
+   "addr": "0xD83D",
+   "bit": 6,
+   "index": 1078,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_RILEY": {
+   "addr": "0xD83D",
+   "bit": 7,
+   "index": 1079,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_JOEL": {
+   "addr": "0xD83E",
+   "bit": 0,
+   "index": 1080,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BIKER_GLENN": {
+   "addr": "0xD83E",
+   "bit": 1,
+   "index": 1081,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_NATHAN": {
+   "addr": "0xD83E",
+   "bit": 2,
+   "index": 1082,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_FRANKLIN": {
+   "addr": "0xD83E",
+   "bit": 3,
+   "index": 1083,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_HERMAN": {
+   "addr": "0xD83E",
+   "bit": 4,
+   "index": 1084,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_FIDEL": {
+   "addr": "0xD83E",
+   "bit": 5,
+   "index": 1085,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_GREG": {
+   "addr": "0xD83E",
+   "bit": 6,
+   "index": 1086,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_NORMAN": {
+   "addr": "0xD83E",
+   "bit": 7,
+   "index": 1087,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_MARK": {
+   "addr": "0xD83F",
+   "bit": 0,
+   "index": 1088,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_PHIL": {
+   "addr": "0xD83F",
+   "bit": 1,
+   "index": 1089,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_RICHARD": {
+   "addr": "0xD83F",
+   "bit": 2,
+   "index": 1090,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_GILBERT": {
+   "addr": "0xD83F",
+   "bit": 3,
+   "index": 1091,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_JARED": {
+   "addr": "0xD83F",
+   "bit": 4,
+   "index": 1092,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PSYCHIC_RODNEY": {
+   "addr": "0xD83F",
+   "bit": 5,
+   "index": 1093,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FIREBREATHER_OTIS": {
+   "addr": "0xD83F",
+   "bit": 6,
+   "index": 1094,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FIREBREATHER_DICK": {
+   "addr": "0xD83F",
+   "bit": 7,
+   "index": 1095,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FIREBREATHER_NED": {
+   "addr": "0xD840",
+   "bit": 0,
+   "index": 1096,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FIREBREATHER_BURT": {
+   "addr": "0xD840",
+   "bit": 1,
+   "index": 1097,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FIREBREATHER_BILL": {
+   "addr": "0xD840",
+   "bit": 2,
+   "index": 1098,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FIREBREATHER_WALT": {
+   "addr": "0xD840",
+   "bit": 3,
+   "index": 1099,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FIREBREATHER_RAY": {
+   "addr": "0xD840",
+   "bit": 4,
+   "index": 1100,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FIREBREATHER_LYLE": {
+   "addr": "0xD840",
+   "bit": 5,
+   "index": 1101,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_JUSTIN": {
+   "addr": "0xD840",
+   "bit": 6,
+   "index": 1102,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_RALPH": {
+   "addr": "0xD840",
+   "bit": 7,
+   "index": 1103,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_ARNOLD": {
+   "addr": "0xD841",
+   "bit": 0,
+   "index": 1104,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_KYLE": {
+   "addr": "0xD841",
+   "bit": 1,
+   "index": 1105,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_HENRY": {
+   "addr": "0xD841",
+   "bit": 2,
+   "index": 1106,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_MARVIN": {
+   "addr": "0xD841",
+   "bit": 3,
+   "index": 1107,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_CHRIS": {
+   "addr": "0xD841",
+   "bit": 4,
+   "index": 1108,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_ANDRE": {
+   "addr": "0xD841",
+   "bit": 5,
+   "index": 1109,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_RAYMOND": {
+   "addr": "0xD841",
+   "bit": 6,
+   "index": 1110,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_WILTON": {
+   "addr": "0xD841",
+   "bit": 7,
+   "index": 1111,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_EDGAR": {
+   "addr": "0xD842",
+   "bit": 0,
+   "index": 1112,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_JONAH": {
+   "addr": "0xD842",
+   "bit": 1,
+   "index": 1113,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_MARTIN": {
+   "addr": "0xD842",
+   "bit": 2,
+   "index": 1114,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_STEPHEN": {
+   "addr": "0xD842",
+   "bit": 3,
+   "index": 1115,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_BARNEY": {
+   "addr": "0xD842",
+   "bit": 4,
+   "index": 1116,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_RALPH2": {
+   "addr": "0xD842",
+   "bit": 5,
+   "index": 1117,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_RALPH3": {
+   "addr": "0xD842",
+   "bit": 6,
+   "index": 1118,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_CHRIS2": {
+   "addr": "0xD842",
+   "bit": 7,
+   "index": 1119,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_CHRIS3": {
+   "addr": "0xD843",
+   "bit": 0,
+   "index": 1120,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_WILTON2": {
+   "addr": "0xD843",
+   "bit": 1,
+   "index": 1121,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_SCOTT": {
+   "addr": "0xD843",
+   "bit": 2,
+   "index": 1122,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FISHER_WILTON3": {
+   "addr": "0xD843",
+   "bit": 3,
+   "index": 1123,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TWINS_AMY_AND_MAY": {
+   "addr": "0xD843",
+   "bit": 4,
+   "index": 1124,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TWINS_ANN_AND_ANNE": {
+   "addr": "0xD843",
+   "bit": 5,
+   "index": 1125,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TWINS_ANN_AND_ANNE2": {
+   "addr": "0xD843",
+   "bit": 6,
+   "index": 1126,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TWINS_AMY_AND_MAY2": {
+   "addr": "0xD843",
+   "bit": 7,
+   "index": 1127,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TWINS_JO_AND_ZOE": {
+   "addr": "0xD844",
+   "bit": 0,
+   "index": 1128,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TWINS_JO_AND_ZOE2": {
+   "addr": "0xD844",
+   "bit": 1,
+   "index": 1129,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TWINS_MEG_AND_PEG": {
+   "addr": "0xD844",
+   "bit": 2,
+   "index": 1130,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TWINS_MEG_AND_PEG2": {
+   "addr": "0xD844",
+   "bit": 3,
+   "index": 1131,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_JACK": {
+   "addr": "0xD844",
+   "bit": 4,
+   "index": 1132,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_KIP": {
+   "addr": "0xD844",
+   "bit": 5,
+   "index": 1133,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_ALAN": {
+   "addr": "0xD844",
+   "bit": 6,
+   "index": 1134,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_JOHNNY": {
+   "addr": "0xD844",
+   "bit": 7,
+   "index": 1135,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_DANNY": {
+   "addr": "0xD845",
+   "bit": 0,
+   "index": 1136,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_TOMMY": {
+   "addr": "0xD845",
+   "bit": 1,
+   "index": 1137,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_DUDLEY": {
+   "addr": "0xD845",
+   "bit": 2,
+   "index": 1138,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_JOE": {
+   "addr": "0xD845",
+   "bit": 3,
+   "index": 1139,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_BILLY": {
+   "addr": "0xD845",
+   "bit": 4,
+   "index": 1140,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_CHAD": {
+   "addr": "0xD845",
+   "bit": 5,
+   "index": 1141,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_NATE": {
+   "addr": "0xD845",
+   "bit": 6,
+   "index": 1142,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_RICKY": {
+   "addr": "0xD845",
+   "bit": 7,
+   "index": 1143,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_JACK2": {
+   "addr": "0xD846",
+   "bit": 0,
+   "index": 1144,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_JACK3": {
+   "addr": "0xD846",
+   "bit": 1,
+   "index": 1145,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_ALAN2": {
+   "addr": "0xD846",
+   "bit": 2,
+   "index": 1146,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_ALAN3": {
+   "addr": "0xD846",
+   "bit": 3,
+   "index": 1147,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_CHAD2": {
+   "addr": "0xD846",
+   "bit": 4,
+   "index": 1148,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCHOOLBOY_CHAD3": {
+   "addr": "0xD846",
+   "bit": 5,
+   "index": 1149,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_LIZ": {
+   "addr": "0xD846",
+   "bit": 6,
+   "index": 1150,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_GINA": {
+   "addr": "0xD846",
+   "bit": 7,
+   "index": 1151,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_BROOKE": {
+   "addr": "0xD847",
+   "bit": 0,
+   "index": 1152,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_KIM": {
+   "addr": "0xD847",
+   "bit": 1,
+   "index": 1153,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_CINDY": {
+   "addr": "0xD847",
+   "bit": 2,
+   "index": 1154,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_HOPE": {
+   "addr": "0xD847",
+   "bit": 3,
+   "index": 1155,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_SHARON": {
+   "addr": "0xD847",
+   "bit": 4,
+   "index": 1156,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_DEBRA": {
+   "addr": "0xD847",
+   "bit": 5,
+   "index": 1157,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_GINA2": {
+   "addr": "0xD847",
+   "bit": 6,
+   "index": 1158,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_ERIN": {
+   "addr": "0xD847",
+   "bit": 7,
+   "index": 1159,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_LIZ2": {
+   "addr": "0xD848",
+   "bit": 0,
+   "index": 1160,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_LIZ3": {
+   "addr": "0xD848",
+   "bit": 1,
+   "index": 1161,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_HEIDI": {
+   "addr": "0xD848",
+   "bit": 2,
+   "index": 1162,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_EDNA": {
+   "addr": "0xD848",
+   "bit": 3,
+   "index": 1163,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_GINA3": {
+   "addr": "0xD848",
+   "bit": 4,
+   "index": 1164,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_TIFFANY2": {
+   "addr": "0xD848",
+   "bit": 5,
+   "index": 1165,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_TIFFANY3": {
+   "addr": "0xD848",
+   "bit": 6,
+   "index": 1166,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_ERIN2": {
+   "addr": "0xD848",
+   "bit": 7,
+   "index": 1167,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_TANYA": {
+   "addr": "0xD849",
+   "bit": 0,
+   "index": 1168,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_TIFFANY": {
+   "addr": "0xD849",
+   "bit": 1,
+   "index": 1169,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PICNICKER_ERIN3": {
+   "addr": "0xD849",
+   "bit": 2,
+   "index": 1170,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_GUITARIST_CLYDE": {
+   "addr": "0xD849",
+   "bit": 3,
+   "index": 1171,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_GUITARIST_VINCENT": {
+   "addr": "0xD849",
+   "bit": 4,
+   "index": 1172,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_JUGGLER_IRWIN": {
+   "addr": "0xD849",
+   "bit": 5,
+   "index": 1173,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_JUGGLER_FRITZ": {
+   "addr": "0xD849",
+   "bit": 6,
+   "index": 1174,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_JUGGLER_HORTON": {
+   "addr": "0xD849",
+   "bit": 7,
+   "index": 1175,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_JUGGLER_IRWIN2": {
+   "addr": "0xD84A",
+   "bit": 0,
+   "index": 1176,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_JUGGLER_IRWIN3": {
+   "addr": "0xD84A",
+   "bit": 1,
+   "index": 1177,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_GENTLEMAN_PRESTON": {
+   "addr": "0xD84A",
+   "bit": 2,
+   "index": 1178,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_GENTLEMAN_EDWARD": {
+   "addr": "0xD84A",
+   "bit": 3,
+   "index": 1179,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_GENTLEMAN_GREGORY": {
+   "addr": "0xD84A",
+   "bit": 4,
+   "index": 1180,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_GENTLEMAN_VIRGIL": {
+   "addr": "0xD84A",
+   "bit": 5,
+   "index": 1181,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_GENTLEMAN_ALFRED": {
+   "addr": "0xD84A",
+   "bit": 6,
+   "index": 1182,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCIENTIST_ROSS": {
+   "addr": "0xD84A",
+   "bit": 7,
+   "index": 1183,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCIENTIST_MITCH": {
+   "addr": "0xD84B",
+   "bit": 0,
+   "index": 1184,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCIENTIST_JED": {
+   "addr": "0xD84B",
+   "bit": 1,
+   "index": 1185,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCIENTIST_MARC": {
+   "addr": "0xD84B",
+   "bit": 2,
+   "index": 1186,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SCIENTIST_RICH": {
+   "addr": "0xD84B",
+   "bit": 3,
+   "index": 1187,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_KENJI2": {
+   "addr": "0xD84B",
+   "bit": 4,
+   "index": 1188,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_YOSHI": {
+   "addr": "0xD84B",
+   "bit": 5,
+   "index": 1189,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_KENJI3": {
+   "addr": "0xD84B",
+   "bit": 6,
+   "index": 1190,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_LAO": {
+   "addr": "0xD84B",
+   "bit": 7,
+   "index": 1191,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_NOB": {
+   "addr": "0xD84C",
+   "bit": 0,
+   "index": 1192,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_KIYO": {
+   "addr": "0xD84C",
+   "bit": 1,
+   "index": 1193,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_LUNG": {
+   "addr": "0xD84C",
+   "bit": 2,
+   "index": 1194,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_KENJI": {
+   "addr": "0xD84C",
+   "bit": 3,
+   "index": 1195,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLACKBELT_WAI": {
+   "addr": "0xD84C",
+   "bit": 4,
+   "index": 1196,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_VICTORIA": {
+   "addr": "0xD84C",
+   "bit": 5,
+   "index": 1197,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_SAMANTHA": {
+   "addr": "0xD84C",
+   "bit": 6,
+   "index": 1198,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_JULIE": {
+   "addr": "0xD84C",
+   "bit": 7,
+   "index": 1199,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_JACLYN": {
+   "addr": "0xD84D",
+   "bit": 0,
+   "index": 1200,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_BRENDA": {
+   "addr": "0xD84D",
+   "bit": 1,
+   "index": 1201,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_CASSIE": {
+   "addr": "0xD84D",
+   "bit": 2,
+   "index": 1202,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_CAROLINE": {
+   "addr": "0xD84D",
+   "bit": 3,
+   "index": 1203,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_CARLENE": {
+   "addr": "0xD84D",
+   "bit": 4,
+   "index": 1204,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_JESSICA": {
+   "addr": "0xD84D",
+   "bit": 5,
+   "index": 1205,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_RACHAEL": {
+   "addr": "0xD84D",
+   "bit": 6,
+   "index": 1206,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_ANGELICA": {
+   "addr": "0xD84D",
+   "bit": 7,
+   "index": 1207,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_KENDRA": {
+   "addr": "0xD84E",
+   "bit": 0,
+   "index": 1208,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_VERONICA": {
+   "addr": "0xD84E",
+   "bit": 1,
+   "index": 1209,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_JULIA": {
+   "addr": "0xD84E",
+   "bit": 2,
+   "index": 1210,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_THERESA": {
+   "addr": "0xD84E",
+   "bit": 3,
+   "index": 1211,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BEAUTY_VALERIE": {
+   "addr": "0xD84E",
+   "bit": 4,
+   "index": 1212,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_FALKNER": {
+   "addr": "0xD84E",
+   "bit": 5,
+   "index": 1213,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUGSY": {
+   "addr": "0xD84E",
+   "bit": 6,
+   "index": 1214,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_WHITNEY": {
+   "addr": "0xD84E",
+   "bit": 7,
+   "index": 1215,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MORTY": {
+   "addr": "0xD84F",
+   "bit": 0,
+   "index": 1216,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_JASMINE": {
+   "addr": "0xD84F",
+   "bit": 1,
+   "index": 1217,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CHUCK": {
+   "addr": "0xD84F",
+   "bit": 2,
+   "index": 1218,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_PRYCE": {
+   "addr": "0xD84F",
+   "bit": 3,
+   "index": 1219,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CLAIR": {
+   "addr": "0xD84F",
+   "bit": 4,
+   "index": 1220,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BROCK": {
+   "addr": "0xD84F",
+   "bit": 5,
+   "index": 1221,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MISTY": {
+   "addr": "0xD84F",
+   "bit": 6,
+   "index": 1222,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LTSURGE": {
+   "addr": "0xD84F",
+   "bit": 7,
+   "index": 1223,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ERIKA": {
+   "addr": "0xD850",
+   "bit": 0,
+   "index": 1224,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_JANINE": {
+   "addr": "0xD850",
+   "bit": 1,
+   "index": 1225,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SABRINA": {
+   "addr": "0xD850",
+   "bit": 2,
+   "index": 1226,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLAINE": {
+   "addr": "0xD850",
+   "bit": 3,
+   "index": 1227,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BLUE": {
+   "addr": "0xD850",
+   "bit": 4,
+   "index": 1228,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_WILLIAM": {
+   "addr": "0xD850",
+   "bit": 5,
+   "index": 1229,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_DEREK": {
+   "addr": "0xD850",
+   "bit": 6,
+   "index": 1230,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_ROBERT": {
+   "addr": "0xD850",
+   "bit": 7,
+   "index": 1231,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_JOSHUA": {
+   "addr": "0xD851",
+   "bit": 0,
+   "index": 1232,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_CARTER": {
+   "addr": "0xD851",
+   "bit": 1,
+   "index": 1233,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_TREVOR": {
+   "addr": "0xD851",
+   "bit": 2,
+   "index": 1234,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_BRANDON": {
+   "addr": "0xD851",
+   "bit": 3,
+   "index": 1235,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_JEREMY": {
+   "addr": "0xD851",
+   "bit": 4,
+   "index": 1236,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_COLIN": {
+   "addr": "0xD851",
+   "bit": 5,
+   "index": 1237,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_DEREK2": {
+   "addr": "0xD851",
+   "bit": 6,
+   "index": 1238,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_DEREK3": {
+   "addr": "0xD851",
+   "bit": 7,
+   "index": 1239,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANM_ALEX": {
+   "addr": "0xD852",
+   "bit": 0,
+   "index": 1240,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANF_BEVERLY": {
+   "addr": "0xD852",
+   "bit": 1,
+   "index": 1241,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANF_RUTH": {
+   "addr": "0xD852",
+   "bit": 2,
+   "index": 1242,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANF_BEVERLY2": {
+   "addr": "0xD852",
+   "bit": 3,
+   "index": 1243,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANF_BEVERLY3": {
+   "addr": "0xD852",
+   "bit": 4,
+   "index": 1244,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEFANF_GEORGIA": {
+   "addr": "0xD852",
+   "bit": 5,
+   "index": 1245,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_KIMONO_GIRL_NAOKO": {
+   "addr": "0xD852",
+   "bit": 7,
+   "index": 1247,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_KIMONO_GIRL_SAYO": {
+   "addr": "0xD853",
+   "bit": 0,
+   "index": 1248,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_KIMONO_GIRL_ZUKI": {
+   "addr": "0xD853",
+   "bit": 1,
+   "index": 1249,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_KIMONO_GIRL_KUNI": {
+   "addr": "0xD853",
+   "bit": 2,
+   "index": 1250,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_KIMONO_GIRL_MIKI": {
+   "addr": "0xD853",
+   "bit": 3,
+   "index": 1251,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_LARRY": {
+   "addr": "0xD853",
+   "bit": 4,
+   "index": 1252,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_ANDREW": {
+   "addr": "0xD853",
+   "bit": 5,
+   "index": 1253,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_CALVIN": {
+   "addr": "0xD853",
+   "bit": 6,
+   "index": 1254,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_SHANE": {
+   "addr": "0xD853",
+   "bit": 7,
+   "index": 1255,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_BEN": {
+   "addr": "0xD854",
+   "bit": 0,
+   "index": 1256,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_BRENT": {
+   "addr": "0xD854",
+   "bit": 1,
+   "index": 1257,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_RON": {
+   "addr": "0xD854",
+   "bit": 2,
+   "index": 1258,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_ETHAN": {
+   "addr": "0xD854",
+   "bit": 3,
+   "index": 1259,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_BRENT2": {
+   "addr": "0xD854",
+   "bit": 4,
+   "index": 1260,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_BRENT3": {
+   "addr": "0xD854",
+   "bit": 5,
+   "index": 1261,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_ISSAC": {
+   "addr": "0xD854",
+   "bit": 6,
+   "index": 1262,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_DONALD": {
+   "addr": "0xD854",
+   "bit": 7,
+   "index": 1263,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_POKEMANIAC_ZACH": {
+   "addr": "0xD855",
+   "bit": 0,
+   "index": 1264,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_1": {
+   "addr": "0xD855",
+   "bit": 1,
+   "index": 1265,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_2": {
+   "addr": "0xD855",
+   "bit": 2,
+   "index": 1266,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_3": {
+   "addr": "0xD855",
+   "bit": 3,
+   "index": 1267,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_4": {
+   "addr": "0xD855",
+   "bit": 4,
+   "index": 1268,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_5": {
+   "addr": "0xD855",
+   "bit": 5,
+   "index": 1269,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_6": {
+   "addr": "0xD855",
+   "bit": 6,
+   "index": 1270,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_7": {
+   "addr": "0xD855",
+   "bit": 7,
+   "index": 1271,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_8": {
+   "addr": "0xD856",
+   "bit": 0,
+   "index": 1272,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_9": {
+   "addr": "0xD856",
+   "bit": 1,
+   "index": 1273,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_10": {
+   "addr": "0xD856",
+   "bit": 2,
+   "index": 1274,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_11": {
+   "addr": "0xD856",
+   "bit": 3,
+   "index": 1275,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_12": {
+   "addr": "0xD856",
+   "bit": 4,
+   "index": 1276,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_13": {
+   "addr": "0xD856",
+   "bit": 5,
+   "index": 1277,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_14": {
+   "addr": "0xD856",
+   "bit": 6,
+   "index": 1278,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_15": {
+   "addr": "0xD856",
+   "bit": 7,
+   "index": 1279,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_16": {
+   "addr": "0xD857",
+   "bit": 0,
+   "index": 1280,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_17": {
+   "addr": "0xD857",
+   "bit": 1,
+   "index": 1281,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_18": {
+   "addr": "0xD857",
+   "bit": 2,
+   "index": 1282,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_19": {
+   "addr": "0xD857",
+   "bit": 3,
+   "index": 1283,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_20": {
+   "addr": "0xD857",
+   "bit": 4,
+   "index": 1284,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_21": {
+   "addr": "0xD857",
+   "bit": 5,
+   "index": 1285,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_22": {
+   "addr": "0xD857",
+   "bit": 6,
+   "index": 1286,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_23": {
+   "addr": "0xD857",
+   "bit": 7,
+   "index": 1287,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_24": {
+   "addr": "0xD858",
+   "bit": 0,
+   "index": 1288,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_25": {
+   "addr": "0xD858",
+   "bit": 1,
+   "index": 1289,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_26": {
+   "addr": "0xD858",
+   "bit": 2,
+   "index": 1290,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_27": {
+   "addr": "0xD858",
+   "bit": 3,
+   "index": 1291,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_28": {
+   "addr": "0xD858",
+   "bit": 4,
+   "index": 1292,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_29": {
+   "addr": "0xD858",
+   "bit": 5,
+   "index": 1293,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_30": {
+   "addr": "0xD858",
+   "bit": 6,
+   "index": 1294,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTM_31": {
+   "addr": "0xD858",
+   "bit": 7,
+   "index": 1295,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTF_1": {
+   "addr": "0xD859",
+   "bit": 0,
+   "index": 1296,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTF_2": {
+   "addr": "0xD859",
+   "bit": 1,
+   "index": 1297,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTF_3": {
+   "addr": "0xD859",
+   "bit": 2,
+   "index": 1298,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTF_4": {
+   "addr": "0xD859",
+   "bit": 3,
+   "index": 1299,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_GRUNTF_5": {
+   "addr": "0xD859",
+   "bit": 4,
+   "index": 1300,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_CARRIE": {
+   "addr": "0xD859",
+   "bit": 5,
+   "index": 1301,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_BRIDGET": {
+   "addr": "0xD859",
+   "bit": 6,
+   "index": 1302,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_ALICE": {
+   "addr": "0xD859",
+   "bit": 7,
+   "index": 1303,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_KRISE": {
+   "addr": "0xD85A",
+   "bit": 0,
+   "index": 1304,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_CONNIE": {
+   "addr": "0xD85A",
+   "bit": 1,
+   "index": 1305,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_LINDA": {
+   "addr": "0xD85A",
+   "bit": 2,
+   "index": 1306,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_LAURA": {
+   "addr": "0xD85A",
+   "bit": 3,
+   "index": 1307,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_SHANNON": {
+   "addr": "0xD85A",
+   "bit": 4,
+   "index": 1308,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_MICHELLE": {
+   "addr": "0xD85A",
+   "bit": 5,
+   "index": 1309,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_DANA": {
+   "addr": "0xD85A",
+   "bit": 6,
+   "index": 1310,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_ELLEN": {
+   "addr": "0xD85A",
+   "bit": 7,
+   "index": 1311,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_CONNIE2": {
+   "addr": "0xD85B",
+   "bit": 0,
+   "index": 1312,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_CONNIE3": {
+   "addr": "0xD85B",
+   "bit": 1,
+   "index": 1313,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_DANA2": {
+   "addr": "0xD85B",
+   "bit": 2,
+   "index": 1314,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_LASS_DANA3": {
+   "addr": "0xD85B",
+   "bit": 3,
+   "index": 1315,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_ANTHONY2": {
+   "addr": "0xD85B",
+   "bit": 4,
+   "index": 1316,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_RUSSELL": {
+   "addr": "0xD85B",
+   "bit": 5,
+   "index": 1317,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_PHILLIP": {
+   "addr": "0xD85B",
+   "bit": 6,
+   "index": 1318,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_LEONARD": {
+   "addr": "0xD85B",
+   "bit": 7,
+   "index": 1319,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_ANTHONY": {
+   "addr": "0xD85C",
+   "bit": 0,
+   "index": 1320,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_BENJAMIN": {
+   "addr": "0xD85C",
+   "bit": 1,
+   "index": 1321,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_ERIK": {
+   "addr": "0xD85C",
+   "bit": 2,
+   "index": 1322,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_MICHAEL": {
+   "addr": "0xD85C",
+   "bit": 3,
+   "index": 1323,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_PARRY": {
+   "addr": "0xD85C",
+   "bit": 4,
+   "index": 1324,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_TIMOTHY": {
+   "addr": "0xD85C",
+   "bit": 5,
+   "index": 1325,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_BAILEY": {
+   "addr": "0xD85C",
+   "bit": 6,
+   "index": 1326,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_ANTHONY3": {
+   "addr": "0xD85C",
+   "bit": 7,
+   "index": 1327,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_TIM": {
+   "addr": "0xD85D",
+   "bit": 0,
+   "index": 1328,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_NOLAND": {
+   "addr": "0xD85D",
+   "bit": 1,
+   "index": 1329,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_SIDNEY": {
+   "addr": "0xD85D",
+   "bit": 2,
+   "index": 1330,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_KENNY": {
+   "addr": "0xD85D",
+   "bit": 3,
+   "index": 1331,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_JIM": {
+   "addr": "0xD85D",
+   "bit": 4,
+   "index": 1332,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_DANIEL": {
+   "addr": "0xD85D",
+   "bit": 5,
+   "index": 1333,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_PARRY2": {
+   "addr": "0xD85D",
+   "bit": 6,
+   "index": 1334,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_HIKER_PARRY3": {
+   "addr": "0xD85D",
+   "bit": 7,
+   "index": 1335,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_DON": {
+   "addr": "0xD85E",
+   "bit": 0,
+   "index": 1336,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_ROB": {
+   "addr": "0xD85E",
+   "bit": 1,
+   "index": 1337,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_ED": {
+   "addr": "0xD85E",
+   "bit": 2,
+   "index": 1338,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_WADE": {
+   "addr": "0xD85E",
+   "bit": 3,
+   "index": 1339,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_BENNY": {
+   "addr": "0xD85E",
+   "bit": 4,
+   "index": 1340,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_AL": {
+   "addr": "0xD85E",
+   "bit": 5,
+   "index": 1341,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_JOSH": {
+   "addr": "0xD85E",
+   "bit": 6,
+   "index": 1342,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_ARNIE": {
+   "addr": "0xD85E",
+   "bit": 7,
+   "index": 1343,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_KEN": {
+   "addr": "0xD85F",
+   "bit": 0,
+   "index": 1344,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_WADE2": {
+   "addr": "0xD85F",
+   "bit": 1,
+   "index": 1345,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_WADE3": {
+   "addr": "0xD85F",
+   "bit": 2,
+   "index": 1346,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_DOUG": {
+   "addr": "0xD85F",
+   "bit": 3,
+   "index": 1347,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_ARNIE2": {
+   "addr": "0xD85F",
+   "bit": 4,
+   "index": 1348,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_BUG_CATCHER_ARNIE3": {
+   "addr": "0xD85F",
+   "bit": 5,
+   "index": 1349,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_OFFICER_KEITH": {
+   "addr": "0xD85F",
+   "bit": 6,
+   "index": 1350,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_OFFICER_DIRK": {
+   "addr": "0xD85F",
+   "bit": 7,
+   "index": 1351,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_NICK": {
+   "addr": "0xD860",
+   "bit": 0,
+   "index": 1352,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_AARON": {
+   "addr": "0xD860",
+   "bit": 1,
+   "index": 1353,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_PAUL": {
+   "addr": "0xD860",
+   "bit": 2,
+   "index": 1354,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_CODY": {
+   "addr": "0xD860",
+   "bit": 3,
+   "index": 1355,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_MIKE": {
+   "addr": "0xD860",
+   "bit": 4,
+   "index": 1356,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_GAVEN2": {
+   "addr": "0xD860",
+   "bit": 5,
+   "index": 1357,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_GAVEN3": {
+   "addr": "0xD860",
+   "bit": 6,
+   "index": 1358,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_RYAN": {
+   "addr": "0xD860",
+   "bit": 7,
+   "index": 1359,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_JAKE": {
+   "addr": "0xD861",
+   "bit": 0,
+   "index": 1360,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_GAVEN": {
+   "addr": "0xD861",
+   "bit": 1,
+   "index": 1361,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_BLAKE": {
+   "addr": "0xD861",
+   "bit": 2,
+   "index": 1362,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_BRIAN": {
+   "addr": "0xD861",
+   "bit": 3,
+   "index": 1363,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_ERICK": {
+   "addr": "0xD861",
+   "bit": 4,
+   "index": 1364,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_ANDY": {
+   "addr": "0xD861",
+   "bit": 5,
+   "index": 1365,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_TYLER": {
+   "addr": "0xD861",
+   "bit": 6,
+   "index": 1366,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_SEAN": {
+   "addr": "0xD861",
+   "bit": 7,
+   "index": 1367,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_KEVIN": {
+   "addr": "0xD862",
+   "bit": 0,
+   "index": 1368,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_STEVE": {
+   "addr": "0xD862",
+   "bit": 1,
+   "index": 1369,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERM_ALLEN": {
+   "addr": "0xD862",
+   "bit": 2,
+   "index": 1370,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_GWEN": {
+   "addr": "0xD862",
+   "bit": 3,
+   "index": 1371,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_LOIS": {
+   "addr": "0xD862",
+   "bit": 4,
+   "index": 1372,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_FRAN": {
+   "addr": "0xD862",
+   "bit": 5,
+   "index": 1373,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_LOLA": {
+   "addr": "0xD862",
+   "bit": 6,
+   "index": 1374,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_KATE": {
+   "addr": "0xD862",
+   "bit": 7,
+   "index": 1375,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_IRENE": {
+   "addr": "0xD863",
+   "bit": 0,
+   "index": 1376,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_KELLY": {
+   "addr": "0xD863",
+   "bit": 1,
+   "index": 1377,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_JOYCE": {
+   "addr": "0xD863",
+   "bit": 2,
+   "index": 1378,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_BETH": {
+   "addr": "0xD863",
+   "bit": 3,
+   "index": 1379,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_REENA": {
+   "addr": "0xD863",
+   "bit": 4,
+   "index": 1380,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_MEGAN": {
+   "addr": "0xD863",
+   "bit": 5,
+   "index": 1381,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_BETH2": {
+   "addr": "0xD863",
+   "bit": 6,
+   "index": 1382,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_CAROL": {
+   "addr": "0xD863",
+   "bit": 7,
+   "index": 1383,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_QUINN": {
+   "addr": "0xD864",
+   "bit": 0,
+   "index": 1384,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_EMMA": {
+   "addr": "0xD864",
+   "bit": 1,
+   "index": 1385,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_CYBIL": {
+   "addr": "0xD864",
+   "bit": 2,
+   "index": 1386,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_JENN": {
+   "addr": "0xD864",
+   "bit": 3,
+   "index": 1387,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_BETH3": {
+   "addr": "0xD864",
+   "bit": 4,
+   "index": 1388,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_REENA2": {
+   "addr": "0xD864",
+   "bit": 5,
+   "index": 1389,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_COOLTRAINERF_REENA3": {
+   "addr": "0xD864",
+   "bit": 6,
+   "index": 1390,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_EXECUTIVEF_1": {
+   "addr": "0xD864",
+   "bit": 7,
+   "index": 1391,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_EXECUTIVEF_2": {
+   "addr": "0xD865",
+   "bit": 0,
+   "index": 1392,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_EXECUTIVEM_1": {
+   "addr": "0xD865",
+   "bit": 1,
+   "index": 1393,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_EXECUTIVEM_2": {
+   "addr": "0xD865",
+   "bit": 2,
+   "index": 1394,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_EXECUTIVEM_3": {
+   "addr": "0xD865",
+   "bit": 3,
+   "index": 1395,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ROCKET_EXECUTIVEM_4": {
+   "addr": "0xD865",
+   "bit": 4,
+   "index": 1396,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_EUGENE": {
+   "addr": "0xD865",
+   "bit": 5,
+   "index": 1397,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_HUEY": {
+   "addr": "0xD865",
+   "bit": 6,
+   "index": 1398,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_TERRELL": {
+   "addr": "0xD865",
+   "bit": 7,
+   "index": 1399,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_KENT": {
+   "addr": "0xD866",
+   "bit": 0,
+   "index": 1400,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_ERNEST": {
+   "addr": "0xD866",
+   "bit": 1,
+   "index": 1401,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_JEFF": {
+   "addr": "0xD866",
+   "bit": 2,
+   "index": 1402,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_GARRETT": {
+   "addr": "0xD866",
+   "bit": 3,
+   "index": 1403,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_KENNETH": {
+   "addr": "0xD866",
+   "bit": 4,
+   "index": 1404,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_STANLY": {
+   "addr": "0xD866",
+   "bit": 5,
+   "index": 1405,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_HARRY": {
+   "addr": "0xD866",
+   "bit": 6,
+   "index": 1406,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_HUEY2": {
+   "addr": "0xD866",
+   "bit": 7,
+   "index": 1407,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SAILOR_HUEY3": {
+   "addr": "0xD867",
+   "bit": 0,
+   "index": 1408,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_ERIC_UNUSED": {
+   "addr": "0xD867",
+   "bit": 1,
+   "index": 1409,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_ERIC": {
+   "addr": "0xD867",
+   "bit": 2,
+   "index": 1410,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_GREGG": {
+   "addr": "0xD867",
+   "bit": 3,
+   "index": 1411,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_JAY": {
+   "addr": "0xD867",
+   "bit": 4,
+   "index": 1412,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAY_SUPER_NERD_DAVE": {
+   "addr": "0xD867",
+   "bit": 5,
+   "index": 1413,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_SAM": {
+   "addr": "0xD867",
+   "bit": 6,
+   "index": 1414,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_TOM": {
+   "addr": "0xD867",
+   "bit": 7,
+   "index": 1415,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_PAT": {
+   "addr": "0xD868",
+   "bit": 0,
+   "index": 1416,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_SHAWN": {
+   "addr": "0xD868",
+   "bit": 1,
+   "index": 1417,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SUPER_NERD_TERU": {
+   "addr": "0xD868",
+   "bit": 2,
+   "index": 1418,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MEDIUM_MARTHA": {
+   "addr": "0xD868",
+   "bit": 3,
+   "index": 1419,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MEDIUM_GRACE": {
+   "addr": "0xD868",
+   "bit": 4,
+   "index": 1420,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MEDIUM_BETHANY": {
+   "addr": "0xD868",
+   "bit": 5,
+   "index": 1421,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MEDIUM_MARGRET": {
+   "addr": "0xD868",
+   "bit": 6,
+   "index": 1422,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MEDIUM_ETHEL": {
+   "addr": "0xD868",
+   "bit": 7,
+   "index": 1423,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MEDIUM_REBECCA": {
+   "addr": "0xD869",
+   "bit": 0,
+   "index": 1424,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_MEDIUM_DORIS": {
+   "addr": "0xD869",
+   "bit": 1,
+   "index": 1425,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SKIER_ROXANNE": {
+   "addr": "0xD869",
+   "bit": 2,
+   "index": 1426,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SKIER_CLARISSA": {
+   "addr": "0xD869",
+   "bit": 3,
+   "index": 1427,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_HAROLD": {
+   "addr": "0xD869",
+   "bit": 4,
+   "index": 1428,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_SIMON": {
+   "addr": "0xD869",
+   "bit": 5,
+   "index": 1429,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_RANDALL": {
+   "addr": "0xD869",
+   "bit": 6,
+   "index": 1430,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_CHARLIE": {
+   "addr": "0xD869",
+   "bit": 7,
+   "index": 1431,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_GEORGE": {
+   "addr": "0xD86A",
+   "bit": 0,
+   "index": 1432,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_BERKE": {
+   "addr": "0xD86A",
+   "bit": 1,
+   "index": 1433,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_KIRK": {
+   "addr": "0xD86A",
+   "bit": 2,
+   "index": 1434,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_MATHEW": {
+   "addr": "0xD86A",
+   "bit": 3,
+   "index": 1435,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_HAL": {
+   "addr": "0xD86A",
+   "bit": 4,
+   "index": 1436,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_PATON": {
+   "addr": "0xD86A",
+   "bit": 5,
+   "index": 1437,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_DARYL": {
+   "addr": "0xD86A",
+   "bit": 6,
+   "index": 1438,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_WALTER": {
+   "addr": "0xD86A",
+   "bit": 7,
+   "index": 1439,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_TONY": {
+   "addr": "0xD86B",
+   "bit": 0,
+   "index": 1440,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_JEROME": {
+   "addr": "0xD86B",
+   "bit": 1,
+   "index": 1441,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_TUCKER": {
+   "addr": "0xD86B",
+   "bit": 2,
+   "index": 1442,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_RICK": {
+   "addr": "0xD86B",
+   "bit": 3,
+   "index": 1443,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_CAMERON": {
+   "addr": "0xD86B",
+   "bit": 4,
+   "index": 1444,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_SETH": {
+   "addr": "0xD86B",
+   "bit": 5,
+   "index": 1445,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_JAMES": {
+   "addr": "0xD86B",
+   "bit": 6,
+   "index": 1446,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_LEWIS": {
+   "addr": "0xD86B",
+   "bit": 7,
+   "index": 1447,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_SWIMMERM_PARKER": {
+   "addr": "0xD86C",
+   "bit": 0,
+   "index": 1448,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_JOEY": {
+   "addr": "0xD86C",
+   "bit": 1,
+   "index": 1449,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_MIKEY": {
+   "addr": "0xD86C",
+   "bit": 2,
+   "index": 1450,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_ALBERT": {
+   "addr": "0xD86C",
+   "bit": 3,
+   "index": 1451,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_GORDON": {
+   "addr": "0xD86C",
+   "bit": 4,
+   "index": 1452,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_SAMUEL": {
+   "addr": "0xD86C",
+   "bit": 5,
+   "index": 1453,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_IAN": {
+   "addr": "0xD86C",
+   "bit": 6,
+   "index": 1454,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_JOEY2": {
+   "addr": "0xD86C",
+   "bit": 7,
+   "index": 1455,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_JOEY3": {
+   "addr": "0xD86D",
+   "bit": 0,
+   "index": 1456,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_WARREN": {
+   "addr": "0xD86D",
+   "bit": 1,
+   "index": 1457,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_JIMMY": {
+   "addr": "0xD86D",
+   "bit": 2,
+   "index": 1458,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_OWEN": {
+   "addr": "0xD86D",
+   "bit": 3,
+   "index": 1459,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_YOUNGSTER_JASON": {
+   "addr": "0xD86D",
+   "bit": 4,
+   "index": 1460,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TEACHER_COLETTE": {
+   "addr": "0xD86D",
+   "bit": 5,
+   "index": 1461,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TEACHER_HILLARY": {
+   "addr": "0xD86D",
+   "bit": 6,
+   "index": 1462,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_TEACHER_SHIRLEY": {
+   "addr": "0xD86D",
+   "bit": 7,
+   "index": 1463,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ELITE_4_WILL": {
+   "addr": "0xD86E",
+   "bit": 0,
+   "index": 1464,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ELITE_4_KOGA": {
+   "addr": "0xD86E",
+   "bit": 1,
+   "index": 1465,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ELITE_4_BRUNO": {
+   "addr": "0xD86E",
+   "bit": 2,
+   "index": 1466,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_ELITE_4_KAREN": {
+   "addr": "0xD86E",
+   "bit": 3,
+   "index": 1467,
+   "kind": "entrenador"
+  },
+  "EVENT_BEAT_CHAMPION_LANCE": {
+   "addr": "0xD86E",
+   "bit": 4,
+   "index": 1468,
+   "kind": "entrenador"
+  },
+  "EVENT_CYNDAQUIL_POKEBALL_IN_ELMS_LAB": {
+   "addr": "0xD87F",
+   "bit": 0,
+   "index": 1600,
+   "kind": "visibilidad"
+  },
+  "EVENT_TOTODILE_POKEBALL_IN_ELMS_LAB": {
+   "addr": "0xD87F",
+   "bit": 1,
+   "index": 1601,
+   "kind": "visibilidad"
+  },
+  "EVENT_CHIKORITA_POKEBALL_IN_ELMS_LAB": {
+   "addr": "0xD87F",
+   "bit": 2,
+   "index": 1602,
+   "kind": "visibilidad"
+  },
+  "EVENT_VIOLET_CITY_PP_UP": {
+   "addr": "0xD87F",
+   "bit": 3,
+   "index": 1603,
+   "kind": "visibilidad"
+  },
+  "EVENT_VIOLET_CITY_RARE_CANDY": {
+   "addr": "0xD87F",
+   "bit": 4,
+   "index": 1604,
+   "kind": "visibilidad"
+  },
+  "EVENT_LAKE_OF_RAGE_MAX_ETHER": {
+   "addr": "0xD87F",
+   "bit": 5,
+   "index": 1605,
+   "kind": "visibilidad"
+  },
+  "EVENT_LAKE_OF_RAGE_TM_DETECT": {
+   "addr": "0xD87F",
+   "bit": 6,
+   "index": 1606,
+   "kind": "visibilidad"
+  },
+  "EVENT_SPROUT_TOWER_1F_PARLYZ_HEAL": {
+   "addr": "0xD87F",
+   "bit": 7,
+   "index": 1607,
+   "kind": "visibilidad"
+  },
+  "EVENT_SPROUT_TOWER_2F_X_DEFEND": {
+   "addr": "0xD880",
+   "bit": 0,
+   "index": 1608,
+   "kind": "visibilidad"
+  },
+  "EVENT_SPROUT_TOWER_3F_POTION": {
+   "addr": "0xD880",
+   "bit": 1,
+   "index": 1609,
+   "kind": "visibilidad"
+  },
+  "EVENT_SPROUT_TOWER_3F_ESCAPE_ROPE": {
+   "addr": "0xD880",
+   "bit": 2,
+   "index": 1610,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_3F_FULL_HEAL": {
+   "addr": "0xD880",
+   "bit": 3,
+   "index": 1611,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_4F_ULTRA_BALL": {
+   "addr": "0xD880",
+   "bit": 4,
+   "index": 1612,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_4F_SUPER_POTION": {
+   "addr": "0xD880",
+   "bit": 5,
+   "index": 1613,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_4F_ESCAPE_ROPE": {
+   "addr": "0xD880",
+   "bit": 6,
+   "index": 1614,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_5F_RARE_CANDY": {
+   "addr": "0xD880",
+   "bit": 7,
+   "index": 1615,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_7F_MAX_REVIVE": {
+   "addr": "0xD881",
+   "bit": 0,
+   "index": 1616,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_8F_NUGGET": {
+   "addr": "0xD881",
+   "bit": 1,
+   "index": 1617,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_8F_MAX_ELIXER": {
+   "addr": "0xD881",
+   "bit": 2,
+   "index": 1618,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_8F_FULL_RESTORE": {
+   "addr": "0xD881",
+   "bit": 3,
+   "index": 1619,
+   "kind": "visibilidad"
+  },
+  "EVENT_BURNED_TOWER_1F_X_SPEED": {
+   "addr": "0xD881",
+   "bit": 4,
+   "index": 1620,
+   "kind": "visibilidad"
+  },
+  "EVENT_BURNED_TOWER_1F_BURN_HEAL": {
+   "addr": "0xD881",
+   "bit": 5,
+   "index": 1621,
+   "kind": "visibilidad"
+  },
+  "EVENT_BURNED_TOWER_B1F_HP_UP": {
+   "addr": "0xD881",
+   "bit": 6,
+   "index": 1622,
+   "kind": "visibilidad"
+  },
+  "EVENT_BURNED_TOWER_B1F_TM_ENDURE": {
+   "addr": "0xD881",
+   "bit": 7,
+   "index": 1623,
+   "kind": "visibilidad"
+  },
+  "EVENT_NATIONAL_PARK_PARLYZ_HEAL": {
+   "addr": "0xD882",
+   "bit": 0,
+   "index": 1624,
+   "kind": "visibilidad"
+  },
+  "EVENT_NATIONAL_PARK_TM_DIG": {
+   "addr": "0xD882",
+   "bit": 1,
+   "index": 1625,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_1F_GREAT_BALL": {
+   "addr": "0xD882",
+   "bit": 2,
+   "index": 1626,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_1F_POTION": {
+   "addr": "0xD882",
+   "bit": 3,
+   "index": 1627,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_1F_X_ATTACK": {
+   "addr": "0xD882",
+   "bit": 4,
+   "index": 1628,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_1F_AWAKENING": {
+   "addr": "0xD882",
+   "bit": 5,
+   "index": 1629,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_B1F_TM_SWIFT": {
+   "addr": "0xD882",
+   "bit": 6,
+   "index": 1630,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_B1F_X_DEFEND": {
+   "addr": "0xD882",
+   "bit": 7,
+   "index": 1631,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_B2F_ELIXER": {
+   "addr": "0xD883",
+   "bit": 0,
+   "index": 1632,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_B2F_HYPER_POTION": {
+   "addr": "0xD883",
+   "bit": 1,
+   "index": 1633,
+   "kind": "visibilidad"
+  },
+  "EVENT_SLOWPOKE_WELL_B1F_SUPER_POTION": {
+   "addr": "0xD883",
+   "bit": 2,
+   "index": 1634,
+   "kind": "visibilidad"
+  },
+  "EVENT_SLOWPOKE_WELL_B2F_TM_RAIN_DANCE": {
+   "addr": "0xD883",
+   "bit": 3,
+   "index": 1635,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_LIGHTHOUSE_3F_ETHER": {
+   "addr": "0xD883",
+   "bit": 4,
+   "index": 1636,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_LIGHTHOUSE_5F_RARE_CANDY": {
+   "addr": "0xD883",
+   "bit": 5,
+   "index": 1637,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_LIGHTHOUSE_5F_GREAT_BALL": {
+   "addr": "0xD883",
+   "bit": 6,
+   "index": 1638,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_LIGHTHOUSE_5F_TM_SWAGGER": {
+   "addr": "0xD883",
+   "bit": 7,
+   "index": 1639,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_LIGHTHOUSE_6F_SUPER_POTION": {
+   "addr": "0xD884",
+   "bit": 0,
+   "index": 1640,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B1F_HYPER_POTION": {
+   "addr": "0xD884",
+   "bit": 1,
+   "index": 1641,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B1F_NUGGET": {
+   "addr": "0xD884",
+   "bit": 2,
+   "index": 1642,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B1F_X_ACCURACY": {
+   "addr": "0xD884",
+   "bit": 3,
+   "index": 1643,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_TM_THIEF": {
+   "addr": "0xD884",
+   "bit": 4,
+   "index": 1644,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B3F_FULL_HEAL": {
+   "addr": "0xD884",
+   "bit": 5,
+   "index": 1645,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B3F_DIRE_HIT": {
+   "addr": "0xD884",
+   "bit": 6,
+   "index": 1646,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B3F_PROTEIN": {
+   "addr": "0xD884",
+   "bit": 7,
+   "index": 1647,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B3F_ICE_HEAL": {
+   "addr": "0xD885",
+   "bit": 0,
+   "index": 1648,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_REVIVE": {
+   "addr": "0xD885",
+   "bit": 1,
+   "index": 1649,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_COIN_CASE": {
+   "addr": "0xD885",
+   "bit": 2,
+   "index": 1650,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES_SMOKE_BALL": {
+   "addr": "0xD885",
+   "bit": 3,
+   "index": 1651,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES_FULL_HEAL": {
+   "addr": "0xD885",
+   "bit": 4,
+   "index": 1652,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_DEPT_STORE_B1F_ETHER": {
+   "addr": "0xD885",
+   "bit": 5,
+   "index": 1653,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_DEPT_STORE_B1F_AMULET_COIN": {
+   "addr": "0xD885",
+   "bit": 6,
+   "index": 1654,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_DEPT_STORE_B1F_BURN_HEAL": {
+   "addr": "0xD885",
+   "bit": 7,
+   "index": 1655,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_DEPT_STORE_B1F_ULTRA_BALL": {
+   "addr": "0xD886",
+   "bit": 0,
+   "index": 1656,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_WAREHOUSE_MAX_ETHER": {
+   "addr": "0xD886",
+   "bit": 1,
+   "index": 1657,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_WAREHOUSE_TM_SLEEP_TALK": {
+   "addr": "0xD886",
+   "bit": 2,
+   "index": 1658,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_1F_OUTSIDE_ETHER": {
+   "addr": "0xD886",
+   "bit": 3,
+   "index": 1659,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_1F_OUTSIDE_REVIVE": {
+   "addr": "0xD886",
+   "bit": 4,
+   "index": 1660,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_1F_INSIDE_ESCAPE_ROPE": {
+   "addr": "0xD886",
+   "bit": 5,
+   "index": 1661,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_1F_INSIDE_MAX_REVIVE": {
+   "addr": "0xD886",
+   "bit": 6,
+   "index": 1662,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_1F_INSIDE_HYPER_POTION": {
+   "addr": "0xD886",
+   "bit": 7,
+   "index": 1663,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_2F_INSIDE_MAX_POTION": {
+   "addr": "0xD887",
+   "bit": 0,
+   "index": 1664,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_2F_INSIDE_RARE_CANDY": {
+   "addr": "0xD887",
+   "bit": 1,
+   "index": 1665,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_2F_INSIDE_TM_DEFENSE_CURL": {
+   "addr": "0xD887",
+   "bit": 2,
+   "index": 1666,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_2F_INSIDE_DRAGON_SCALE": {
+   "addr": "0xD887",
+   "bit": 3,
+   "index": 1667,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_2F_INSIDE_ELIXER": {
+   "addr": "0xD887",
+   "bit": 4,
+   "index": 1668,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_2F_INSIDE_ESCAPE_ROPE": {
+   "addr": "0xD887",
+   "bit": 5,
+   "index": 1669,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_B1F_HYPER_POTION": {
+   "addr": "0xD887",
+   "bit": 6,
+   "index": 1670,
+   "kind": "visibilidad"
+  },
+  "EVENT_MOUNT_MORTAR_B1F_FULL_HEAL": {
+   "addr": "0xD887",
+   "bit": 7,
+   "index": 1671,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOT_HM07_WATERFALL": {
+   "addr": "0xD888",
+   "bit": 0,
+   "index": 1672,
+   "kind": "visibilidad"
+  },
+  "EVENT_ICE_PATH_1F_PP_UP": {
+   "addr": "0xD888",
+   "bit": 1,
+   "index": 1673,
+   "kind": "visibilidad"
+  },
+  "EVENT_ICE_PATH_B1F_IRON": {
+   "addr": "0xD888",
+   "bit": 2,
+   "index": 1674,
+   "kind": "visibilidad"
+  },
+  "EVENT_ICE_PATH_B2F_MAHOGANY_SIDE_FULL_HEAL": {
+   "addr": "0xD888",
+   "bit": 3,
+   "index": 1675,
+   "kind": "visibilidad"
+  },
+  "EVENT_ICE_PATH_B2F_MAHOGANY_SIDE_MAX_POTION": {
+   "addr": "0xD888",
+   "bit": 4,
+   "index": 1676,
+   "kind": "visibilidad"
+  },
+  "EVENT_ICE_PATH_B2F_BLACKTHORN_SIDE_TM_REST": {
+   "addr": "0xD888",
+   "bit": 5,
+   "index": 1677,
+   "kind": "visibilidad"
+  },
+  "EVENT_ICE_PATH_B3F_NEVERMELTICE": {
+   "addr": "0xD888",
+   "bit": 6,
+   "index": 1678,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_NE_ULTRA_BALL": {
+   "addr": "0xD888",
+   "bit": 7,
+   "index": 1679,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_SW_GUARD_SPEC": {
+   "addr": "0xD889",
+   "bit": 0,
+   "index": 1680,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_B1F_FULL_RESTORE": {
+   "addr": "0xD889",
+   "bit": 1,
+   "index": 1681,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_B1F_CARBOS": {
+   "addr": "0xD889",
+   "bit": 2,
+   "index": 1682,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_B1F_CALCIUM": {
+   "addr": "0xD889",
+   "bit": 3,
+   "index": 1683,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_B1F_NUGGET": {
+   "addr": "0xD889",
+   "bit": 4,
+   "index": 1684,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_B1F_ESCAPE_ROPE": {
+   "addr": "0xD889",
+   "bit": 5,
+   "index": 1685,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_B2F_FULL_RESTORE": {
+   "addr": "0xD889",
+   "bit": 6,
+   "index": 1686,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_B2F_MAX_REVIVE": {
+   "addr": "0xD889",
+   "bit": 7,
+   "index": 1687,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_B2F_MAX_ELIXER": {
+   "addr": "0xD88A",
+   "bit": 0,
+   "index": 1688,
+   "kind": "visibilidad"
+  },
+  "EVENT_SILVER_CAVE_ROOM_1_MAX_ELIXER": {
+   "addr": "0xD88A",
+   "bit": 1,
+   "index": 1689,
+   "kind": "visibilidad"
+  },
+  "EVENT_SILVER_CAVE_ROOM_1_X_ACCURACY": {
+   "addr": "0xD88A",
+   "bit": 2,
+   "index": 1690,
+   "kind": "visibilidad"
+  },
+  "EVENT_SILVER_CAVE_ROOM_1_ESCAPE_ROPE": {
+   "addr": "0xD88A",
+   "bit": 3,
+   "index": 1691,
+   "kind": "visibilidad"
+  },
+  "EVENT_SILVER_CAVE_ITEM_ROOMS_MAX_REVIVE": {
+   "addr": "0xD88A",
+   "bit": 4,
+   "index": 1692,
+   "kind": "visibilidad"
+  },
+  "EVENT_SILVER_CAVE_ITEM_ROOMS_FULL_RESTORE": {
+   "addr": "0xD88A",
+   "bit": 5,
+   "index": 1693,
+   "kind": "visibilidad"
+  },
+  "EVENT_DARK_CAVE_VIOLET_ENTRANCE_POTION": {
+   "addr": "0xD88A",
+   "bit": 6,
+   "index": 1694,
+   "kind": "visibilidad"
+  },
+  "EVENT_DARK_CAVE_VIOLET_ENTRANCE_FULL_HEAL": {
+   "addr": "0xD88A",
+   "bit": 7,
+   "index": 1695,
+   "kind": "visibilidad"
+  },
+  "EVENT_DARK_CAVE_VIOLET_ENTRANCE_HYPER_POTION": {
+   "addr": "0xD88B",
+   "bit": 0,
+   "index": 1696,
+   "kind": "visibilidad"
+  },
+  "EVENT_DARK_CAVE_BLACKTHORN_ENTRANCE_REVIVE": {
+   "addr": "0xD88B",
+   "bit": 1,
+   "index": 1697,
+   "kind": "visibilidad"
+  },
+  "EVENT_DARK_CAVE_BLACKTHORN_ENTRANCE_TM_SNORE": {
+   "addr": "0xD88B",
+   "bit": 2,
+   "index": 1698,
+   "kind": "visibilidad"
+  },
+  "EVENT_VICTORY_ROAD_TM_EARTHQUAKE": {
+   "addr": "0xD88B",
+   "bit": 3,
+   "index": 1699,
+   "kind": "visibilidad"
+  },
+  "EVENT_VICTORY_ROAD_MAX_REVIVE": {
+   "addr": "0xD88B",
+   "bit": 4,
+   "index": 1700,
+   "kind": "visibilidad"
+  },
+  "EVENT_VICTORY_ROAD_FULL_RESTORE": {
+   "addr": "0xD88B",
+   "bit": 5,
+   "index": 1701,
+   "kind": "visibilidad"
+  },
+  "EVENT_VICTORY_ROAD_FULL_HEAL": {
+   "addr": "0xD88B",
+   "bit": 6,
+   "index": 1702,
+   "kind": "visibilidad"
+  },
+  "EVENT_VICTORY_ROAD_X_SPECIAL": {
+   "addr": "0xD88B",
+   "bit": 7,
+   "index": 1703,
+   "kind": "visibilidad"
+  },
+  "EVENT_DRAGONS_DEN_B1F_DRAGON_FANG": {
+   "addr": "0xD88C",
+   "bit": 0,
+   "index": 1704,
+   "kind": "visibilidad"
+  },
+  "EVENT_TOHJO_FALLS_MOON_STONE": {
+   "addr": "0xD88C",
+   "bit": 1,
+   "index": 1705,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_26_MAX_ELIXER": {
+   "addr": "0xD88C",
+   "bit": 2,
+   "index": 1706,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_27_TM_SOLARBEAM": {
+   "addr": "0xD88C",
+   "bit": 3,
+   "index": 1707,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_27_RARE_CANDY": {
+   "addr": "0xD88C",
+   "bit": 4,
+   "index": 1708,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_29_POTION": {
+   "addr": "0xD88C",
+   "bit": 5,
+   "index": 1709,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_31_ANTIDOTE": {
+   "addr": "0xD88C",
+   "bit": 6,
+   "index": 1710,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_31_POKE_BALL": {
+   "addr": "0xD88C",
+   "bit": 7,
+   "index": 1711,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_32_GREAT_BALL": {
+   "addr": "0xD88D",
+   "bit": 0,
+   "index": 1712,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_32_POTION": {
+   "addr": "0xD88D",
+   "bit": 1,
+   "index": 1713,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_35_TM_ROLLOUT": {
+   "addr": "0xD88D",
+   "bit": 2,
+   "index": 1714,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_42_ULTRA_BALL": {
+   "addr": "0xD88D",
+   "bit": 3,
+   "index": 1715,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_42_SUPER_POTION": {
+   "addr": "0xD88D",
+   "bit": 4,
+   "index": 1716,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_43_MAX_ETHER": {
+   "addr": "0xD88D",
+   "bit": 5,
+   "index": 1717,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_44_MAX_REVIVE": {
+   "addr": "0xD88D",
+   "bit": 6,
+   "index": 1718,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_44_ULTRA_BALL": {
+   "addr": "0xD88D",
+   "bit": 7,
+   "index": 1719,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_45_X_SPECIAL": {
+   "addr": "0xD88E",
+   "bit": 0,
+   "index": 1720,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_45_REVIVE": {
+   "addr": "0xD88E",
+   "bit": 1,
+   "index": 1721,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_45_ELIXER": {
+   "addr": "0xD88E",
+   "bit": 2,
+   "index": 1722,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_45_MAX_POTION": {
+   "addr": "0xD88E",
+   "bit": 3,
+   "index": 1723,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_46_DIRE_HIT": {
+   "addr": "0xD88E",
+   "bit": 4,
+   "index": 1724,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_NEW_BARK_TOWN": {
+   "addr": "0xD88E",
+   "bit": 5,
+   "index": 1725,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_CHERRYGROVE_CITY": {
+   "addr": "0xD88E",
+   "bit": 6,
+   "index": 1726,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_AZALEA_TOWN": {
+   "addr": "0xD88E",
+   "bit": 7,
+   "index": 1727,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_TEAM_ROCKET_BASE": {
+   "addr": "0xD88F",
+   "bit": 0,
+   "index": 1728,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_GOLDENROD_UNDERGROUND": {
+   "addr": "0xD88F",
+   "bit": 1,
+   "index": 1729,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_VICTORY_ROAD": {
+   "addr": "0xD88F",
+   "bit": 2,
+   "index": 1730,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_OLIVINE_CITY": {
+   "addr": "0xD88F",
+   "bit": 3,
+   "index": 1731,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_SPROUT_TOWER": {
+   "addr": "0xD88F",
+   "bit": 4,
+   "index": 1732,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_BURNED_TOWER": {
+   "addr": "0xD88F",
+   "bit": 5,
+   "index": 1733,
+   "kind": "visibilidad"
+  },
+  "EVENT_RIVAL_DRAGONS_DEN": {
+   "addr": "0xD88F",
+   "bit": 6,
+   "index": 1734,
+   "kind": "visibilidad"
+  },
+  "EVENT_PLAYERS_HOUSE_MOM_1": {
+   "addr": "0xD88F",
+   "bit": 7,
+   "index": 1735,
+   "kind": "visibilidad"
+  },
+  "EVENT_PLAYERS_HOUSE_MOM_2": {
+   "addr": "0xD890",
+   "bit": 0,
+   "index": 1736,
+   "kind": "visibilidad"
+  },
+  "EVENT_MR_POKEMONS_HOUSE_OAK": {
+   "addr": "0xD890",
+   "bit": 1,
+   "index": 1737,
+   "kind": "visibilidad"
+  },
+  "EVENT_VIOLET_CITY_EARL": {
+   "addr": "0xD890",
+   "bit": 2,
+   "index": 1738,
+   "kind": "visibilidad"
+  },
+  "EVENT_EARLS_ACADEMY_EARL": {
+   "addr": "0xD890",
+   "bit": 3,
+   "index": 1739,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_CITY_ROCKET_SCOUT": {
+   "addr": "0xD890",
+   "bit": 4,
+   "index": 1740,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_CITY_ROCKET_TAKEOVER": {
+   "addr": "0xD890",
+   "bit": 5,
+   "index": 1741,
+   "kind": "visibilidad"
+  },
+  "EVENT_RADIO_TOWER_ROCKET_TAKEOVER": {
+   "addr": "0xD890",
+   "bit": 6,
+   "index": 1742,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_CITY_CIVILIANS": {
+   "addr": "0xD890",
+   "bit": 7,
+   "index": 1743,
+   "kind": "visibilidad"
+  },
+  "EVENT_RADIO_TOWER_CIVILIANS_AFTER": {
+   "addr": "0xD891",
+   "bit": 0,
+   "index": 1744,
+   "kind": "visibilidad"
+  },
+  "EVENT_RADIO_TOWER_BLACKBELT_BLOCKS_STAIRS": {
+   "addr": "0xD891",
+   "bit": 1,
+   "index": 1745,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_LIGHTHOUSE_JASMINE": {
+   "addr": "0xD891",
+   "bit": 2,
+   "index": 1746,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_GYM_JASMINE": {
+   "addr": "0xD891",
+   "bit": 3,
+   "index": 1747,
+   "kind": "visibilidad"
+  },
+  "EVENT_LAKE_OF_RAGE_LANCE": {
+   "addr": "0xD891",
+   "bit": 4,
+   "index": 1748,
+   "kind": "visibilidad"
+  },
+  "EVENT_MAHOGANY_MART_LANCE_AND_DRAGONITE": {
+   "addr": "0xD891",
+   "bit": 5,
+   "index": 1749,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_LANCE": {
+   "addr": "0xD891",
+   "bit": 6,
+   "index": 1750,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B3F_LANCE_PASSWORDS": {
+   "addr": "0xD891",
+   "bit": 7,
+   "index": 1751,
+   "kind": "visibilidad"
+  },
+  "EVENT_DRAGONS_DEN_CLAIR": {
+   "addr": "0xD892",
+   "bit": 0,
+   "index": 1752,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_SECURITY_GRUNTS": {
+   "addr": "0xD892",
+   "bit": 1,
+   "index": 1753,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_POPULATION": {
+   "addr": "0xD892",
+   "bit": 2,
+   "index": 1754,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B3F_EXECUTIVE": {
+   "addr": "0xD892",
+   "bit": 3,
+   "index": 1755,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_43_GATE_ROCKETS": {
+   "addr": "0xD892",
+   "bit": 4,
+   "index": 1756,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_EXECUTIVE": {
+   "addr": "0xD892",
+   "bit": 5,
+   "index": 1757,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_GRUNT_WITH_EXECUTIVE": {
+   "addr": "0xD892",
+   "bit": 6,
+   "index": 1758,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_DRAGONITE": {
+   "addr": "0xD892",
+   "bit": 7,
+   "index": 1759,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_1": {
+   "addr": "0xD893",
+   "bit": 0,
+   "index": 1760,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_2": {
+   "addr": "0xD893",
+   "bit": 1,
+   "index": 1761,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_3": {
+   "addr": "0xD893",
+   "bit": 2,
+   "index": 1762,
+   "kind": "visibilidad"
+  },
+  "EVENT_BLACKTHORN_CITY_SUPER_NERD_BLOCKS_GYM": {
+   "addr": "0xD893",
+   "bit": 3,
+   "index": 1763,
+   "kind": "visibilidad"
+  },
+  "EVENT_BLACKTHORN_CITY_SUPER_NERD_DOES_NOT_BLOCK_GYM": {
+   "addr": "0xD893",
+   "bit": 4,
+   "index": 1764,
+   "kind": "visibilidad"
+  },
+  "EVENT_DAY_CARE_MAN_IN_DAY_CARE": {
+   "addr": "0xD893",
+   "bit": 5,
+   "index": 1765,
+   "kind": "visibilidad"
+  },
+  "EVENT_DAY_CARE_MAN_ON_ROUTE_34": {
+   "addr": "0xD893",
+   "bit": 6,
+   "index": 1766,
+   "kind": "visibilidad"
+  },
+  "EVENT_DAY_CARE_MON_1": {
+   "addr": "0xD893",
+   "bit": 7,
+   "index": 1767,
+   "kind": "visibilidad"
+  },
+  "EVENT_DAY_CARE_MON_2": {
+   "addr": "0xD894",
+   "bit": 0,
+   "index": 1768,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_1": {
+   "addr": "0xD894",
+   "bit": 1,
+   "index": 1769,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_2": {
+   "addr": "0xD894",
+   "bit": 2,
+   "index": 1770,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_3": {
+   "addr": "0xD894",
+   "bit": 3,
+   "index": 1771,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_4": {
+   "addr": "0xD894",
+   "bit": 4,
+   "index": 1772,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_5": {
+   "addr": "0xD894",
+   "bit": 5,
+   "index": 1773,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_6": {
+   "addr": "0xD894",
+   "bit": 6,
+   "index": 1774,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_7": {
+   "addr": "0xD894",
+   "bit": 7,
+   "index": 1775,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_8": {
+   "addr": "0xD895",
+   "bit": 0,
+   "index": 1776,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_9": {
+   "addr": "0xD895",
+   "bit": 1,
+   "index": 1777,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_FARFETCHD_10": {
+   "addr": "0xD895",
+   "bit": 2,
+   "index": 1778,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_APPRENTICE": {
+   "addr": "0xD895",
+   "bit": 3,
+   "index": 1779,
+   "kind": "visibilidad"
+  },
+  "EVENT_ILEX_FOREST_CHARCOAL_MASTER": {
+   "addr": "0xD895",
+   "bit": 4,
+   "index": 1780,
+   "kind": "visibilidad"
+  },
+  "EVENT_CHARCOAL_KILN_FARFETCH_D": {
+   "addr": "0xD895",
+   "bit": 5,
+   "index": 1781,
+   "kind": "visibilidad"
+  },
+  "EVENT_CHARCOAL_KILN_APPRENTICE": {
+   "addr": "0xD895",
+   "bit": 6,
+   "index": 1782,
+   "kind": "visibilidad"
+  },
+  "EVENT_CHARCOAL_KILN_BOSS": {
+   "addr": "0xD895",
+   "bit": 7,
+   "index": 1783,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_36_SUDOWOODO": {
+   "addr": "0xD896",
+   "bit": 0,
+   "index": 1784,
+   "kind": "visibilidad"
+  },
+  "EVENT_AZALEA_TOWN_SLOWPOKES": {
+   "addr": "0xD896",
+   "bit": 1,
+   "index": 1785,
+   "kind": "visibilidad"
+  },
+  "EVENT_AZALEA_TOWN_SLOWPOKETAIL_ROCKET": {
+   "addr": "0xD896",
+   "bit": 2,
+   "index": 1786,
+   "kind": "visibilidad"
+  },
+  "EVENT_SLOWPOKE_WELL_SLOWPOKES": {
+   "addr": "0xD896",
+   "bit": 3,
+   "index": 1787,
+   "kind": "visibilidad"
+  },
+  "EVENT_SLOWPOKE_WELL_ROCKETS": {
+   "addr": "0xD896",
+   "bit": 4,
+   "index": 1788,
+   "kind": "visibilidad"
+  },
+  "EVENT_KURTS_HOUSE_SLOWPOKE": {
+   "addr": "0xD896",
+   "bit": 5,
+   "index": 1789,
+   "kind": "visibilidad"
+  },
+  "EVENT_GUIDE_GENT_IN_HIS_HOUSE": {
+   "addr": "0xD896",
+   "bit": 6,
+   "index": 1790,
+   "kind": "visibilidad"
+  },
+  "EVENT_GUIDE_GENT_VISIBLE_IN_CHERRYGROVE": {
+   "addr": "0xD896",
+   "bit": 7,
+   "index": 1791,
+   "kind": "visibilidad"
+  },
+  "EVENT_ELMS_AIDE_IN_VIOLET_POKEMON_CENTER": {
+   "addr": "0xD897",
+   "bit": 0,
+   "index": 1792,
+   "kind": "visibilidad"
+  },
+  "EVENT_ELMS_AIDE_IN_LAB": {
+   "addr": "0xD897",
+   "bit": 1,
+   "index": 1793,
+   "kind": "visibilidad"
+  },
+  "EVENT_COP_IN_ELMS_LAB": {
+   "addr": "0xD897",
+   "bit": 2,
+   "index": 1794,
+   "kind": "visibilidad"
+  },
+  "EVENT_RUINS_OF_ALPH_OUTSIDE_SCIENTIST": {
+   "addr": "0xD897",
+   "bit": 3,
+   "index": 1795,
+   "kind": "visibilidad"
+  },
+  "EVENT_RUINS_OF_ALPH_RESEARCH_CENTER_SCIENTIST": {
+   "addr": "0xD897",
+   "bit": 4,
+   "index": 1796,
+   "kind": "visibilidad"
+  },
+  "EVENT_RUINS_OF_ALPH_INNER_CHAMBER_TOURISTS": {
+   "addr": "0xD897",
+   "bit": 5,
+   "index": 1797,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_BLACKTHORN_GYM_1": {
+   "addr": "0xD897",
+   "bit": 6,
+   "index": 1798,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_BLACKTHORN_GYM_2": {
+   "addr": "0xD897",
+   "bit": 7,
+   "index": 1799,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_BLACKTHORN_GYM_3": {
+   "addr": "0xD898",
+   "bit": 0,
+   "index": 1800,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_ICE_PATH_1": {
+   "addr": "0xD898",
+   "bit": 1,
+   "index": 1801,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_ICE_PATH_2": {
+   "addr": "0xD898",
+   "bit": 2,
+   "index": 1802,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_ICE_PATH_3": {
+   "addr": "0xD898",
+   "bit": 3,
+   "index": 1803,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_ICE_PATH_4": {
+   "addr": "0xD898",
+   "bit": 4,
+   "index": 1804,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_ICE_PATH_1A": {
+   "addr": "0xD898",
+   "bit": 5,
+   "index": 1805,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_ICE_PATH_2A": {
+   "addr": "0xD898",
+   "bit": 6,
+   "index": 1806,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_ICE_PATH_3A": {
+   "addr": "0xD898",
+   "bit": 7,
+   "index": 1807,
+   "kind": "visibilidad"
+  },
+  "EVENT_BOULDER_IN_ICE_PATH_4A": {
+   "addr": "0xD899",
+   "bit": 0,
+   "index": 1808,
+   "kind": "visibilidad"
+  },
+  "EVENT_MYSTERY_GIFT_DELIVERY_GUY": {
+   "addr": "0xD899",
+   "bit": 1,
+   "index": 1809,
+   "kind": "visibilidad"
+  },
+  "EVENT_MET_BILL": {
+   "addr": "0xD899",
+   "bit": 2,
+   "index": 1810,
+   "kind": "visibilidad"
+  },
+  "EVENT_ECRUTEAK_POKE_CENTER_BILL": {
+   "addr": "0xD899",
+   "bit": 3,
+   "index": 1811,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_30_BATTLE": {
+   "addr": "0xD899",
+   "bit": 4,
+   "index": 1812,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_30_YOUNGSTER_JOEY": {
+   "addr": "0xD899",
+   "bit": 5,
+   "index": 1813,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_1A": {
+   "addr": "0xD899",
+   "bit": 6,
+   "index": 1814,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_2A": {
+   "addr": "0xD899",
+   "bit": 7,
+   "index": 1815,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_3A": {
+   "addr": "0xD89A",
+   "bit": 0,
+   "index": 1816,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_4A": {
+   "addr": "0xD89A",
+   "bit": 1,
+   "index": 1817,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_5A": {
+   "addr": "0xD89A",
+   "bit": 2,
+   "index": 1818,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_6A": {
+   "addr": "0xD89A",
+   "bit": 3,
+   "index": 1819,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_7A": {
+   "addr": "0xD89A",
+   "bit": 4,
+   "index": 1820,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_8A": {
+   "addr": "0xD89A",
+   "bit": 5,
+   "index": 1821,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_9A": {
+   "addr": "0xD89A",
+   "bit": 6,
+   "index": 1822,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_10A": {
+   "addr": "0xD89A",
+   "bit": 7,
+   "index": 1823,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_1B": {
+   "addr": "0xD89B",
+   "bit": 0,
+   "index": 1824,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_2B": {
+   "addr": "0xD89B",
+   "bit": 1,
+   "index": 1825,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_3B": {
+   "addr": "0xD89B",
+   "bit": 2,
+   "index": 1826,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_4B": {
+   "addr": "0xD89B",
+   "bit": 3,
+   "index": 1827,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_5B": {
+   "addr": "0xD89B",
+   "bit": 4,
+   "index": 1828,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_6B": {
+   "addr": "0xD89B",
+   "bit": 5,
+   "index": 1829,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_7B": {
+   "addr": "0xD89B",
+   "bit": 6,
+   "index": 1830,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_8B": {
+   "addr": "0xD89B",
+   "bit": 7,
+   "index": 1831,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_9B": {
+   "addr": "0xD89C",
+   "bit": 0,
+   "index": 1832,
+   "kind": "visibilidad"
+  },
+  "EVENT_BUG_CATCHING_CONTESTANT_10B": {
+   "addr": "0xD89C",
+   "bit": 1,
+   "index": 1833,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_PORT_SAILOR_AT_GANGWAY": {
+   "addr": "0xD89C",
+   "bit": 2,
+   "index": 1834,
+   "kind": "visibilidad"
+  },
+  "EVENT_VERMILION_PORT_SAILOR_AT_GANGWAY": {
+   "addr": "0xD89C",
+   "bit": 3,
+   "index": 1835,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_1F_GENTLEMAN": {
+   "addr": "0xD89C",
+   "bit": 4,
+   "index": 1836,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_CABINS_NNW_NNE_NE_SAILOR": {
+   "addr": "0xD89C",
+   "bit": 5,
+   "index": 1837,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_B1F_SAILOR_LEFT": {
+   "addr": "0xD89C",
+   "bit": 6,
+   "index": 1838,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_B1F_SAILOR_RIGHT": {
+   "addr": "0xD89C",
+   "bit": 7,
+   "index": 1839,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_CABINS_SE_SSE_GENTLEMAN": {
+   "addr": "0xD89D",
+   "bit": 0,
+   "index": 1840,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_CABINS_SE_SSE_CAPTAINS_CABIN_TWIN_1": {
+   "addr": "0xD89D",
+   "bit": 1,
+   "index": 1841,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_CABINS_SE_SSE_CAPTAINS_CABIN_TWIN_2": {
+   "addr": "0xD89D",
+   "bit": 2,
+   "index": 1842,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_PORT_PASSAGE_POKEFAN_M": {
+   "addr": "0xD89D",
+   "bit": 3,
+   "index": 1843,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_35_NATIONAL_PARK_GATE_YOUNGSTER": {
+   "addr": "0xD89D",
+   "bit": 4,
+   "index": 1844,
+   "kind": "visibilidad"
+  },
+  "EVENT_LAKE_OF_RAGE_CIVILIANS": {
+   "addr": "0xD89D",
+   "bit": 5,
+   "index": 1845,
+   "kind": "visibilidad"
+  },
+  "EVENT_MAHOGANY_MART_OWNERS": {
+   "addr": "0xD89D",
+   "bit": 6,
+   "index": 1846,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_PORT_SPRITES_BEFORE_HALL_OF_FAME": {
+   "addr": "0xD89D",
+   "bit": 7,
+   "index": 1847,
+   "kind": "visibilidad"
+  },
+  "EVENT_OLIVINE_PORT_SPRITES_AFTER_HALL_OF_FAME": {
+   "addr": "0xD89E",
+   "bit": 0,
+   "index": 1848,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP": {
+   "addr": "0xD89E",
+   "bit": 1,
+   "index": 1849,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_PASSENGERS_EASTBOUND": {
+   "addr": "0xD89E",
+   "bit": 2,
+   "index": 1850,
+   "kind": "visibilidad"
+  },
+  "EVENT_FAST_SHIP_PASSENGERS_WESTBOUND": {
+   "addr": "0xD89E",
+   "bit": 3,
+   "index": 1851,
+   "kind": "visibilidad"
+  },
+  "EVENT_TIN_TOWER_ROOF_HO_OH": {
+   "addr": "0xD89E",
+   "bit": 4,
+   "index": 1852,
+   "kind": "visibilidad"
+  },
+  "EVENT_WHIRL_ISLAND_LUGIA_CHAMBER_LUGIA": {
+   "addr": "0xD89E",
+   "bit": 5,
+   "index": 1853,
+   "kind": "visibilidad"
+  },
+  "EVENT_KURTS_HOUSE_KURT_1": {
+   "addr": "0xD89E",
+   "bit": 6,
+   "index": 1854,
+   "kind": "visibilidad"
+  },
+  "EVENT_KURTS_HOUSE_KURT_2": {
+   "addr": "0xD89E",
+   "bit": 7,
+   "index": 1855,
+   "kind": "visibilidad"
+  },
+  "EVENT_SLOWPOKE_WELL_KURT": {
+   "addr": "0xD89F",
+   "bit": 0,
+   "index": 1856,
+   "kind": "visibilidad"
+  },
+  "EVENT_PLAYERS_HOUSE_2F_CONSOLE": {
+   "addr": "0xD89F",
+   "bit": 1,
+   "index": 1857,
+   "kind": "visibilidad"
+  },
+  "EVENT_PLAYERS_HOUSE_2F_DOLL_1": {
+   "addr": "0xD89F",
+   "bit": 2,
+   "index": 1858,
+   "kind": "visibilidad"
+  },
+  "EVENT_PLAYERS_HOUSE_2F_DOLL_2": {
+   "addr": "0xD89F",
+   "bit": 3,
+   "index": 1859,
+   "kind": "visibilidad"
+  },
+  "EVENT_PLAYERS_HOUSE_2F_BIG_DOLL": {
+   "addr": "0xD89F",
+   "bit": 4,
+   "index": 1860,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_35_NATIONAL_PARK_GATE_OFFICER_CONTEST_DAY": {
+   "addr": "0xD89F",
+   "bit": 5,
+   "index": 1861,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_35_NATIONAL_PARK_GATE_OFFICER_NOT_CONTEST_DAY": {
+   "addr": "0xD89F",
+   "bit": 6,
+   "index": 1862,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_36_NATIONAL_PARK_GATE_OFFICER_CONTEST_DAY": {
+   "addr": "0xD89F",
+   "bit": 7,
+   "index": 1863,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_36_NATIONAL_PARK_GATE_OFFICER_NOT_CONTEST_DAY": {
+   "addr": "0xD8A0",
+   "bit": 0,
+   "index": 1864,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_TRAIN_STATION_GENTLEMAN": {
+   "addr": "0xD8A0",
+   "bit": 1,
+   "index": 1865,
+   "kind": "visibilidad"
+  },
+  "EVENT_BURNED_TOWER_B1F_BEASTS_1": {
+   "addr": "0xD8A0",
+   "bit": 2,
+   "index": 1866,
+   "kind": "visibilidad"
+  },
+  "EVENT_BURNED_TOWER_B1F_BEASTS_2": {
+   "addr": "0xD8A0",
+   "bit": 3,
+   "index": 1867,
+   "kind": "visibilidad"
+  },
+  "EVENT_BLACKTHORN_CITY_GRAMPS_BLOCKS_DRAGONS_DEN": {
+   "addr": "0xD8A0",
+   "bit": 4,
+   "index": 1868,
+   "kind": "visibilidad"
+  },
+  "EVENT_BLACKTHORN_CITY_GRAMPS_NOT_BLOCKING_DRAGONS_DEN": {
+   "addr": "0xD8A0",
+   "bit": 5,
+   "index": 1869,
+   "kind": "visibilidad"
+  },
+  "EVENT_RUINS_OF_ALPH_KABUTO_CHAMBER_RECEPTIONIST": {
+   "addr": "0xD8A0",
+   "bit": 6,
+   "index": 1870,
+   "kind": "visibilidad"
+  },
+  "EVENT_OPENED_MT_SILVER": {
+   "addr": "0xD8A0",
+   "bit": 7,
+   "index": 1871,
+   "kind": "visibilidad"
+  },
+  "EVENT_FOUGHT_SNORLAX": {
+   "addr": "0xD8A1",
+   "bit": 0,
+   "index": 1872,
+   "kind": "visibilidad"
+  },
+  "EVENT_LAKE_OF_RAGE_RED_GYARADOS": {
+   "addr": "0xD8A1",
+   "bit": 1,
+   "index": 1873,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_GRANNY": {
+   "addr": "0xD8A1",
+   "bit": 2,
+   "index": 1874,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_GRAMPS": {
+   "addr": "0xD8A1",
+   "bit": 3,
+   "index": 1875,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_OLDER_HAIRCUT_BROTHER": {
+   "addr": "0xD8A1",
+   "bit": 4,
+   "index": 1876,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_UNDERGROUND_YOUNGER_HAIRCUT_BROTHER": {
+   "addr": "0xD8A1",
+   "bit": 5,
+   "index": 1877,
+   "kind": "visibilidad"
+  },
+  "EVENT_MAHOGANY_TOWN_POKEFAN_M_BLOCKS_EAST": {
+   "addr": "0xD8A1",
+   "bit": 6,
+   "index": 1878,
+   "kind": "visibilidad"
+  },
+  "EVENT_MAHOGANY_TOWN_POKEFAN_M_BLOCKS_GYM": {
+   "addr": "0xD8A1",
+   "bit": 7,
+   "index": 1879,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_32_FRIEDA_OF_FRIDAY": {
+   "addr": "0xD8A2",
+   "bit": 0,
+   "index": 1880,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_29_TUSCANY_OF_TUESDAY": {
+   "addr": "0xD8A2",
+   "bit": 1,
+   "index": 1881,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_36_ARTHUR_OF_THURSDAY": {
+   "addr": "0xD8A2",
+   "bit": 2,
+   "index": 1882,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_37_SUNNY_OF_SUNDAY": {
+   "addr": "0xD8A2",
+   "bit": 3,
+   "index": 1883,
+   "kind": "visibilidad"
+  },
+  "EVENT_LAKE_OF_RAGE_WESLEY_OF_WEDNESDAY": {
+   "addr": "0xD8A2",
+   "bit": 4,
+   "index": 1884,
+   "kind": "visibilidad"
+  },
+  "EVENT_BLACKTHORN_CITY_SANTOS_OF_SATURDAY": {
+   "addr": "0xD8A2",
+   "bit": 5,
+   "index": 1885,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_40_MONICA_OF_MONDAY": {
+   "addr": "0xD8A2",
+   "bit": 6,
+   "index": 1886,
+   "kind": "visibilidad"
+  },
+  "EVENT_LANCES_ROOM_OAK_AND_MARY": {
+   "addr": "0xD8A2",
+   "bit": 7,
+   "index": 1887,
+   "kind": "visibilidad"
+  },
+  "EVENT_UNION_CAVE_B2F_LAPRAS": {
+   "addr": "0xD8A3",
+   "bit": 0,
+   "index": 1888,
+   "kind": "visibilidad"
+  },
+  "EVENT_TEAM_ROCKET_DISBANDED": {
+   "addr": "0xD8A3",
+   "bit": 1,
+   "index": 1889,
+   "kind": "visibilidad"
+  },
+  "EVENT_RED_IN_MT_SILVER": {
+   "addr": "0xD8A3",
+   "bit": 2,
+   "index": 1890,
+   "kind": "visibilidad"
+  },
+  "EVENT_GOLDENROD_DEPT_STORE_5F_HAPPINESS_EVENT_LADY": {
+   "addr": "0xD8A3",
+   "bit": 3,
+   "index": 1891,
+   "kind": "visibilidad"
+  },
+  "EVENT_BURNED_TOWER_FIREBREATHER_DICK_NORMAL": {
+   "addr": "0xD8A3",
+   "bit": 4,
+   "index": 1892,
+   "kind": "visibilidad"
+  },
+  "EVENT_BURNED_TOWER_FIREBREATHER_DICK_ASHES": {
+   "addr": "0xD8A3",
+   "bit": 5,
+   "index": 1893,
+   "kind": "visibilidad"
+  },
+  "EVENT_ECRUTEAK_TIN_TOWER_ENTRANCE_SAGE_LEFT": {
+   "addr": "0xD8A3",
+   "bit": 6,
+   "index": 1894,
+   "kind": "visibilidad"
+  },
+  "EVENT_ECRUTEAK_TIN_TOWER_ENTRANCE_SAGE_RIGHT": {
+   "addr": "0xD8A3",
+   "bit": 7,
+   "index": 1895,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_24_ROCKET": {
+   "addr": "0xD8A4",
+   "bit": 4,
+   "index": 1900,
+   "kind": "visibilidad"
+  },
+  "EVENT_CERULEAN_GYM_ROCKET": {
+   "addr": "0xD8A4",
+   "bit": 5,
+   "index": 1901,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_25_MISTY_BOYFRIEND": {
+   "addr": "0xD8A4",
+   "bit": 6,
+   "index": 1902,
+   "kind": "visibilidad"
+  },
+  "EVENT_TRAINERS_IN_CERULEAN_GYM": {
+   "addr": "0xD8A4",
+   "bit": 7,
+   "index": 1903,
+   "kind": "visibilidad"
+  },
+  "EVENT_VERMILION_CITY_SNORLAX": {
+   "addr": "0xD8A5",
+   "bit": 0,
+   "index": 1904,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH": {
+   "addr": "0xD8A5",
+   "bit": 1,
+   "index": 1905,
+   "kind": "visibilidad"
+  },
+  "EVENT_SAFFRON_TRAIN_STATION_POPULATION": {
+   "addr": "0xD8A5",
+   "bit": 2,
+   "index": 1906,
+   "kind": "visibilidad"
+  },
+  "EVENT_COPYCATS_HOUSE_2F_DOLL": {
+   "addr": "0xD8A5",
+   "bit": 3,
+   "index": 1907,
+   "kind": "visibilidad"
+  },
+  "EVENT_VERMILION_FAN_CLUB_DOLL": {
+   "addr": "0xD8A5",
+   "bit": 4,
+   "index": 1908,
+   "kind": "visibilidad"
+  },
+  "EVENT_BLUE_IN_CINNABAR": {
+   "addr": "0xD8A5",
+   "bit": 5,
+   "index": 1909,
+   "kind": "visibilidad"
+  },
+  "EVENT_VIRIDIAN_GYM_BLUE": {
+   "addr": "0xD8A5",
+   "bit": 6,
+   "index": 1910,
+   "kind": "visibilidad"
+  },
+  "EVENT_SEAFOAM_GYM_GYM_GUIDE": {
+   "addr": "0xD8A5",
+   "bit": 7,
+   "index": 1911,
+   "kind": "visibilidad"
+  },
+  "EVENT_MT_MOON_SQUARE_ROCK": {
+   "addr": "0xD8A6",
+   "bit": 0,
+   "index": 1912,
+   "kind": "visibilidad"
+  },
+  "EVENT_MT_MOON_SQUARE_CLEFAIRY": {
+   "addr": "0xD8A6",
+   "bit": 1,
+   "index": 1913,
+   "kind": "visibilidad"
+  },
+  "EVENT_MT_MOON_RIVAL": {
+   "addr": "0xD8A6",
+   "bit": 2,
+   "index": 1914,
+   "kind": "visibilidad"
+  },
+  "EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL": {
+   "addr": "0xD8A6",
+   "bit": 3,
+   "index": 1915,
+   "kind": "visibilidad"
+  },
+  "EVENT_TELEPORT_GUY": {
+   "addr": "0xD8A6",
+   "bit": 4,
+   "index": 1916,
+   "kind": "visibilidad"
+  },
+  "EVENT_PICKED_UP_FOCUS_BAND": {
+   "addr": "0xD8A6",
+   "bit": 5,
+   "index": 1917,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROCK_TUNNEL_1F_ELIXER": {
+   "addr": "0xD8A6",
+   "bit": 6,
+   "index": 1918,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROCK_TUNNEL_1F_TM_STEEL_WING": {
+   "addr": "0xD8A6",
+   "bit": 7,
+   "index": 1919,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROCK_TUNNEL_B1F_IRON": {
+   "addr": "0xD8A7",
+   "bit": 0,
+   "index": 1920,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROCK_TUNNEL_B1F_PP_UP": {
+   "addr": "0xD8A7",
+   "bit": 1,
+   "index": 1921,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROCK_TUNNEL_B1F_REVIVE": {
+   "addr": "0xD8A7",
+   "bit": 2,
+   "index": 1922,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_2_DIRE_HIT": {
+   "addr": "0xD8A7",
+   "bit": 3,
+   "index": 1923,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_2_MAX_POTION": {
+   "addr": "0xD8A7",
+   "bit": 4,
+   "index": 1924,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_2_CARBOS": {
+   "addr": "0xD8A7",
+   "bit": 5,
+   "index": 1925,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_2_ELIXER": {
+   "addr": "0xD8A7",
+   "bit": 6,
+   "index": 1926,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_4_HP_UP": {
+   "addr": "0xD8A7",
+   "bit": 7,
+   "index": 1927,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_12_CALCIUM": {
+   "addr": "0xD8A8",
+   "bit": 0,
+   "index": 1928,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_12_NUGGET": {
+   "addr": "0xD8A8",
+   "bit": 1,
+   "index": 1929,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_15_PP_UP": {
+   "addr": "0xD8A8",
+   "bit": 2,
+   "index": 1930,
+   "kind": "visibilidad"
+  },
+  "EVENT_ROUTE_25_PROTEIN": {
+   "addr": "0xD8A8",
+   "bit": 3,
+   "index": 1931,
+   "kind": "visibilidad"
+  }
+ },
+ "maps": {
+  "1,1": "OLIVINE_POKECENTER_1F",
+  "1,2": "OLIVINE_GYM",
+  "1,3": "OLIVINE_TIMS_HOUSE",
+  "1,4": "OLIVINE_HOUSE_BETA",
+  "1,5": "OLIVINE_PUNISHMENT_SPEECH_HOUSE",
+  "1,6": "OLIVINE_GOOD_ROD_HOUSE",
+  "1,7": "OLIVINE_CAFE",
+  "1,8": "OLIVINE_MART",
+  "1,9": "ROUTE_38_ECRUTEAK_GATE",
+  "1,10": "ROUTE_39_BARN",
+  "1,11": "ROUTE_39_FARMHOUSE",
+  "1,12": "ROUTE_38",
+  "1,13": "ROUTE_39",
+  "1,14": "OLIVINE_CITY",
+  "2,1": "MAHOGANY_RED_GYARADOS_SPEECH_HOUSE",
+  "2,2": "MAHOGANY_GYM",
+  "2,3": "MAHOGANY_POKECENTER_1F",
+  "2,4": "ROUTE_42_ECRUTEAK_GATE",
+  "2,5": "ROUTE_42",
+  "2,6": "ROUTE_44",
+  "2,7": "MAHOGANY_TOWN",
+  "3,1": "SPROUT_TOWER_1F",
+  "3,2": "SPROUT_TOWER_2F",
+  "3,3": "SPROUT_TOWER_3F",
+  "3,4": "TIN_TOWER_1F",
+  "3,5": "TIN_TOWER_2F",
+  "3,6": "TIN_TOWER_3F",
+  "3,7": "TIN_TOWER_4F",
+  "3,8": "TIN_TOWER_5F",
+  "3,9": "TIN_TOWER_6F",
+  "3,10": "TIN_TOWER_7F",
+  "3,11": "TIN_TOWER_8F",
+  "3,12": "TIN_TOWER_9F",
+  "3,13": "BURNED_TOWER_1F",
+  "3,14": "BURNED_TOWER_B1F",
+  "3,15": "NATIONAL_PARK",
+  "3,16": "NATIONAL_PARK_BUG_CONTEST",
+  "3,17": "RADIO_TOWER_1F",
+  "3,18": "RADIO_TOWER_2F",
+  "3,19": "RADIO_TOWER_3F",
+  "3,20": "RADIO_TOWER_4F",
+  "3,21": "RADIO_TOWER_5F",
+  "3,22": "RUINS_OF_ALPH_OUTSIDE",
+  "3,23": "RUINS_OF_ALPH_HO_OH_CHAMBER",
+  "3,24": "RUINS_OF_ALPH_KABUTO_CHAMBER",
+  "3,25": "RUINS_OF_ALPH_OMANYTE_CHAMBER",
+  "3,26": "RUINS_OF_ALPH_AERODACTYL_CHAMBER",
+  "3,27": "RUINS_OF_ALPH_INNER_CHAMBER",
+  "3,28": "RUINS_OF_ALPH_RESEARCH_CENTER",
+  "3,29": "UNION_CAVE_1F",
+  "3,30": "UNION_CAVE_B1F",
+  "3,31": "UNION_CAVE_B2F",
+  "3,32": "SLOWPOKE_WELL_B1F",
+  "3,33": "SLOWPOKE_WELL_B2F",
+  "3,34": "OLIVINE_LIGHTHOUSE_1F",
+  "3,35": "OLIVINE_LIGHTHOUSE_2F",
+  "3,36": "OLIVINE_LIGHTHOUSE_3F",
+  "3,37": "OLIVINE_LIGHTHOUSE_4F",
+  "3,38": "OLIVINE_LIGHTHOUSE_5F",
+  "3,39": "OLIVINE_LIGHTHOUSE_6F",
+  "3,40": "MAHOGANY_MART_1F",
+  "3,41": "TEAM_ROCKET_BASE_B1F",
+  "3,42": "TEAM_ROCKET_BASE_B2F",
+  "3,43": "TEAM_ROCKET_BASE_B3F",
+  "3,44": "ILEX_FOREST",
+  "3,45": "GOLDENROD_UNDERGROUND",
+  "3,46": "GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES",
+  "3,47": "GOLDENROD_DEPT_STORE_B1F",
+  "3,48": "GOLDENROD_UNDERGROUND_WAREHOUSE",
+  "3,49": "MOUNT_MORTAR_1F_OUTSIDE",
+  "3,50": "MOUNT_MORTAR_1F_INSIDE",
+  "3,51": "MOUNT_MORTAR_2F_INSIDE",
+  "3,52": "MOUNT_MORTAR_B1F",
+  "3,53": "ICE_PATH_1F",
+  "3,54": "ICE_PATH_B1F",
+  "3,55": "ICE_PATH_B2F_MAHOGANY_SIDE",
+  "3,56": "ICE_PATH_B2F_BLACKTHORN_SIDE",
+  "3,57": "ICE_PATH_B3F",
+  "3,58": "WHIRL_ISLAND_NW",
+  "3,59": "WHIRL_ISLAND_NE",
+  "3,60": "WHIRL_ISLAND_SW",
+  "3,61": "WHIRL_ISLAND_CAVE",
+  "3,62": "WHIRL_ISLAND_SE",
+  "3,63": "WHIRL_ISLAND_B1F",
+  "3,64": "WHIRL_ISLAND_B2F",
+  "3,65": "WHIRL_ISLAND_LUGIA_CHAMBER",
+  "3,66": "SILVER_CAVE_ROOM_1",
+  "3,67": "SILVER_CAVE_ROOM_2",
+  "3,68": "SILVER_CAVE_ROOM_3",
+  "3,69": "SILVER_CAVE_ITEM_ROOMS",
+  "3,70": "DARK_CAVE_VIOLET_ENTRANCE",
+  "3,71": "DARK_CAVE_BLACKTHORN_ENTRANCE",
+  "3,72": "DRAGONS_DEN_1F",
+  "3,73": "DRAGONS_DEN_B1F",
+  "3,74": "TOHJO_FALLS",
+  "3,75": "DIGLETTS_CAVE",
+  "3,76": "MOUNT_MOON",
+  "3,77": "UNDERGROUND_PATH",
+  "3,78": "ROCK_TUNNEL_1F",
+  "3,79": "ROCK_TUNNEL_B1F",
+  "3,80": "SAFARI_ZONE_FUCHSIA_GATE_BETA",
+  "3,81": "SAFARI_ZONE_BETA",
+  "3,82": "VICTORY_ROAD",
+  "4,1": "ECRUTEAK_TIN_TOWER_ENTRANCE",
+  "4,2": "ECRUTEAK_TIN_TOWER_BACK_ENTRANCE",
+  "4,3": "ECRUTEAK_POKECENTER_1F",
+  "4,4": "ECRUTEAK_LUGIA_SPEECH_HOUSE",
+  "4,5": "DANCE_THEATER",
+  "4,6": "ECRUTEAK_MART",
+  "4,7": "ECRUTEAK_GYM",
+  "4,8": "ECRUTEAK_ITEMFINDER_HOUSE",
+  "4,9": "ECRUTEAK_CITY",
+  "5,1": "BLACKTHORN_GYM_1F",
+  "5,2": "BLACKTHORN_GYM_2F",
+  "5,3": "BLACKTHORN_DRAGON_SPEECH_HOUSE",
+  "5,4": "BLACKTHORN_EMYS_HOUSE",
+  "5,5": "BLACKTHORN_MART",
+  "5,6": "BLACKTHORN_POKECENTER_1F",
+  "5,7": "MOVE_DELETERS_HOUSE",
+  "5,8": "ROUTE_45",
+  "5,9": "ROUTE_46",
+  "5,10": "BLACKTHORN_CITY",
+  "6,1": "CINNABAR_POKECENTER_1F",
+  "6,2": "CINNABAR_POKECENTER_2F_BETA",
+  "6,3": "ROUTE_19_FUCHSIA_GATE",
+  "6,4": "SEAFOAM_GYM",
+  "6,5": "ROUTE_19",
+  "6,6": "ROUTE_20",
+  "6,7": "ROUTE_21",
+  "6,8": "CINNABAR_ISLAND",
+  "7,1": "CERULEAN_GYM_BADGE_SPEECH_HOUSE",
+  "7,2": "CERULEAN_POLICE_STATION",
+  "7,3": "CERULEAN_TRADE_SPEECH_HOUSE",
+  "7,4": "CERULEAN_POKECENTER_1F",
+  "7,5": "CERULEAN_POKECENTER_2F_BETA",
+  "7,6": "CERULEAN_GYM",
+  "7,7": "CERULEAN_MART",
+  "7,8": "ROUTE_10_POKECENTER_1F",
+  "7,9": "ROUTE_10_POKECENTER_2F_BETA",
+  "7,10": "POWER_PLANT",
+  "7,11": "BILLS_HOUSE",
+  "7,12": "ROUTE_4",
+  "7,13": "ROUTE_9",
+  "7,14": "ROUTE_10_NORTH",
+  "7,15": "ROUTE_24",
+  "7,16": "ROUTE_25",
+  "7,17": "CERULEAN_CITY",
+  "8,1": "AZALEA_POKECENTER_1F",
+  "8,2": "CHARCOAL_KILN",
+  "8,3": "AZALEA_MART",
+  "8,4": "KURTS_HOUSE",
+  "8,5": "AZALEA_GYM",
+  "8,6": "ROUTE_33",
+  "8,7": "AZALEA_TOWN",
+  "9,1": "LAKE_OF_RAGE_HIDDEN_POWER_HOUSE",
+  "9,2": "LAKE_OF_RAGE_MAGIKARP_HOUSE",
+  "9,3": "ROUTE_43_MAHOGANY_GATE",
+  "9,4": "ROUTE_43_GATE",
+  "9,5": "ROUTE_43",
+  "9,6": "LAKE_OF_RAGE",
+  "10,1": "ROUTE_32",
+  "10,2": "ROUTE_35",
+  "10,3": "ROUTE_36",
+  "10,4": "ROUTE_37",
+  "10,5": "VIOLET_CITY",
+  "10,6": "VIOLET_MART",
+  "10,7": "VIOLET_GYM",
+  "10,8": "EARLS_POKEMON_ACADEMY",
+  "10,9": "VIOLET_NICKNAME_SPEECH_HOUSE",
+  "10,10": "VIOLET_POKECENTER_1F",
+  "10,11": "VIOLET_KYLES_HOUSE",
+  "10,12": "ROUTE_32_RUINS_OF_ALPH_GATE",
+  "10,13": "ROUTE_32_POKECENTER_1F",
+  "10,14": "ROUTE_35_GOLDENROD_GATE",
+  "10,15": "ROUTE_35_NATIONAL_PARK_GATE",
+  "10,16": "ROUTE_36_RUINS_OF_ALPH_GATE",
+  "10,17": "ROUTE_36_NATIONAL_PARK_GATE",
+  "11,1": "ROUTE_34",
+  "11,2": "GOLDENROD_CITY",
+  "11,3": "GOLDENROD_GYM",
+  "11,4": "GOLDENROD_BIKE_SHOP",
+  "11,5": "GOLDENROD_HAPPINESS_RATER",
+  "11,6": "BILLS_FAMILYS_HOUSE",
+  "11,7": "GOLDENROD_MAGNET_TRAIN_STATION",
+  "11,8": "GOLDENROD_FLOWER_SHOP",
+  "11,9": "GOLDENROD_POKECENTER_1F",
+  "11,10": "GOLDENROD_PP_SPEECH_HOUSE",
+  "11,11": "GOLDENROD_NAME_RATER",
+  "11,12": "GOLDENROD_DEPT_STORE_1F",
+  "11,13": "GOLDENROD_DEPT_STORE_2F",
+  "11,14": "GOLDENROD_DEPT_STORE_3F",
+  "11,15": "GOLDENROD_DEPT_STORE_4F",
+  "11,16": "GOLDENROD_DEPT_STORE_5F",
+  "11,17": "GOLDENROD_DEPT_STORE_6F",
+  "11,18": "GOLDENROD_DEPT_STORE_ELEVATOR",
+  "11,19": "GOLDENROD_GAME_CORNER",
+  "11,20": "ILEX_FOREST_AZALEA_GATE",
+  "11,21": "ROUTE_34_ILEX_FOREST_GATE",
+  "11,22": "DAY_CARE",
+  "12,1": "ROUTE_6",
+  "12,2": "ROUTE_11",
+  "12,3": "VERMILION_CITY",
+  "12,4": "VERMILION_FISHING_SPEECH_HOUSE",
+  "12,5": "VERMILION_POKECENTER_1F",
+  "12,6": "VERMILION_POKECENTER_2F_BETA",
+  "12,7": "POKEMON_FAN_CLUB",
+  "12,8": "VERMILION_MAGNET_TRAIN_SPEECH_HOUSE",
+  "12,9": "VERMILION_MART",
+  "12,10": "VERMILION_DIGLETTS_CAVE_SPEECH_HOUSE",
+  "12,11": "VERMILION_GYM",
+  "12,12": "ROUTE_6_SAFFRON_GATE",
+  "12,13": "ROUTE_6_UNDERGROUND_PATH_ENTRANCE",
+  "13,1": "ROUTE_1",
+  "13,2": "PALLET_TOWN",
+  "13,3": "REDS_HOUSE_1F",
+  "13,4": "REDS_HOUSE_2F",
+  "13,5": "BLUES_HOUSE",
+  "13,6": "OAKS_LAB",
+  "14,1": "ROUTE_3",
+  "14,2": "PEWTER_CITY",
+  "14,3": "PEWTER_NIDORAN_SPEECH_HOUSE",
+  "14,4": "PEWTER_GYM",
+  "14,5": "PEWTER_MART",
+  "14,6": "PEWTER_POKECENTER_1F",
+  "14,7": "PEWTER_POKECENTER_2F_BETA",
+  "14,8": "PEWTER_SNOOZE_SPEECH_HOUSE",
+  "15,1": "OLIVINE_PORT",
+  "15,2": "VERMILION_PORT",
+  "15,3": "FAST_SHIP_1F",
+  "15,4": "FAST_SHIP_CABINS_NNW_NNE_NE",
+  "15,5": "FAST_SHIP_CABINS_SW_SSW_NW",
+  "15,6": "FAST_SHIP_CABINS_SE_SSE_CAPTAINS_CABIN",
+  "15,7": "FAST_SHIP_B1F",
+  "15,8": "OLIVINE_PORT_PASSAGE",
+  "15,9": "VERMILION_PORT_PASSAGE",
+  "15,10": "MOUNT_MOON_SQUARE",
+  "15,11": "MOUNT_MOON_GIFT_SHOP",
+  "15,12": "TIN_TOWER_ROOF",
+  "16,1": "ROUTE_23",
+  "16,2": "INDIGO_PLATEAU_POKECENTER_1F",
+  "16,3": "WILLS_ROOM",
+  "16,4": "KOGAS_ROOM",
+  "16,5": "BRUNOS_ROOM",
+  "16,6": "KARENS_ROOM",
+  "16,7": "LANCES_ROOM",
+  "16,8": "HALL_OF_FAME",
+  "17,1": "ROUTE_13",
+  "17,2": "ROUTE_14",
+  "17,3": "ROUTE_15",
+  "17,4": "ROUTE_18",
+  "17,5": "FUCHSIA_CITY",
+  "17,6": "FUCHSIA_MART",
+  "17,7": "SAFARI_ZONE_MAIN_OFFICE",
+  "17,8": "FUCHSIA_GYM",
+  "17,9": "BILLS_OLDER_SISTERS_HOUSE",
+  "17,10": "FUCHSIA_POKECENTER_1F",
+  "17,11": "FUCHSIA_POKECENTER_2F_BETA",
+  "17,12": "SAFARI_ZONE_WARDENS_HOME",
+  "17,13": "ROUTE_15_FUCHSIA_GATE",
+  "18,1": "ROUTE_8",
+  "18,2": "ROUTE_12",
+  "18,3": "ROUTE_10_SOUTH",
+  "18,4": "LAVENDER_TOWN",
+  "18,5": "LAVENDER_POKECENTER_1F",
+  "18,6": "LAVENDER_POKECENTER_2F_BETA",
+  "18,7": "MR_FUJIS_HOUSE",
+  "18,8": "LAVENDER_SPEECH_HOUSE",
+  "18,9": "LAVENDER_NAME_RATER",
+  "18,10": "LAVENDER_MART",
+  "18,11": "SOUL_HOUSE",
+  "18,12": "LAV_RADIO_TOWER_1F",
+  "18,13": "ROUTE_8_SAFFRON_GATE",
+  "18,14": "ROUTE_12_SUPER_ROD_HOUSE",
+  "19,1": "ROUTE_28",
+  "19,2": "SILVER_CAVE_OUTSIDE",
+  "19,3": "SILVER_CAVE_POKECENTER_1F",
+  "19,4": "ROUTE_28_STEEL_WING_HOUSE",
+  "20,1": "POKECENTER_2F",
+  "20,2": "TRADE_CENTER",
+  "20,3": "COLOSSEUM",
+  "20,4": "TIME_CAPSULE",
+  "21,1": "ROUTE_7",
+  "21,2": "ROUTE_16",
+  "21,3": "ROUTE_17",
+  "21,4": "CELADON_CITY",
+  "21,5": "CELADON_DEPT_STORE_1F",
+  "21,6": "CELADON_DEPT_STORE_2F",
+  "21,7": "CELADON_DEPT_STORE_3F",
+  "21,8": "CELADON_DEPT_STORE_4F",
+  "21,9": "CELADON_DEPT_STORE_5F",
+  "21,10": "CELADON_DEPT_STORE_6F",
+  "21,11": "CELADON_DEPT_STORE_ELEVATOR",
+  "21,12": "CELADON_MANSION_1F",
+  "21,13": "CELADON_MANSION_2F",
+  "21,14": "CELADON_MANSION_3F",
+  "21,15": "CELADON_MANSION_ROOF",
+  "21,16": "CELADON_MANSION_ROOF_HOUSE",
+  "21,17": "CELADON_POKECENTER_1F",
+  "21,18": "CELADON_POKECENTER_2F_BETA",
+  "21,19": "CELADON_GAME_CORNER",
+  "21,20": "CELADON_GAME_CORNER_PRIZE_ROOM",
+  "21,21": "CELADON_GYM",
+  "21,22": "CELADON_CAFE",
+  "21,23": "ROUTE_16_FUCHSIA_SPEECH_HOUSE",
+  "21,24": "ROUTE_16_GATE",
+  "21,25": "ROUTE_7_SAFFRON_GATE",
+  "21,26": "ROUTE_17_ROUTE_18_GATE",
+  "22,1": "ROUTE_40",
+  "22,2": "ROUTE_41",
+  "22,3": "CIANWOOD_CITY",
+  "22,4": "MANIAS_HOUSE",
+  "22,5": "CIANWOOD_GYM",
+  "22,6": "CIANWOOD_POKECENTER_1F",
+  "22,7": "CIANWOOD_PHARMACY",
+  "22,8": "CIANWOOD_PHOTO_STUDIO",
+  "22,9": "CIANWOOD_LUGIA_SPEECH_HOUSE",
+  "23,1": "ROUTE_2",
+  "23,2": "ROUTE_22",
+  "23,3": "VIRIDIAN_CITY",
+  "23,4": "VIRIDIAN_GYM",
+  "23,5": "VIRIDIAN_NICKNAME_SPEECH_HOUSE",
+  "23,6": "TRAINER_HOUSE_1F",
+  "23,7": "TRAINER_HOUSE_B1F",
+  "23,8": "VIRIDIAN_MART",
+  "23,9": "VIRIDIAN_POKECENTER_1F",
+  "23,10": "VIRIDIAN_POKECENTER_2F_BETA",
+  "23,11": "ROUTE_2_NUGGET_HOUSE",
+  "23,12": "ROUTE_2_GATE",
+  "23,13": "VICTORY_ROAD_GATE",
+  "24,1": "ROUTE_26",
+  "24,2": "ROUTE_27",
+  "24,3": "ROUTE_29",
+  "24,4": "NEW_BARK_TOWN",
+  "24,5": "ELMS_LAB",
+  "24,6": "PLAYERS_HOUSE_1F",
+  "24,7": "PLAYERS_HOUSE_2F",
+  "24,8": "PLAYERS_NEIGHBORS_HOUSE",
+  "24,9": "ELMS_HOUSE",
+  "24,10": "ROUTE_26_HEAL_HOUSE",
+  "24,11": "DAY_OF_WEEK_SIBLINGS_HOUSE",
+  "24,12": "ROUTE_27_SANDSTORM_HOUSE",
+  "24,13": "ROUTE_29_ROUTE_46_GATE",
+  "25,1": "ROUTE_5",
+  "25,2": "SAFFRON_CITY",
+  "25,3": "FIGHTING_DOJO",
+  "25,4": "SAFFRON_GYM",
+  "25,5": "SAFFRON_MART",
+  "25,6": "SAFFRON_POKECENTER_1F",
+  "25,7": "SAFFRON_POKECENTER_2F_BETA",
+  "25,8": "MR_PSYCHICS_HOUSE",
+  "25,9": "SAFFRON_MAGNET_TRAIN_STATION",
+  "25,10": "SILPH_CO_1F",
+  "25,11": "COPYCATS_HOUSE_1F",
+  "25,12": "COPYCATS_HOUSE_2F",
+  "25,13": "ROUTE_5_UNDERGROUND_PATH_ENTRANCE",
+  "25,14": "ROUTE_5_SAFFRON_GATE",
+  "25,15": "ROUTE_5_CLEANSE_TAG_HOUSE",
+  "26,1": "ROUTE_30",
+  "26,2": "ROUTE_31",
+  "26,3": "CHERRYGROVE_CITY",
+  "26,4": "CHERRYGROVE_MART",
+  "26,5": "CHERRYGROVE_POKECENTER_1F",
+  "26,6": "CHERRYGROVE_GYM_SPEECH_HOUSE",
+  "26,7": "GUIDE_GENTS_HOUSE",
+  "26,8": "CHERRYGROVE_EVOLUTION_SPEECH_HOUSE",
+  "26,9": "ROUTE_30_BERRY_HOUSE",
+  "26,10": "MR_POKEMONS_HOUSE",
+  "26,11": "ROUTE_31_VIOLET_GATE"
+ }
+}
