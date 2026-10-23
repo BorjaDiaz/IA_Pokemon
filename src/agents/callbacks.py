@@ -1,4 +1,6 @@
 import os
+import subprocess
+import sys
 
 from stable_baselines3.common.callbacks import BaseCallback
 
@@ -6,6 +8,37 @@ import src.utils.config as config
 import src.utils.constantes as c
 
 STOP_FILE = os.path.join(config.BASE_DIR, "PARAR")
+
+
+def lanzar_analisis(run_dir):
+    """Ejecuta visualizador.py para esta ejecución en otro proceso (no frena el entrenamiento).
+    Resultado en runs/<id>/analisis/; su salida en runs/<id>/analisis/visualizador.log."""
+    salida = os.path.join(run_dir, "analisis")
+    os.makedirs(salida, exist_ok=True)
+    log = open(os.path.join(salida, "visualizador.log"), "w", encoding="utf-8")
+    entorno = dict(os.environ, PYTHONIOENCODING="utf-8")
+    return subprocess.Popen([sys.executable, os.path.join(config.BASE_DIR, "visualizador.py"), "--run", os.path.basename(run_dir)],
+                            cwd=config.BASE_DIR, stdout=log, stderr=subprocess.STDOUT, env=entorno)
+
+
+class AnalisisCallback(BaseCallback):
+    """Regenera el análisis de la ejecución (resumen.txt, gráficas y mapas) cada `cada_pasos` pasos."""
+
+    def __init__(self, run_dir, cada_pasos):
+        super().__init__()
+        self.run_dir = run_dir
+        self.cada_llamadas = None
+        self.cada_pasos = cada_pasos
+        self.proceso = None
+
+    def _on_training_start(self):
+        self.cada_llamadas = max(1, self.cada_pasos // self.training_env.num_envs)
+
+    def _on_step(self):
+        # Si el anterior aún no ha terminado, se espera a la siguiente vez
+        if self.n_calls % self.cada_llamadas == 0 and (self.proceso is None or self.proceso.poll() is not None):
+            self.proceso = lanzar_analisis(self.run_dir)
+        return True
 
 
 class StopFileCallback(BaseCallback):
@@ -27,6 +60,9 @@ class SplitsCallback(BaseCallback):
     - exito/<HITO>: fracción de episodios que lo consiguen
 
     Solo aparecen los hitos que algún clon ha conseguido alguna vez.
+
+    Y por episodio, los combates: combate/<tipo>_<resultado> (salvaje_ganado, entrenador_perdido...)
+    y combate/pasos_en_combate.
     """
 
     def __init__(self):
@@ -44,4 +80,10 @@ class SplitsCallback(BaseCallback):
                 self.logger.record_mean(f"exito/{hito}", float(conseguido))
                 if conseguido:
                     self.logger.record_mean(f"splits/{hito}", splits[hito])
+            combates = info.get("combates")
+            if combates:
+                for tipo in ("salvaje", "entrenador"):
+                    for resultado, n in combates[tipo].items():
+                        self.logger.record_mean(f"combate/{tipo}_{resultado}", n)
+                self.logger.record_mean("combate/pasos_en_combate", combates["pasos_en_combate"])
         return True

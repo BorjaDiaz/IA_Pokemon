@@ -27,6 +27,14 @@ class SplitsCallbackTests(unittest.TestCase):
         self.assertEqual(valores[f"splits/{hito}"], 800)
         self.assertAlmostEqual(valores[f"exito/{hito}"], 2 / 3)
 
+    def test_logs_battle_results_per_episode(self):
+        combates = {"salvaje": {"ganado": 2, "huido": 1, "perdido": 0},
+                    "entrenador": {"ganado": 0, "huido": 0, "perdido": 1}, "pasos_en_combate": 120}
+        valores = self.step({"splits": {}, "combates": combates})
+        self.assertEqual(valores["combate/salvaje_ganado"], 2)
+        self.assertEqual(valores["combate/entrenador_perdido"], 1)
+        self.assertEqual(valores["combate/pasos_en_combate"], 120)
+
     def test_maps_are_not_sent_to_tensorboard(self):
         valores = self.step({"splits": {"PLAYERS_HOUSE_1F": 120}})
         self.assertFalse(any("PLAYERS_HOUSE_1F" in k for k in valores))

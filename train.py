@@ -5,7 +5,7 @@ import time
 
 from src.agents.env_builder import build_vectorized_env
 from src.agents.agent_manager import AgentManager
-from src.agents.callbacks import SplitsCallback, StopFileCallback, STOP_FILE
+from src.agents.callbacks import AnalisisCallback, SplitsCallback, StopFileCallback, STOP_FILE, lanzar_analisis
 import src.utils.config as config
 
 
@@ -70,7 +70,8 @@ def main():
     print("- Presiona Ctrl+C (o crea un archivo llamado PARAR en la carpeta del proyecto) para detener y guardar")
     print("- El modelo se guardará automáticamente al finalizar")
     print(f"- Copias de seguridad cada {config.CHECKPOINT_FREQ:,} pasos en ia/checkpoints/")
-    print(f"- Datos de esta ejecución en runs/{os.path.basename(run_dir)}/")
+    print(f"- Datos de esta ejecución en runs/{os.path.basename(run_dir)}/ (análisis y mapas en analisis/, "
+          f"se actualizan cada {config.CHECKPOINT_FREQ:,} pasos)")
     print("- Gráficas: en otra terminal, tensorboard --logdir logs/tensorboard")
     print("================================")
 
@@ -90,13 +91,16 @@ def main():
     # nombres de checkpoints que no se pisan)
     try:
         model.learn(total_timesteps=config.TOTAL_TIMESTEPS,
-                    callback=[gestor_agente.checkpoint_callback(), SplitsCallback(), StopFileCallback()],
+                    callback=[gestor_agente.checkpoint_callback(), SplitsCallback(), StopFileCallback(),
+                              AnalisisCallback(run_dir, config.CHECKPOINT_FREQ)],
                     reset_num_timesteps=not gestor_agente.cargado, tb_log_name="PPO")
     except KeyboardInterrupt:
         print("\n🛑 Entrenamiento detenido por el usuario. Guardando progreso...")
     finally:
         shutdown_training(env, gestor_agente=gestor_agente, model=model)
         guardar_info_run(run_dir, fin=time.strftime("%Y-%m-%d %H:%M:%S"), pasos_al_terminar=model.num_timesteps)
+        print(f"📊 Generando el análisis final en runs/{os.path.basename(run_dir)}/analisis/ ...")
+        lanzar_analisis(run_dir).wait()
 
 
 if __name__ == "__main__":

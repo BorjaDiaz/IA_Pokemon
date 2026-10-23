@@ -116,6 +116,7 @@ ADDR_LIDER_SP_DEF     = 0xDA58
 # ==========================================
 # MEMORIA COMBATE: POKÉMON RIVAL (wEnemyMon)
 # ==========================================
+ADDR_RIVAL_ESPECIE    = rom_catalog.RAM["wEnemyMonSpecies"]
 ADDR_RIVAL_NIVEL      = 0xD0FC
 ADDR_RIVAL_TIPO1      = 0xD10D
 ADDR_RIVAL_TIPO2      = 0xD10E

@@ -16,11 +16,20 @@ class MovementHandlerTests(unittest.TestCase):
         reward, _ = paso(handler, visited, pos=(2, 1), last_pos=(1, 1))
         self.assertLess(reward, 0)
 
-    def test_dialogue_and_battle_do_not_count_as_stuck(self):
+    def test_dialogue_and_battle_are_not_penalized_but_count_as_no_progress(self):
+        # Repetir un diálogo sin fin no debe evitar el corte del episodio
         handler, visited = MovementHandler(rank=0), {(24, 7, 1, 1)}
-        for _ in range(handler.max_steps_sin_progreso * 2):
-            self.assertEqual(paso(handler, visited, en_script=True), (0.0, False))
-            self.assertEqual(paso(handler, visited, en_combate=True), (0.0, False))
+        for i in range(handler.max_steps_sin_progreso - 1):
+            self.assertEqual(paso(handler, visited, en_script=i % 2 == 0, en_combate=i % 2 == 1), (0.0, False))
+        reward, sin_progreso = paso(handler, visited, en_script=True)
+        self.assertTrue(sin_progreso)
+        self.assertEqual(reward, c.PENALTY_NO_PROGRESS)
+
+    def test_game_events_reset_no_progress_counter(self):
+        handler, visited = MovementHandler(rank=0), {(24, 7, 1, 1)}
+        for _ in range(500):
+            paso(handler, visited, en_script=True)
+        handler.registrar_progreso()
         self.assertEqual(handler.steps_sin_progreso, 0)
 
     def test_episode_ends_without_progress(self):

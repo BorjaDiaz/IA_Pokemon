@@ -66,6 +66,36 @@ class PokemonGoldEnvTests(unittest.TestCase):
             self.fail("No hubo encuentro salvaje")
         self.assertFalse(obs[1].any())
 
+        # Pulsando A se lucha con el primer ataque hasta acabar: el combate queda registrado
+        for _ in range(1500):
+            self.env.step(4)
+            if not self.env.ram.leer(c.ADDR_BATTLE_MODE):
+                break
+        self.env.step(4)
+        salvajes = self.env.combates["salvaje"]
+        self.assertEqual(sum(salvajes.values()), 1)
+        self.assertGreater(self.env.combates["pasos_en_combate"], 0)
+        self.assertIsNone(self.env.combate_actual)
+
+    def test_talking_to_elm_forever_does_not_avoid_the_cut(self):
+        """Tras recibir el Pokémon, pulsar A junto a Elm mantenía una escena casi siempre activa y el
+        contador de pasos sin progreso no avanzaba: los episodios llegaban a 20.480 pasos sin hacer nada."""
+        estado = "best_speedrun_EVENT_GOT_A_POKEMON_FROM_ELM.state"
+        if not os.path.exists(os.path.join(config.STATES_DIR, estado)):
+            self.skipTest("No hay savestate de ese hito todavía")
+        estados = config.CURRICULUM_STATES
+        config.CURRICULUM_STATES = [estado]
+        try:
+            self.env.reset()
+            self.env.h_movement.max_steps_sin_progreso = 200
+            for _ in range(300):
+                _, _, terminated, _, info = self.env.step(4)
+                if terminated:
+                    break
+            self.assertTrue(terminated)
+        finally:
+            config.CURRICULUM_STATES = estados
+
     def test_no_progress_terminates_episode(self):
         self.env.h_movement.max_steps_sin_progreso = 3
         resultados = [self.env.step(B) for _ in range(4)]

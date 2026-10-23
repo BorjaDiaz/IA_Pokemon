@@ -22,6 +22,13 @@ from src.env.handlers.story import StoryHandler
 # Pantalla de 10 x 9 casillas de 16 px; en la observación (72 x 80) cada casilla ocupa 8 x 8 px
 CASILLAS_X, CASILLAS_Y, JUGADOR_COL, JUGADOR_FILA = 10, 9, 4, 4
 
+
+def nuevas_estadisticas_combate():
+    """Combates de un episodio por tipo y resultado (huido incluye capturas)."""
+    return {"salvaje": {"ganado": 0, "huido": 0, "perdido": 0},
+            "entrenador": {"ganado": 0, "huido": 0, "perdido": 0},
+            "pasos_en_combate": 0}
+
 class PokemonGoldEnv(gym.Env):
     def __init__(self, rank=0):
         super().__init__()
@@ -48,6 +55,8 @@ class PokemonGoldEnv(gym.Env):
         self.all_maps_seen = set()
         # ⏱️ Splits: paso del episodio en que se llega por primera vez a cada mapa o hito
         self.splits = {}
+        self.combates = nuevas_estadisticas_combate()
+        self.combate_actual = None
 
         # Trackeo de salud y niveles del equipo durante la partida
         self.vida_equipo_anterior = 999
@@ -106,6 +115,7 @@ class PokemonGoldEnv(gym.Env):
             "tiempo_juego_s": round(self.ram.leer_tiempo_juego(), 1),
             "timestamp": round(time.time(), 1),
             "splits": self.splits,
+            "combates": self.combates,
         }
         try:
             with open(self.metrics_path, "a", encoding="utf-8") as f:
@@ -118,6 +128,8 @@ class PokemonGoldEnv(gym.Env):
         self.episode_maps = set()
         self.episode_tiles = set()
         self.splits = {}
+        self.combates = nuevas_estadisticas_combate()
+        self.combate_actual = None
 
         # Sistema de Curriculum Learning (Cargar partida avanzada)
         if config.USE_CURRICULUM:
@@ -196,24 +208,32 @@ class PokemonGoldEnv(gym.Env):
             self.nivel_total_previo = nivel_actual_total
         self.party_count_anterior, self.max_vida_equipo_anterior = party_count, max_vida_equipo
 
+        # 📜 Eventos del juego (antes que el movimiento: un evento nuevo cuenta como progreso)
+        reward += self.h_story.procesar(self.pb, self.ram, self.rewards, self.active_flags, self.tuplas_historia, self.steps_count)
+        if self.h_story.hubo_progreso:
+            self.h_movement.registrar_progreso()
+
         # 🗺️ 1. GESTIÓN DE MOVIMIENTO Y ATASCOS (Delegado)
         r_mov, sin_progreso = self.h_movement.procesar(
             x, y, self.last_speedrun_pos, current_speedrun_tile, self.episode_tiles, map_name, en_combate, en_script
         )
         reward += r_mov
 
-        # Registro al entrar/salir de combate
-        if tipo_combate != self.ultimo_tipo_combate:
-            if not en_combate:
-                if self.logger:
-                    self.logger.log_step({"evento": "FIN_COMBATE", "mapa": map_name, "step": self.steps_count})
-            else:
-                if config.VERBOSE:
-                    self.gestor.imprimir_auditoria(tipo_combate)
-                if self.logger:
-                    tipo_str = "Entrenador" if tipo_combate == 2 else "Salvaje"
-                    self.logger.log_step({"evento": "INICIO_COMBATE", "tipo": tipo_str, "mapa": map_name, "step": self.steps_count})
-            self.ultimo_tipo_combate = tipo_combate
+        # ⚔️ Seguimiento de combates: tipo, duración y resultado (para medir si aprende a combatir)
+        if en_combate and self.combate_actual is None:
+            self.combate_actual = {"tipo": "entrenador" if tipo_combate == 2 else "salvaje", "inicio": self.steps_count,
+                                   "ps_rival": None, "rival": self.ram.leer(c.ADDR_RIVAL_ESPECIE),
+                                   "nivel_rival": self.ram.leer(c.ADDR_RIVAL_NIVEL), "mapa": map_name}
+            if config.VERBOSE:
+                self.gestor.imprimir_auditoria(tipo_combate)
+            if self.logger:
+                self.logger.log_step({"evento": "INICIO_COMBATE", "tipo": self.combate_actual["tipo"], "mapa": map_name, "step": self.steps_count})
+        if en_combate:
+            self.combate_actual["ps_rival"] = self.gestor.leer_vida_enemigo()
+        elif self.combate_actual is not None:
+            # Rival a 0 PS al acabar = ganado; si no, ha huido (o capturado)
+            self._cerrar_combate("ganado" if self.combate_actual["ps_rival"] == 0 else "huido")
+        self.ultimo_tipo_combate = tipo_combate
 
         # ⚔️ 2. GESTIÓN DE COMBATE (Delegado)
         r_comb, _ = self.h_combat.procesar(
@@ -247,17 +267,19 @@ class PokemonGoldEnv(gym.Env):
             if config.VERBOSE: print(f"🌍 [Clon {self.rank}] ¡Mapa descubierto! -> {map_name}")
             if self.logger: self.logger.log_step({"evento": "NUEVO_MAPA", "mapa": map_name, "step": self.steps_count})
 
-        reward += self.h_story.procesar(self.pb, self.ram, self.rewards, self.active_flags, self.tuplas_historia, self.steps_count)
 
         # 📸 Capturas: pantalla en memoria cada pocos pasos y foto de cada hito
         pantalla = self.pb.screen.ndarray[:, :, :3]
         self.capturer.record(pantalla, self.steps_count)
         for hito in self.h_story.hitos_nuevos:
             self.splits[hito] = self.steps_count
-            self.capturer.milestone(pantalla, self.episode_counter, hito, map_name, (x, y), self.steps_count)
+            self.capturer.milestone(pantalla, self.episode_counter, hito, map_name, (x, y), self.steps_count,
+                                    self.ram.leer_tiempo_juego())
 
         # 💀 CONDICIÓN DE MUERTE
         debilitado = vida_actual_equipo <= 0 and party_count > 0
+        if debilitado and self.combate_actual is not None:
+            self._cerrar_combate("perdido")
         if debilitado:
             reward += c.PENALTY_TEAM_FAINTED
             if self.logger: self.logger.log_step({"evento": "EQUIPO_DEBILITADO", "mapa": map_name, "step": self.steps_count})
@@ -287,12 +309,22 @@ class PokemonGoldEnv(gym.Env):
             if hitos:
                 print(f"⏱️ [Clon {self.rank}] Hitos del episodio: {' | '.join(hitos)}")
             self.capturer.episode_end(pantalla, self.episode_counter, reason, map_name, (x, y),
-                                      self.steps_count, self.total_speedrun_reward)
+                                      self.steps_count, self.total_speedrun_reward, self.ram.leer_tiempo_juego())
 
         terminated = reason in ("fainted", "no_progress")
         truncated = reason == "max_steps"
-        info = {"splits": dict(self.splits)} if reason else {}
+        info = {"splits": dict(self.splits), "combates": self.combates} if reason else {}
         return self._get_obs(), reward, terminated, truncated, info
+
+    def _cerrar_combate(self, resultado):
+        combate, self.combate_actual = self.combate_actual, None
+        pasos = self.steps_count - combate["inicio"]
+        self.combates[combate["tipo"]][resultado] += 1
+        self.combates["pasos_en_combate"] += pasos
+        if self.logger:
+            self.logger.log_step({"evento": "FIN_COMBATE", "tipo": combate["tipo"], "resultado": resultado, "pasos": pasos,
+                                  "rival": combate["rival"], "nivel_rival": combate["nivel_rival"],
+                                  "mapa": combate["mapa"], "step": self.steps_count})
 
     def _get_obs(self):
         # Grises (pesos 77/150/29 ≈ 0.299/0.587/0.114) y media de cada bloque 2x2: 144x160 -> 72x80

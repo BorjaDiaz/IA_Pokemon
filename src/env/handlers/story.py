@@ -11,6 +11,7 @@ class StoryHandler:
         self.rank = rank
         self.logger = logger
         self.hitos_nuevos = []  # hitos conseguidos en el último procesar(), para las capturas
+        self.hubo_progreso = False  # algún evento nuevo (no temporal) en el último procesar()
 
     def procesar(self, pb, ram, rewards, active_flags, tuplas_historia, step_count):
         """active_flags: bytes de flags ya vistos en el episodio (se actualiza en el sitio)."""
@@ -18,6 +19,9 @@ class StoryHandler:
         self.hitos_nuevos = []
         flags = ram.get_flag_bytes()
         nuevos = flags & ~active_flags
+        # Progreso real de la partida: cualquier evento nuevo salvo los 8 temporales (byte 0),
+        # que el juego reinicia al recargar el mapa
+        self.hubo_progreso = bool(nuevos[1:].any())
         if not nuevos.any():
             return reward
         active_flags |= flags

@@ -1,9 +1,10 @@
-"""Genera las visualizaciones del entrenamiento en visualizaciones/.
+"""Analiza una ejecución del entrenamiento y guarda el resultado en runs/<fecha_hora>/analisis/.
 
 Cada lanzamiento de train.py guarda sus datos en runs/<fecha_hora>/. Por defecto se usa la
-ejecución actualizada más recientemente.
+ejecución actualizada más recientemente (--todas va a visualizaciones/todas/).
 
-- progreso.png: recompensa, mapas y baldosas por episodio de cada clon
+- resumen.txt: lo más importante en texto, con valoración de cada métrica (también se imprime)
+- progreso.png: recompensa, mapas, baldosas y combates ganados por episodio de cada clon
 - splits.png: pasos que tarda cada episodio en llegar a cada hito/mapa (si baja, va más rápido)
 - mapas/<MAPA>.png: imagen real del mapa (atlas que construyen los clones) con
   un mini-cuadro de color por clon en cada casilla visitada (más intenso = más visitas)
@@ -54,9 +55,9 @@ def fuentes_de_datos():
     fuentes = []
     for d in glob.glob(os.path.join(config.RUNS_DIR, "*")):
         if os.path.isdir(d):
-            fuentes.append({"nombre": os.path.basename(d), "metrics": os.path.join(d, "metrics.jsonl"),
+            fuentes.append({"nombre": os.path.basename(d), "dir": d, "metrics": os.path.join(d, "metrics.jsonl"),
                             "coords": os.path.join(d, "coordinates")})
-    fuentes.append({"nombre": "anterior", "metrics": os.path.join(config.LOG_DIR, "metrics.jsonl"),
+    fuentes.append({"nombre": "anterior", "dir": None, "metrics": os.path.join(config.LOG_DIR, "metrics.jsonl"),
                     "coords": os.path.join(config.BASE_DIR, "coordinates")})
     for f in fuentes:
         archivos = [f["metrics"]] + glob.glob(os.path.join(f["coords"], "*.txt"))
@@ -101,7 +102,7 @@ def _load_coordinates(coords_dir):
 
 
 def plot_progress(metrics):
-    fig, axes = plt.subplots(3, 1, figsize=(10, 10), sharex=True, constrained_layout=True)
+    fig, axes = plt.subplots(4, 1, figsize=(10, 12), sharex=True, constrained_layout=True)
     fig.suptitle("Progreso por episodio", fontsize=14, fontweight="bold")
     if not metrics:
         axes[0].text(0.5, 0.5, "No hay métricas aún. Ejecuta el entrenamiento.", ha="center", va="center", transform=axes[0].transAxes)
@@ -114,14 +115,16 @@ def plot_progress(metrics):
         rows.sort(key=lambda r: r.get("episode", 0))
         eps = [r["episode"] for r in rows]
         col = np.array(color(rank)) / 255
-        for ax, key in zip(axes, ("reward", "maps_discovered", "tiles_discovered")):
+        for r in rows:
+            r["combates_ganados"] = combates_ganados(r)
+        for ax, key in zip(axes, ("reward", "maps_discovered", "tiles_discovered", "combates_ganados")):
             ax.plot(eps, [r.get(key, 0) for r in rows], color=col, linewidth=1, alpha=0.8, label=f"Clon {rank}")
             for reason, marker in marcadores.items():
                 sel = [(r["episode"], r.get(key, 0)) for r in rows if r.get("reason") == reason]
                 if sel:
                     ax.scatter(*zip(*sel), color=col, marker=marker, s=18)
 
-    for ax, title in zip(axes, ("Recompensa total", "Mapas distintos", "Baldosas distintas")):
+    for ax, title in zip(axes, ("Recompensa total", "Mapas distintos", "Baldosas distintas", "Combates ganados")):
         ax.set_ylabel(title)
         ax.grid(True, alpha=0.3)
     axes[-1].set_xlabel("Episodio  (x = sin progreso, v = debilitado, o = límite de pasos)")
@@ -132,6 +135,11 @@ def plot_progress(metrics):
     fig.savefig(path, dpi=150)
     plt.close(fig)
     return path
+
+
+def combates_ganados(row):
+    c = row.get("combates")
+    return c["salvaje"]["ganado"] + c["entrenador"]["ganado"] if c else 0
 
 
 def resumen_splits(metrics):
@@ -180,6 +188,22 @@ def plot_splits(splits, max_paneles=12):
     fig.savefig(path, dpi=130)
     plt.close(fig)
     return path
+
+
+def exportar_atlas():
+    """Guarda en visualizaciones/atlas/<MAPA>.png el fondo de cada mapa descubierto por los clones
+    (todas las ejecuciones juntas, sin recorridos). Las zonas que nadie ha visto salen en gris."""
+    atlas = merge_atlases(sorted(glob.glob(os.path.join(ATLAS_DIR, "clon*.npz"))))
+    for viejo in glob.glob(os.path.join(ATLAS_DIR, "*.png")):
+        os.remove(viejo)
+    for mapa, entry in atlas.items():
+        img = entry["img"].copy()
+        img[~np.kron(entry["known"], np.ones((TILE, TILE), dtype=bool))] = 45
+        h, w = entry["known"].shape
+        nombre = MAP_NAMES.get(mapa, f"Mapa {mapa[0]}-{mapa[1]}")
+        Image.fromarray(img).resize((w * TILE * ESCALA, h * TILE * ESCALA), Image.NEAREST).save(
+            os.path.join(ATLAS_DIR, f"{nombre}.png"))
+    return len(atlas)
 
 
 def render_map(mapa, entry, visitas, recorridos):
@@ -281,6 +305,159 @@ def plot_maps(coords_por_fuente, ultimos_episodios=None):
     return sorted(resumen, reverse=True)
 
 
+def _info_run(fuentes):
+    info = {}
+    for f in fuentes:
+        if f["dir"] and os.path.exists(os.path.join(f["dir"], "run.json")):
+            with open(os.path.join(f["dir"], "run.json"), encoding="utf-8") as fh:
+                info[f["nombre"]] = json.load(fh)
+    return info
+
+
+def _metricas_tensorboard(desde=None, hasta=None):
+    """Escalares de TensorBoard (todas las ejecuciones PPO_*) entre los pasos [desde, hasta]."""
+    try:
+        from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+    except ImportError:
+        return {}
+    series = defaultdict(list)
+    for d in sorted(glob.glob(os.path.join(config.TENSORBOARD_DIR, "*"))):
+        ea = EventAccumulator(d, size_guidance={"scalars": 0})
+        ea.Reload()
+        for tag in ea.Tags().get("scalars", []):
+            for e in ea.Scalars(tag):
+                if (desde is None or e.step >= desde) and (hasta is None or e.step <= hasta):
+                    series[tag].append((e.step, e.value))
+    return {t: sorted(v) for t, v in series.items()}
+
+
+def _ini_fin(serie, n=3):
+    valores = [v for _, v in serie]
+    return float(np.mean(valores[:n])), float(np.mean(valores[-n:]))
+
+
+def generar_resumen(fuentes, metrics, splits, mapas):
+    L = []
+    nombres = ", ".join(f["nombre"] for f in fuentes)
+    L.append(f"RESUMEN DE LA EJECUCIÓN: {nombres}")
+    L.append("=" * 78)
+
+    infos = _info_run(fuentes)
+    desde = hasta = None
+    for nombre, info in infos.items():
+        c = info.get("config", {})
+        L.append(f"Inicio {info.get('inicio', '?')}  ·  fin {info.get('fin', 'en curso')}  ·  código {info.get('git_commit', '?')}"
+                 f"  ·  modelo {info.get('modelo', '?')}")
+        a, b = info.get("pasos_al_empezar"), info.get("pasos_al_terminar")
+        if a is not None:
+            desde = a if desde is None else min(desde, a)
+        if b is not None:
+            hasta = b if hasta is None else max(hasta, b)
+        if a is not None and b is not None and info.get("fin"):
+            from datetime import datetime
+            dur = (datetime.strptime(info["fin"], "%Y-%m-%d %H:%M:%S") - datetime.strptime(info["inicio"], "%Y-%m-%d %H:%M:%S")).total_seconds()
+            L.append(f"Pasos de entrenamiento {a:,} → {b:,} (+{b - a:,}) en {dur / 60:.0f} min  ·  {(b - a) / max(dur, 1):.0f} pasos/s")
+        L.append(f"Config: {c.get('NUM_CLONES')} clones · lr {c.get('PPO_LEARNING_RATE')} · target_kl {c.get('PPO_TARGET_KL')}"
+                 f" · gamma {c.get('PPO_GAMMA')} · ent {c.get('PPO_ENT_COEF')} · empieza en {info.get('estado_inicial')}")
+    L.append("")
+
+    # Episodios
+    n = len(metrics)
+    L.append(f"EPISODIOS TERMINADOS: {n}")
+    if n:
+        razones = Counter(r.get("reason") for r in metrics)
+        nombres_razon = {"no_progress": "sin progreso", "fainted": "debilitado", "max_steps": "límite de pasos"}
+        L.append("  Cómo terminan: " + " · ".join(f"{nombres_razon.get(k, k)} {100 * v / n:.0f}%" for k, v in razones.most_common()))
+        ordenados = sorted(metrics, key=lambda r: r["_orden"])
+        k = max(1, n // 5)
+        rec_ini = np.mean([r["reward"] for r in ordenados[:k]]); rec_fin = np.mean([r["reward"] for r in ordenados[-k:]])
+        len_ini = np.mean([r["steps"] for r in ordenados[:k]]); len_fin = np.mean([r["steps"] for r in ordenados[-k:]])
+        L.append(f"  Recompensa media: primer 20% de episodios {rec_ini:.2f} → último 20% {rec_fin:.2f}  {_flecha(rec_fin - rec_ini, 0.1)}")
+        L.append(f"  Duración media:   {len_ini:.0f} → {len_fin:.0f} pasos")
+    L.append("")
+
+    # Hitos y mapas
+    L.append("HITOS Y MAPAS (en qué paso del episodio se llega; más bajo = más rápido)")
+    L.append(f"  {'':38s} {'episodios':>12s} {'récord':>7s} {'mediana 1ºs 10':>15s} {'últimos 10':>11s}")
+    for split, puntos, total in splits:
+        pasos = [p[1] for p in puntos]
+        ini, fin = np.median(pasos[:10]), np.median(pasos[-10:])
+        cambio = f"{100 * (fin - ini) / ini:+.0f}%" if len(pasos) >= 20 else "(pocos datos)"
+        tipo = "★" if split in FLAGS else " "
+        L.append(f" {tipo}{split:38s} {len(puntos):4d} ({100 * len(puntos) / total:3.0f}%) {min(pasos):7d} {ini:15.0f} {fin:11.0f}  {cambio}")
+    L.append("  ★ = hito del speedrun")
+    L.append("")
+
+    # Combates
+    con_datos = [r for r in metrics if "combates" in r]
+    L.append("COMBATES" + ("" if con_datos else ": aún no hay datos (se registran desde esta versión del código)"))
+    if con_datos:
+        for tipo in ("salvaje", "entrenador"):
+            t = Counter()
+            for r in con_datos:
+                t.update(r["combates"][tipo])
+            total = sum(t.values())
+            if total:
+                L.append(f"  {tipo:10s}: {total} combates · ganados {t['ganado']} ({100 * t['ganado'] / total:.0f}%) · "
+                         f"huidos {t['huido']} · perdidos {t['perdido']}")
+            else:
+                L.append(f"  {tipo:10s}: ninguno")
+        pasos_c = sum(r["combates"]["pasos_en_combate"] for r in con_datos)
+        pasos_t = sum(r["steps"] for r in con_datos)
+        L.append(f"  Tiempo en combate: {100 * pasos_c / max(pasos_t, 1):.1f}% de los pasos")
+    L.append("")
+
+    # TensorBoard
+    tb = _metricas_tensorboard(desde, hasta) if (desde is not None or not infos) else {}
+    L.append("APRENDIZAJE (TensorBoard" + (f", pasos {desde:,}–{hasta:,})" if desde is not None else ")"))
+    if not tb:
+        L.append("  Sin datos de TensorBoard para este tramo.")
+    else:
+        def linea(tag, texto):
+            if tag in tb and tb[tag]:
+                L.append("  " + texto(tb[tag]))
+        linea("rollout/ep_rew_mean", lambda s: f"Recompensa por episodio: {_ini_fin(s)[0]:.2f} → {_ini_fin(s)[1]:.2f}  "
+              f"{_flecha(_ini_fin(s)[1] - _ini_fin(s)[0], 0.1)}")
+        linea("train/explained_variance", lambda s: _valora(f"Predicción de la recompensa (explained_variance): {_ini_fin(s)[1]:.2f}",
+              _ini_fin(s)[1], [(0.6, "✅ buena"), (0.3, "➖ regular"), (-9, "⚠️ mala: la red aún no entiende qué da puntos")]))
+        linea("train/approx_kl", lambda s: _valora(f"Tamaño de cada actualización (approx_kl): {np.mean([v for _, v in s]):.3f}",
+              -np.mean([v for _, v in s]), [(-0.02, "✅ estable"), (-0.04, "➖ algo brusca"), (-9, "⚠️ demasiado brusca")]))
+        linea("train/clip_fraction", lambda s: _valora(f"clip_fraction: {np.mean([v for _, v in s]):.2f}",
+              -np.mean([v for _, v in s]), [(-0.2, "✅ normal"), (-0.3, "➖ alta"), (-9, "⚠️ muy alta")]))
+        linea("train/entropy_loss", lambda s: _valora(
+              f"Aleatoriedad de la política: {100 * -_ini_fin(s)[1] / math.log(6):.0f}% del máximo",
+              -_ini_fin(s)[1] / math.log(6), [(0.9, "➖ casi aleatoria (normal al principio)"), (0.4, "✅ aprendiendo a decidir"),
+                                              (-9, "⚠️ muy decidida: vigilar que no se estanque")]))
+        linea("time/fps", lambda s: f"Velocidad: {np.mean([v for _, v in s]):.0f} pasos/s")
+    L.append("")
+
+    # Récords
+    records = cargar_records()
+    if records:
+        L.append("RÉCORDS DE TIEMPO DE PARTIDA (de todas las ejecuciones; savestates best_speedrun_*)")
+        for hito, r in sorted(records.items(), key=lambda kv: kv[1]["tiempo_juego_s"]):
+            minutos, segundos = divmod(r["tiempo_juego_s"], 60)
+            L.append(f"  {hito:40s} {int(minutos):3d}:{segundos:05.2f}  ({r['pasos']} pasos, clon {r['clon']}, {r['run']})")
+        L.append("")
+
+    # Mapas
+    L.append(f"MAPAS VISITADOS: {len(mapas)}")
+    for visitas_totales, nombre, casillas in mapas:
+        L.append(f"  {nombre:28s} {visitas_totales:7d} visitas · {len(casillas):2d} clones lo pisaron")
+    return "\n".join(L) + "\n"
+
+
+def _flecha(diferencia, umbral):
+    return "✅ sube" if diferencia > umbral else ("⚠️ baja" if diferencia < -umbral else "➖ estable")
+
+
+def _valora(texto, valor, escala):
+    for minimo, etiqueta in escala:
+        if valor >= minimo:
+            return f"{texto}  {etiqueta}"
+    return texto
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--episodios", type=int, default=None, help="usar solo los N últimos episodios de cada clon")
@@ -303,33 +480,28 @@ def main():
             raise SystemExit(f"No hay ninguna ejecución que contenga '{args.run}'. Usa --listar.")
     if not args.todas:
         fuentes = fuentes[-1:]
-    print(f"📂 Ejecución{'es' if len(fuentes) > 1 else ''}: {', '.join(f['nombre'] for f in fuentes)}")
-
+    global OUTPUT_DIR, MAPS_DIR
+    if args.todas:
+        OUTPUT_DIR = os.path.join("visualizaciones", "todas")
+    elif fuentes[0]["dir"]:
+        OUTPUT_DIR = os.path.join(fuentes[0]["dir"], "analisis")
+    else:
+        OUTPUT_DIR = os.path.join("visualizaciones", fuentes[0]["nombre"])
+    MAPS_DIR = os.path.join(OUTPUT_DIR, "mapas")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     metrics = _load_metrics(fuentes)
-    print(f"✅ {plot_progress(metrics)}")
-
     splits = resumen_splits(metrics)
-    print(f"✅ {plot_splits(splits)}")
-    print(f"   {'split':40s} {'logrado':>12s} {'récord':>7s} {'mediana primeros 10':>20s} {'últimos 10':>11s}")
-    for split, puntos, total in splits:
-        pasos = [p[1] for p in puntos]
-        inicio, final = np.median(pasos[:10]), np.median(pasos[-10:])
-        cambio = f"({100 * (final - inicio) / inicio:+.0f}%)" if len(pasos) >= 20 else ""
-        print(f"   {split:40s} {len(puntos):5d}/{total:<6d} {min(pasos):7d} {inicio:20.0f} {final:11.0f} {cambio}")
+    plot_progress(metrics)
+    plot_splits(splits)
+    mapas = plot_maps([_load_coordinates(f["coords"]) for f in fuentes], args.episodios)
 
-    records = cargar_records()
-    if records:
-        print("🏆 Récords de tiempo de partida (savestates best_speedrun_*, todas las ejecuciones):")
-        for hito, r in sorted(records.items(), key=lambda kv: kv[1]["tiempo_juego_s"]):
-            minutos, segundos = divmod(r["tiempo_juego_s"], 60)
-            print(f"   {hito:40s} {int(minutos):3d}:{segundos:05.2f}  (clon {r['clon']}, {r['run']})")
-
-    resumen = plot_maps([_load_coordinates(f["coords"]) for f in fuentes], args.episodios)
-    print(f"✅ {len(resumen)} mapas en {MAPS_DIR}/")
-    for visitas_totales, nombre, casillas in resumen:
-        por_clon = "  ".join(f"c{r}:{n}" for r, n in sorted(casillas.items()))
-        print(f"   {nombre:28s} {visitas_totales:7d} visitas | casillas por clon: {por_clon}")
+    texto = generar_resumen(fuentes, metrics, splits, mapas)
+    with open(os.path.join(OUTPUT_DIR, "resumen.txt"), "w", encoding="utf-8") as f:
+        f.write(texto)
+    print(texto)
+    print(f"📁 Todo guardado en {OUTPUT_DIR}/ (resumen.txt, progreso.png, splits.png, mapas/)")
+    print(f"🗺️ {exportar_atlas()} mapas limpios (lo descubierto entre todas las ejecuciones) en {ATLAS_DIR}/")
 
 
 if __name__ == "__main__":
