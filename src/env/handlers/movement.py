@@ -29,11 +29,11 @@ class MovementHandler:
 
         # ⚠️ Alertas de atasco
         if self.steps_sin_progreso > 0 and self.steps_sin_progreso % 250 == 0:
-            print(f"⚠️ [Clon {self.rank}] Lleva {self.steps_sin_progreso} pasos sin pisar baldosas nuevas en {map_name}...")
+            if config.VERBOSE: print(f"⚠️ [Clon {self.rank}] Lleva {self.steps_sin_progreso} pasos sin pisar baldosas nuevas en {map_name}...")
 
         # 💀 Corte del episodio si no avanza
         if self.steps_sin_progreso >= self.max_steps_sin_progreso:
-            print(f"🛑 [Clon {self.rank}] SIN PROGRESO en {map_name}. Reiniciando...")
+            if config.VERBOSE: print(f"🛑 [Clon {self.rank}] SIN PROGRESO en {map_name}. Reiniciando...")
             sin_progreso = True
             reward += c.PENALTY_NO_PROGRESS
 

@@ -18,14 +18,15 @@ PENALTY_NO_PROGRESS = -10.0         # Al cortar el episodio por no avanzar
 
 # Supervivencia y Progreso
 REWARD_HEAL = 10.0
-REWARD_LEVEL_UP = 15.0              # Multiplicador por cada nivel ganado en el equipo
+REWARD_LEVEL_UP = 5.0               # Por cada nivel ganado (no cuenta al entrar un Pokémon nuevo en el equipo)
 
-# Combate
-REWARD_COMBAT_ENEMY_FAINTED = 10.0  # Por debilitar a un Pokémon rival
+# Combate: un combate salvaje típico sale aproximadamente neutro (daño + K.O. ≈ pasos en combate),
+# para que el agente no aprenda a farmear combates en la hierba en lugar de avanzar
+REWARD_COMBAT_ENEMY_FAINTED = 2.0   # Por debilitar a un Pokémon rival
 PENALTY_COMBAT_DAMAGE_RECEIVED = -1.0 # Por recibir daño
 PENALTY_COMBAT_STEP = -0.05         # Penalización por paso en combate (para que no alargue batallas)
 PENALTY_TEAM_FAINTED = -15.0        # Game Over (equipo debilitado)
-REWARD_DAMAGE_MULT = 0.5
+REWARD_DAMAGE_MULT = 0.05           # Por cada PS de daño causado
 
 # Historia (Flags)
 REWARD_FLAG_STORY = 100.0           # Por conseguir un hito de FLAGS

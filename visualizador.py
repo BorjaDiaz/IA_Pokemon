@@ -30,7 +30,8 @@ from src.utils.map_atlas import ATLAS_DIR, TILE, merge_atlases, ensure_region, n
 OUTPUT_DIR = "visualizaciones"
 MAPS_DIR = os.path.join(OUTPUT_DIR, "mapas")
 ESCALA = 2  # cada casilla de 16 px se dibuja a 32 px
-COLORES = [(230, 57, 70), (29, 120, 230), (46, 184, 92), (255, 159, 28), (155, 89, 214), (0, 200, 200)]
+COLORES = [(230, 57, 70), (29, 120, 230), (46, 184, 92), (255, 159, 28), (155, 89, 214), (0, 200, 200),
+           (255, 105, 180), (240, 228, 66), (139, 87, 42), (255, 255, 255), (120, 120, 255), (0, 120, 60)]
 
 
 def color(rank):
@@ -164,11 +165,13 @@ def render_map(mapa, entry, visitas, recorridos):
     ranks = sorted(visitas)
     maximo = max((c for v in visitas.values() for c in v.values()), default=1)
 
-    # Mini-cuadros 3x2 dentro de cada casilla, uno por clon (posición fija por clon)
-    cw, ch = t // 3, t // 2
+    # Mini-cuadros dentro de cada casilla, uno por clon (posición fija por clon): 3x2 hasta 6 clones, 4x3 hasta 12
+    n_slots = max(ranks, default=0) + 1
+    cols = 3 if n_slots <= 6 else 4
+    filas = math.ceil(n_slots / cols)
+    cw, ch = t // cols, t // filas
     for rank in ranks:
-        slot = rank % 6
-        dx, dy = (slot % 3) * cw, (slot // 3) * ch
+        dx, dy = (rank % cols) * cw, (rank // cols) * ch
         r, g, b = color(rank)
         for (x, y), n in visitas[rank].items():
             alpha = int(255 * (0.35 + 0.65 * math.log1p(n) / math.log1p(maximo)))

@@ -1,4 +1,5 @@
 import os
+import time
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import CheckpointCallback
 import src.utils.config as config
@@ -9,23 +10,32 @@ class AgentManager:
         self.model_path = os.path.join(config.IA_DIR, "modelo_speedrunner.zip")
         os.makedirs(config.IA_DIR, exist_ok=True)
 
+    def _hiperparametros(self):
+        return dict(
+            learning_rate=config.PPO_LEARNING_RATE,
+            gamma=config.PPO_GAMMA,
+            ent_coef=config.PPO_ENT_COEF,
+            n_steps=config.PPO_N_STEPS,
+            batch_size=config.PPO_BATCH_SIZE,
+            tensorboard_log=config.TENSORBOARD_DIR,
+        )
+
     def load_or_create_model(self):
-        """Carga un modelo existente o crea uno nuevo con los hiperparámetros de config.py."""
+        """Carga el modelo guardado (aplicando los hiperparámetros actuales de config.py) o crea uno nuevo.
+        Si el guardado no es compatible (p. ej. cambió la observación), se aparta con otro nombre."""
+        model = None
         if os.path.exists(self.model_path):
             print("\n🧠 [AgentManager] Cargando cerebro existente...")
-            # Si cargas un modelo, le bajamos un poco el learning rate para afinar
-            model = PPO.load(self.model_path, env=self.env, learning_rate=0.0001,
-                             tensorboard_log=config.TENSORBOARD_DIR)
-        else:
+            try:
+                model = PPO.load(self.model_path, env=self.env, **self._hiperparametros())
+            except ValueError as e:
+                apartado = self.model_path.replace(".zip", f"_incompatible_{time.strftime('%Y%m%d_%H%M%S')}.zip")
+                os.replace(self.model_path, apartado)
+                print(f"⚠️ [AgentManager] El modelo guardado no es compatible con el entorno actual ({e}).")
+                print(f"   Se ha apartado como {os.path.basename(apartado)} y se empieza uno nuevo.")
+        if model is None:
             print("\n👶 [AgentManager] Creando cerebro neuronal desde cero...")
-            model = PPO(
-                "CnnPolicy", self.env, verbose=1,
-                learning_rate=config.PPO_LEARNING_RATE,
-                gamma=config.PPO_GAMMA,
-                ent_coef=config.PPO_ENT_COEF,
-                batch_size=config.PPO_BATCH_SIZE,
-                tensorboard_log=config.TENSORBOARD_DIR,
-            )
+            model = PPO("CnnPolicy", self.env, verbose=1, **self._hiperparametros())
         print(f"🖥️ [AgentManager] Entrenando en: {model.device}")
         return model
 

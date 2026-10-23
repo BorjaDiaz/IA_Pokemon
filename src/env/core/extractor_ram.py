@@ -1,3 +1,5 @@
+import numpy as np
+
 import src.utils.constantes as c
 
 class RamExtractor:
@@ -8,9 +10,9 @@ class RamExtractor:
         """Lee un byte de WRAM banco 1 sin depender del banco que tenga activo el juego."""
         return self.pb.memory[c.WRAM_BANK, addr]
 
-    def get_all_flags(self):
-        mem = bytes(self.pb.memory[c.WRAM_BANK, c.FLAG_START:c.FLAG_END+1])
-        return {(c.FLAG_START + i, b): (mem[i] >> b) & 1 for i in range(len(mem)) for b in range(8)}
+    def get_flag_bytes(self):
+        """Los 256 bytes de wEventFlags como array (bit b del byte i = flag (FLAG_START + i, b))."""
+        return np.array(self.pb.memory[c.WRAM_BANK, c.FLAG_START:c.FLAG_END+1], dtype=np.uint8)
 
     def leer_party_count(self):
         return self.leer(c.ADDR_PARTY_COUNT)
