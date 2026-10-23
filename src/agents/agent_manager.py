@@ -13,6 +13,7 @@ class AgentManager:
     def _hiperparametros(self):
         return dict(
             learning_rate=config.PPO_LEARNING_RATE,
+            target_kl=config.PPO_TARGET_KL,
             gamma=config.PPO_GAMMA,
             ent_coef=config.PPO_ENT_COEF,
             n_steps=config.PPO_N_STEPS,

@@ -49,7 +49,7 @@ def guardar_info_run(run_dir, **extra):
             "inicio": time.strftime("%Y-%m-%d %H:%M:%S"),
             "git_commit": commit + ("+cambios" if cambios else ""),
             "config": {k: getattr(config, k) for k in (
-                "NUM_CLONES", "TOTAL_TIMESTEPS", "PPO_LEARNING_RATE", "PPO_GAMMA", "PPO_ENT_COEF", "PPO_N_STEPS",
+                "NUM_CLONES", "TOTAL_TIMESTEPS", "PPO_LEARNING_RATE", "PPO_TARGET_KL", "PPO_GAMMA", "PPO_ENT_COEF", "PPO_N_STEPS",
                 "PPO_BATCH_SIZE", "FRAME_STACK", "FRAMES_POR_ACCION", "FRAMES_PULSACION", "MAX_STEPS_PER_EPISODE",
                 "MAX_STEPS_SIN_PROGRESO", "CURRENT_STAGE")},
             "estado_inicial": config.CURRICULUM_STATES[config.CURRENT_STAGE],

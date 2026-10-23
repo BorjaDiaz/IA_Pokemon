@@ -39,7 +39,8 @@ CURRENT_STAGE = 0
 # ENTRENAMIENTO (PPO)
 # ==========================================
 TOTAL_TIMESTEPS = 5_000_000
-PPO_LEARNING_RATE = 0.0003
+PPO_LEARNING_RATE = 0.0001   # con 0.0003 approx_kl ~0.035 y clip_fraction ~0.25: actualizaciones demasiado bruscas
+PPO_TARGET_KL = 0.02         # corta las vueltas de una actualización si la política ya cambió bastante
 PPO_GAMMA = 0.998          # horizonte largo: los hitos están a miles de pasos
 PPO_ENT_COEF = 0.01        # exploración sin volver la política casi aleatoria
 PPO_N_STEPS = 2048         # pasos que juega cada clon antes de cada actualización de la red
