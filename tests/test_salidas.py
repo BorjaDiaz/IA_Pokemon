@@ -22,7 +22,7 @@ class SalidasTests(unittest.TestCase):
         config.SALIDAS_MEZCLADAS, config.PROB_SALIDA_INICIO, config.PROB_HITO_MAS_AVANZADO = True, 0.5, 0.6
         config.CURRENT_STAGE = 0
         # _elegir_salida solo usa self.rng: no hace falta arrancar el emulador
-        self.env = SimpleNamespace(rng=random.Random(0))
+        self.env = SimpleNamespace(rng=random.Random(0), salida_fija=None)
 
     def tearDown(self):
         (config.STATES_DIR, config.SALIDAS_MEZCLADAS, config.PROB_SALIDA_INICIO,

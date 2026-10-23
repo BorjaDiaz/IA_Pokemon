@@ -31,9 +31,15 @@ def nuevas_estadisticas_combate():
             "pasos_en_combate": 0}
 
 class PokemonGoldEnv(gym.Env):
-    def __init__(self, rank=0):
+    def __init__(self, rank=0, ventana=None, velocidad=None, salida_fija=None):
+        """ventana: True para ver el juego en una ventana (por defecto, según SPEEDRUN_MODE).
+        velocidad: 1 = tiempo real, 2 = el doble... 0 = sin límite (por defecto, según SPEEDRUN_MODE).
+        salida_fija: savestate desde el que empiezan siempre los episodios (por defecto, salidas mezcladas).
+        Se pasan como parámetros porque los clones en procesos aparte no ven los cambios hechos a config."""
         super().__init__()
         self.rank = rank
+        self.ventana = (not config.SPEEDRUN_MODE) if ventana is None else ventana
+        self.salida_fija = salida_fija
         self.total_speedrun_reward = 0.0
         self.ultimo_tipo_combate = 0
         self.episode_counter = 0
@@ -70,9 +76,10 @@ class PokemonGoldEnv(gym.Env):
         self.nivel_total_previo = 0
 
         # Inicialización del emulador (sin sonido: no se usa y cuesta tiempo de CPU)
-        window_type = "null" if config.SPEEDRUN_MODE else "SDL2"
-        self.pb = PyBoy(config.ROM_PATH, window=window_type, sound_emulated=False)
-        self.pb.set_emulation_speed(0 if config.SPEEDRUN_MODE else 1)
+        self.pb = PyBoy(config.ROM_PATH, window="SDL2" if self.ventana else "null", sound_emulated=False)
+        if velocidad is None:
+            velocidad = 1 if self.ventana else 0
+        self.pb.set_emulation_speed(velocidad)
         # Congela el reloj del cartucho: misma hora/día en cada episodio, episodios reproducibles
         self.pb.rtc_lock_experimental(True)
 
@@ -173,7 +180,7 @@ class PokemonGoldEnv(gym.Env):
     def _pulsar(self, action):
         """Mantiene el botón FRAMES_PULSACION frames y espera hasta completar FRAMES_POR_ACCION.
         Solo se dibuja el último frame (el que se observa); dibujar los demás no aporta nada y es lo más caro."""
-        dibujar_todos = not config.SPEEDRUN_MODE  # con ventana, que se vea fluido
+        dibujar_todos = self.ventana  # con ventana, que se vea fluido
         p, r = self.actions[action]
         self.pb.send_input(p)
         ok = self.pb.tick(config.FRAMES_PULSACION, dibujar_todos)
@@ -331,6 +338,8 @@ class PokemonGoldEnv(gym.Env):
 
     def _elegir_salida(self):
         """Savestate desde el que empieza el episodio (ver SALIDAS_MEZCLADAS en config.py)."""
+        if self.salida_fija:
+            return self.salida_fija
         base = config.CURRICULUM_STATES[config.CURRENT_STAGE]
         if not config.SALIDAS_MEZCLADAS:
             return base
