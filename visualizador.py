@@ -32,7 +32,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 import src.utils.config as config
-from src.utils.constantes import FLAGS, MAP_NAMES
+from src.utils.constantes import HITOS, MAP_NAMES
 from src.env.handlers.story import cargar_records
 from src.utils.map_atlas import ATLAS_DIR, TILE, merge_atlases, ensure_region, new_entry
 
@@ -153,9 +153,9 @@ def resumen_splits(metrics):
     for i, row in enumerate(episodios, start=1):
         for split, paso in row.get("splits", {}).items():
             puntos[split].append((i, paso, row.get("rank", 0)))
-    hitos = [h for h in FLAGS if h in puntos]
+    hitos = [h for h in HITOS if h in puntos]
     # El mapa donde empieza el episodio siempre marca el paso 1: no dice nada
-    mapas = [s for s in puntos if s not in FLAGS and np.median([p[1] for p in puntos[s]]) > 1]
+    mapas = [s for s in puntos if s not in HITOS and np.median([p[1] for p in puntos[s]]) > 1]
     mapas.sort(key=lambda s: np.median([p[1] for p in puntos[s]]))
     return [(s, puntos[s], len(episodios)) for s in hitos + mapas]
 
@@ -178,7 +178,7 @@ def plot_splits(splits, max_paneles=12):
         mediana = [np.median(ys[max(0, i - ventana + 1):i + 1]) for i in range(len(ys))]
         ax.plot(xs, mediana, color="black", linewidth=1.5, label=f"mediana (últimos {ventana})")
         ax.plot(xs, np.minimum.accumulate(ys), color="crimson", linestyle="--", linewidth=1, label="récord")
-        tipo = "HITO" if split in FLAGS else "mapa"
+        tipo = "HITO" if split in HITOS else "mapa"
         ax.set_title(f"[{tipo}] {split}\n{len(puntos)}/{total} episodios ({100 * len(puntos) / total:.0f}%) · récord {ys.min()} pasos", fontsize=9)
         ax.set_xlabel("Episodio terminado (todos los clones, en orden)", fontsize=8)
         ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(integer=True))
@@ -292,10 +292,36 @@ def render_map(mapa, entry, visitas, recorridos):
     return final.convert("RGB"), nombre
 
 
+MARGEN_MAPA = 4  # casillas de margen alrededor de la zona conocida del atlas
+
+
+def limites_conocidos(atlas):
+    """{mapa: (x_min, x_max, y_min, y_max)} de la zona que el atlas conoce de cada mapa, con margen."""
+    limites = {}
+    for mapa, entry in atlas.items():
+        if entry["known"].any():
+            filas, cols = np.nonzero(entry["known"])
+            ox, oy = entry["origin"]
+            limites[mapa] = (ox + cols.min() - MARGEN_MAPA, ox + cols.max() + MARGEN_MAPA,
+                             oy + filas.min() - MARGEN_MAPA, oy + filas.max() + MARGEN_MAPA)
+    return limites
+
+
+def dentro_del_mapa(limites, mapa, x, y):
+    """False si (x, y) cae lejos de lo que el atlas conoce de ese mapa. Durante un cambio de mapa la RAM
+    puede tener ya el mapa nuevo con las coordenadas del anterior (p. ej. x=250 en la Ruta 29), y esas
+    visitas sueltas estiraban la imagen del mapa a miles de píxeles casi vacíos."""
+    if mapa not in limites:
+        return True
+    x0, x1, y0, y1 = limites[mapa]
+    return x0 <= x <= x1 and y0 <= y <= y1
+
+
 def plot_maps(coords_por_fuente, ultimos_episodios=None, orden=None):
     """coords_por_fuente: coordenadas de cada ejecución, de la más antigua a la más reciente.
     Las visitas se suman; el recorrido dibujado es el último episodio de la ejecución más reciente."""
     atlas = merge_atlases(sorted(glob.glob(os.path.join(ATLAS_DIR, "clon*.npz"))))
+    limites = limites_conocidos(atlas)
 
     visitas = defaultdict(lambda: defaultdict(Counter))  # mapa -> rank -> Counter
     recorridos = defaultdict(dict)                        # mapa -> rank -> [(x, y)]
@@ -308,6 +334,8 @@ def plot_maps(coords_por_fuente, ultimos_episodios=None, orden=None):
             validos = set(episodios[-ultimos_episodios:]) if ultimos_episodios else set(episodios)
             ultimo = episodios[-1]
             for ep, grp, mid, x, y in puntos:
+                if not dentro_del_mapa(limites, (grp, mid), x, y):
+                    continue  # coordenada mal leída durante un cambio de mapa
                 if ep in validos:
                     visitas[(grp, mid)][rank][(x, y)] += 1
                 if es_la_ultima and ep == ultimo:
@@ -440,7 +468,7 @@ def generar_resumen(fuentes, metrics, splits, mapas):
             pasos = [p[1] for p in puntos]
             ini, fin = np.median(pasos[:10]), np.median(pasos[-10:])
             cambio = f"{100 * (fin - ini) / ini:+.0f}%" if len(pasos) >= 20 else "(pocos datos)"
-            tipo = "★" if split in FLAGS else " "
+            tipo = "★" if split in HITOS else " "
             L.append(f" {tipo}{split:38s} {len(puntos):4d} ({100 * len(puntos) / total:3.0f}%) {min(pasos):7d} {ini:15.0f} {fin:11.0f}  {cambio}")
         L.append("  ★ = hito del speedrun")
         L.append("")
@@ -523,7 +551,7 @@ def estado_tramos(metrics):
     L = ["¿TRAMO DOMINADO? (últimos %d episodios)" % VENTANA_TRAMO]
     ordenados = sorted(metrics, key=lambda r: r["_orden"])
     recientes = ordenados[-VENTANA_TRAMO:]
-    hitos = [h for h in FLAGS if any(h in r.get("splits", {}) for r in ordenados)]
+    hitos = [h for h in HITOS if any(h in r.get("splits", {}) for r in ordenados)]
     if not hitos:
         L.append("  Aún no se ha conseguido ningún hito.")
     if len(recientes) < MIN_EPISODIOS_TRAMO and hitos:
@@ -536,7 +564,7 @@ def estado_tramos(metrics):
         mediana = float(np.median([r["splits"][hito] for r in con_hito[-10:]])) if con_hito else None
         # "Más allá": tras el hito llega a algún mapa que no había pisado antes en ese episodio
         mas_alla = sum(1 for r in con_hito
-                       if any(paso > r["splits"][hito] for nombre, paso in r["splits"].items() if nombre not in FLAGS))
+                       if any(paso > r["splits"][hito] for nombre, paso in r["splits"].items() if nombre not in HITOS))
         mas_alla_frac = mas_alla / len(recientes)
 
         ok_exito = exito >= EXITO_OBJETIVO

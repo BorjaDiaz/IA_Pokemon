@@ -11,7 +11,8 @@ from src.utils import rom_catalog
 # Exploración (baldosas y mapas cuentan una vez por episodio)
 REWARD_STEP = -0.005                 # Penalización por cada paso (para incentivar rapidez)
 REWARD_NEW_TILE = 0.05              # Por pisar una baldosa nueva
-REWARD_NEW_MAP = 5.0               # Por entrar a una zona/mapa nuevo
+REWARD_NEW_MAP = 1.0               # Por entrar a una zona/mapa nuevo (con 5.0 se desviaba a las casas
+                                    # del pueblo: cada una valía tanto como 100 casillas nuevas)
 PENALTY_SAME_TILE = -0.005          # Por quedarse en la misma baldosa fuera de combate y escenas
 PENALTY_REVISIT_TILE = -0.001       # Por volver a una baldosa ya pisada
 PENALTY_NO_PROGRESS = -10.0         # Al cortar el episodio por no avanzar
@@ -95,6 +96,21 @@ FLAGS = {name: rom_catalog.EVENT_FLAGS[name] for name in [
     "EVENT_BEAT_CHAMPION_LANCE",
     "EVENT_BEAT_ELITE_FOUR",
 ]}
+
+# Hitos intermedios de ruta: primera llegada del episodio a mapas clave entre dos hitos de historia
+# (entre el primer Pokémon y el Huevo Misterioso no hay ningún evento que guíe al agente).
+# Cuentan como hitos: premio, savestate de récord y salidas mezcladas.
+_MAPA_POR_NOMBRE = {nombre: clave for clave, nombre in rom_catalog.MAPS.items()}
+HITOS_MAPA = {f"LLEGADA_{nombre}": _MAPA_POR_NOMBRE[nombre] for nombre in [
+    "CHERRYGROVE_CITY",
+    "ROUTE_30",
+    "MR_POKEMONS_HOUSE",
+]}
+
+# Todos los hitos en orden de la ruta (eventos y llegadas a mapas). El orden importa: la salida
+# mezclada empieza desde el más avanzado conseguido
+HITOS = list(FLAGS)
+HITOS[HITOS.index("EVENT_GOT_A_POKEMON_FROM_ELM") + 1:HITOS.index("EVENT_GOT_A_POKEMON_FROM_ELM") + 1] = list(HITOS_MAPA)
 
 # ==========================================
 # MEMORIA COMBATE: TU POKÉMON (LÍDER)

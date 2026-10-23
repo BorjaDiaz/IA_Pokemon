@@ -36,16 +36,7 @@ class StoryHandler:
                 f_id = (c.FLAG_START + int(i), b)
 
                 if f_id in tuplas_historia:
-                    # Hito del speedrun: gran premio y savestate para el curriculum
-                    nombre_evento = tuplas_historia[f_id]
-                    self.hitos_nuevos.append(nombre_evento)
-                    bonus = rewards.calcular_bonus_prisa_flag(step_count)
-                    reward += c.REWARD_FLAG_STORY + bonus
-                    print(f"🌟 [Clon {self.rank}] ¡HIT HISTÓRICO! -> {nombre_evento}")
-                    if self.logger:
-                        self.logger.log_step({"evento": "LOGRO_HISTORIA", "flag": nombre_evento, "step": step_count})
-
-                    self._guardar_si_es_record(pb, ram, nombre_evento, step_count)
+                    reward += self.conseguir_hito(pb, ram, rewards, tuplas_historia[f_id], step_count)
 
                 elif rom_catalog.is_story_flag(*f_id):
                     # Evento de historia menor; los de visibilidad, entrenador y temporales no puntúan
@@ -57,6 +48,16 @@ class StoryHandler:
                         self.logger.log_step({"evento": "PROGRESO_HISTORIA", "flag": nombre_evento, "step": step_count})
 
         return reward
+
+    def conseguir_hito(self, pb, ram, rewards, hito, step_count):
+        """Hito del speedrun (evento de FLAGS o llegada a un mapa de HITOS_MAPA): gran premio con bonus
+        por rapidez y savestate de récord para el curriculum. Devuelve la recompensa."""
+        self.hitos_nuevos.append(hito)
+        print(f"🌟 [Clon {self.rank}] ¡HIT HISTÓRICO! -> {hito}")
+        if self.logger:
+            self.logger.log_step({"evento": "LOGRO_HISTORIA", "flag": hito, "step": step_count})
+        self._guardar_si_es_record(pb, ram, hito, step_count)
+        return c.REWARD_FLAG_STORY + rewards.calcular_bonus_prisa_flag(step_count)
 
     def _guardar_si_es_record(self, pb, ram, hito, step_count):
         """Guarda state/best_speedrun_<hito>.state solo si es el menor tiempo de partida conseguido

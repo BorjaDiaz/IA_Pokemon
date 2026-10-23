@@ -96,7 +96,7 @@ class SplitsCallback(BaseCallback):
             salida = info.get("salida", base)
             prefijo = "" if salida == base else salida.replace("best_speedrun_", "desde_").replace(".state", "") + "/"
             self.logger.record_mean("salidas/desde_base", float(salida == base))
-            self.hitos_vistos.update(h for h in splits if h in c.FLAGS)
+            self.hitos_vistos.update(h for h in splits if h in c.HITOS)
             for hito in self.hitos_vistos:
                 conseguido = hito in splits
                 self.logger.record_mean(f"{prefijo}exito/{hito}", float(conseguido))

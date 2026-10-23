@@ -10,7 +10,7 @@ import src.utils.config as config
 import src.utils.constantes as c
 from src.env.pokemon_env import PokemonGoldEnv
 
-HITOS = list(c.FLAGS)
+HITOS = list(c.HITOS)
 
 
 class SalidasTests(unittest.TestCase):

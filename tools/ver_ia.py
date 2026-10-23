@@ -37,7 +37,7 @@ def salida_de(opcion):
     if opcion == "inicio":
         return config.CURRICULUM_STATES[config.CURRENT_STAGE]
     if opcion == "hito":
-        hitos = [f"best_speedrun_{h}.state" for h in c.FLAGS
+        hitos = [f"best_speedrun_{h}.state" for h in c.HITOS
                  if os.path.exists(os.path.join(config.STATES_DIR, f"best_speedrun_{h}.state"))]
         if not hitos:
             raise SystemExit("Aún no hay ningún savestate de hito; usa --salida inicio.")
@@ -82,8 +82,8 @@ def main():
             for i, (fin, info) in enumerate(zip(dones, infos)):
                 if fin:
                     terminados += 1
-                    mapas = [k for k in info.get("splits", {}) if k not in c.FLAGS]
-                    hitos = [f"{k} @ {v}" for k, v in info.get("splits", {}).items() if k in c.FLAGS]
+                    mapas = [k for k in info.get("splits", {}) if k not in c.HITOS]
+                    hitos = [f"{k} @ {v}" for k, v in info.get("splits", {}).items() if k in c.HITOS]
                     inicio = info.get("salida", "?").replace("best_speedrun_", "hito ").replace(".state", "")
                     print(f"🎮 Ventana {i + 1} · episodio de {info['episode']['l']} pasos desde {inicio}\n"
                           f"     mapas nuevos: {' → '.join(mapas) or 'ninguno'}"

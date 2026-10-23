@@ -113,6 +113,7 @@ class PokemonGoldEnv(gym.Env):
 
         # Mapeo invertido de flags para saber qué evento ocurrió
         self.tuplas_historia = {(int(v[0]), v[1]): k for k, v in c.FLAGS.items()}
+        self.hito_por_mapa = {mapa: hito for hito, mapa in c.HITOS_MAPA.items()}
 
     def _log_episode_summary(self, reward, reason):
         payload = {
@@ -286,6 +287,10 @@ class PokemonGoldEnv(gym.Env):
             reward += c.REWARD_NEW_MAP
             if config.VERBOSE: print(f"🌍 [Clon {self.rank}] ¡Mapa descubierto! -> {map_name}")
             if self.logger: self.logger.log_step({"evento": "NUEVO_MAPA", "mapa": map_name, "step": self.steps_count})
+            # Hito intermedio de ruta: primera llegada a un mapa clave (Ciudad Cerezo, Ruta 30...)
+            hito_mapa = self.hito_por_mapa.get(current_speedrun_map)
+            if hito_mapa:
+                reward += self.h_story.conseguir_hito(self.pb, self.ram, self.rewards, hito_mapa, self.steps_count)
 
 
         # 📸 Capturas: pantalla en memoria cada pocos pasos y foto de cada hito
@@ -325,7 +330,7 @@ class PokemonGoldEnv(gym.Env):
         if reason:
             self._log_episode_summary(self.total_speedrun_reward, reason)
             print(f"🏁 [Clon {self.rank}] FIN DEL EPISODIO ({reason}) | Pasos: {self.steps_count} | Puntuación: {round(self.total_speedrun_reward, 2)}")
-            hitos = [f"{h} @ {p}" for h, p in self.splits.items() if h in c.FLAGS]
+            hitos = [f"{h} @ {p}" for h, p in self.splits.items() if h in c.HITOS]
             if hitos:
                 print(f"⏱️ [Clon {self.rank}] Hitos del episodio: {' | '.join(hitos)}")
             self.capturer.episode_end(pantalla, self.episode_counter, reason, map_name, (x, y),
@@ -344,7 +349,7 @@ class PokemonGoldEnv(gym.Env):
         if not config.SALIDAS_MEZCLADAS:
             return base
         # Hitos conseguidos hasta ahora por cualquier clon, en orden de la ruta (se revisa en cada episodio)
-        hitos = [f"best_speedrun_{h}.state" for h in c.FLAGS
+        hitos = [f"best_speedrun_{h}.state" for h in c.HITOS
                  if os.path.exists(os.path.join(config.STATES_DIR, f"best_speedrun_{h}.state"))]
         if not hitos or self.rng.random() < config.PROB_SALIDA_INICIO:
             return base
