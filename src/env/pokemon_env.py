@@ -42,7 +42,9 @@ class PokemonGoldEnv(gym.Env):
         window_type = "null" if config.SPEEDRUN_MODE else "SDL2"
         self.pb = PyBoy(config.ROM_PATH, window=window_type)
         self.pb.set_emulation_speed(0 if config.SPEEDRUN_MODE else 1)
-        
+        # Congela el reloj del cartucho: misma hora/día en cada episodio, episodios reproducibles
+        self.pb.rtc_lock_experimental(True)
+
         # 🔌 Conexión de módulos base
         self.ram = RamExtractor(self.pb)
         self.rewards = RewardSystem(rank=self.rank)
@@ -145,8 +147,8 @@ class PokemonGoldEnv(gym.Env):
         reward = c.REWARD_STEP
 
         # 📍 Leer coordenadas y mapa actuales del speedrun
-        x, y = self.pb.memory[c.ADDR_PLAYER_X], self.pb.memory[c.ADDR_PLAYER_Y]
-        grp, mid = self.pb.memory[c.ADDR_MAP_GRP], self.pb.memory[c.ADDR_MAP_ID]
+        x, y = self.ram.leer(c.ADDR_PLAYER_X), self.ram.leer(c.ADDR_PLAYER_Y)
+        grp, mid = self.ram.leer(c.ADDR_MAP_GRP), self.ram.leer(c.ADDR_MAP_ID)
         current_speedrun_tile, current_speedrun_map = (grp, mid, x, y), (grp, mid)
         map_name = c.MAP_NAMES.get(current_speedrun_map, f"Mapa {grp}-{mid}")
 
@@ -157,7 +159,7 @@ class PokemonGoldEnv(gym.Env):
                 f.write(f"{x},{y},{grp},{mid}\n")
 
         # --- 💥 BLOQUE MOVIDO AQUÍ PARA QUE EXISTA 'en_combate' ---
-        tipo_combate = self.pb.memory[c.ADDR_BATTLE_TYPE]
+        tipo_combate = self.ram.leer(c.ADDR_BATTLE_MODE)
         en_combate = tipo_combate > 0
         vida_actual_equipo = self.ram.leer_vida_total_equipo()
 
@@ -178,7 +180,7 @@ class PokemonGoldEnv(gym.Env):
             else:
                 self.gestor.imprimir_auditoria(tipo_combate)
                 if self.logger:
-                    tipo_str = "Entrenador" if tipo_combate in [1, 2] else "Salvaje"
+                    tipo_str = "Entrenador" if tipo_combate == 2 else "Salvaje"
                     self.logger.log_step({"evento": "INICIO_COMBATE", "tipo": tipo_str, "mapa": map_name, "step": self.steps_count})
             
             self.ultimo_tipo_combate = tipo_combate
@@ -230,7 +232,7 @@ class PokemonGoldEnv(gym.Env):
             print(f"🚪 [Clon {self.rank}] Transición de mapa/puerta detectada (+{transition_bonus})")
 
         # 💀 CONDICIÓN DE MUERTE (Cortes de Episodio)
-        party_count = self.pb.memory[0xDA22]
+        party_count = self.ram.leer_party_count()
         if vida_actual_equipo <= 0 and party_count > 0:
             print(f"💀 [Clon {self.rank}] ¡Equipo debilitado! Reiniciando...")
             if self.logger: self.logger.log_step({"evento": "EQUIPO_DEBILITADO", "mapa": map_name, "step": self.steps_count})

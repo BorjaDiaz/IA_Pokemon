@@ -31,7 +31,7 @@ class MovementHandler:
             reward -= 0.001
 
         # Bonus extra para salir de la casa inicial y abrir la exploración
-        if map_name in {"Tu Casa (Planta Baja)", "Tu Habitación"} and (x, y) != last_pos:
+        if map_name in {"PLAYERS_HOUSE_1F", "PLAYERS_HOUSE_2F"} and (x, y) != last_pos:
             reward += 0.06
 
         # ⚠️ Alertas de atasco

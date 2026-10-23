@@ -1,4 +1,5 @@
 import src.utils.config as config
+from src.utils import rom_catalog
 
 
 # ==========================================
@@ -22,90 +23,67 @@ PENALTY_TEAM_FAINTED = -15.0        # Game Over (equipo debilitado)
 REWARD_DAMAGE_MULT = 0.5
 
 # Historia (Flags)
-REWARD_FLAG_STORY = 100.0           # Por conseguir un objetivo clave de la historia
-REWARD_FLAG_UNKNOWN = 2.0           # Por activar un evento menor o desconocido
+REWARD_FLAG_STORY = 100.0           # Por conseguir un hito de FLAGS
+REWARD_FLAG_UNKNOWN = 2.0           # Por otro event flag de historia (no visibilidad/entrenador/temporal)
 
 MAX_STEPS_PER_EPISODE = getattr(config, 'MAX_STEPS_PER_EPISODE', 500000)
 
 # ==========================================
-# MEMORIA BASE
+# MEMORIA BASE (WRAM banco 1, verificada en tests/test_rom_addresses.py)
 # ==========================================
-ADDR_MAP_GRP  = 0xDA00
-ADDR_MAP_ID   = 0xDA01
-ADDR_PLAYER_Y = 0xD20E
-ADDR_PLAYER_X = 0xD20D
+WRAM_BANK = 1
+ADDR_MAP_GRP  = rom_catalog.RAM["wMapGroup"]
+ADDR_MAP_ID   = rom_catalog.RAM["wMapNumber"]
+ADDR_PLAYER_Y = rom_catalog.RAM["wYCoord"]
+ADDR_PLAYER_X = rom_catalog.RAM["wXCoord"]
 
 # ==========================================
 # ESTADO DEL JUEGO / COMBATE
 # ==========================================
+ADDR_BATTLE_MODE = rom_catalog.RAM["wBattleMode"]  # 0 = Mapa, 1 = Salvaje, 2 = Entrenador
+ADDR_PARTY_COUNT = rom_catalog.RAM["wPartyCount"]
 
-ADDR_BATTLE_TYPE = 0xD11E # 0 = Mapa, 1 = Salvaje, 2 = Entrenador
 # ==========================================
 # RANGO FLAGS
 # ==========================================
-FLAG_START = 0xD7B7
-FLAG_END   = 0xD8B6
+FLAG_START = rom_catalog.RAM["wEventFlags"]
+FLAG_END   = FLAG_START + 255
 
 # ==========================================
-# FLAGS CONOCIDOS (HISTORIA)
+# HITOS DEL SPEEDRUN (event flags de pret, en orden aproximado de la ruta)
 # ==========================================
-FLAGS = {
-    # Validado con los savestates disponibles de la ROM actual
-    "got_cyndaquil": (0xD87F, 0),
-    "got_totodile":  (0xD87F, 1),
-    "got_chikorita": (0xD87F, 2),
-    "has_pokemon_1": (0xD7BA, 3),
-    "has_pokemon_2": (0xD7BA, 5),
-    "player_is_trainer": (0xD7BA, 2),
-    "got_pokegear_1": (0xD88F, 7),
-    "entered_route_29": (0xD8A2, 1),
-    "got_radio": (0xD81B, 5),
-
-    # Gimnasios y progreso principal
-    "beat_falkner": (0xD8B0, 0),
-    "beat_bugsy":   (0xD8B0, 1),
-    "beat_whitney": (0xD8B0, 2),
-    "beat_morty":   (0xD8B0, 3),
-    "beat_chuck":   (0xD8B0, 4),
-    "beat_jasmine": (0xD8B0, 5),
-    "beat_pryce":   (0xD8B0, 6),
-    "beat_clair":   (0xD8B0, 7),
-}
-
-# Flags candidatos para validar en ejecución contra la ROM actual.
-# Algunos de estos bits han aparecido en los diffs entre save states del proyecto.
-FLAGS_CANDIDATES = {
-    "spoke_with_elm": (0xD8A2, 0),
-    "met_rival": (0xD8A4, 0),
-    "defeated_rival": (0xD8A4, 1),
-    "rival_stole_pokemon": (0xD8A4, 2),
-    "got_pokegear_2": (0xD890, 0),
-    "got_pokedex": (0xD8A8, 5),
-    "runtime_d7ba_4": (0xD7BA, 4),
-    "runtime_d7ba_2": (0xD7BA, 2),
-    "runtime_d7ba_3": (0xD7BA, 3),
-    "runtime_d7ba_5": (0xD7BA, 5),
-    "runtime_d81b_5": (0xD81B, 5),
-    "runtime_d87f_0": (0xD87F, 0),
-    "runtime_d87f_1": (0xD87F, 1),
-    "runtime_d87f_2": (0xD87F, 2),
-    "runtime_d88f_7": (0xD88F, 7),
-    "runtime_d8a2_1": (0xD8A2, 1),
-}
-
-# Mapa de eventos de progreso derivado de los diffs de save states.
-RUNTIME_PROGRESS_FLAGS = {
-    (0xD7BA, 2): "player_is_trainer",
-    (0xD7BA, 3): "has_pokemon_1",
-    (0xD7BA, 4): "runtime_d7ba_4",
-    (0xD7BA, 5): "has_pokemon_2",
-    (0xD81B, 5): "got_radio",
-    (0xD87F, 0): "got_cyndaquil",
-    (0xD87F, 1): "got_totodile",
-    (0xD87F, 2): "got_chikorita",
-    (0xD88F, 7): "got_pokegear_1",
-    (0xD8A2, 1): "entered_route_29",
-}
+FLAGS = {name: rom_catalog.EVENT_FLAGS[name] for name in [
+    "EVENT_GOT_A_POKEMON_FROM_ELM",
+    "EVENT_GOT_MYSTERY_EGG_FROM_MR_POKEMON",
+    "EVENT_GAVE_MYSTERY_EGG_TO_ELM",
+    "EVENT_BEAT_FALKNER",
+    "EVENT_CLEARED_SLOWPOKE_WELL",
+    "EVENT_BEAT_BUGSY",
+    "EVENT_GOT_HM01_CUT",
+    "EVENT_BEAT_WHITNEY",
+    "EVENT_GOT_SQUIRTBOTTLE",
+    "EVENT_FOUGHT_SUDOWOODO",
+    "EVENT_BEAT_MORTY",
+    "EVENT_GOT_HM03_SURF",
+    "EVENT_BEAT_CHUCK",
+    "EVENT_GOT_HM02_FLY",
+    "EVENT_GOT_SECRETPOTION_FROM_PHARMACY",
+    "EVENT_BEAT_JASMINE",
+    "EVENT_DECIDED_TO_HELP_LANCE",
+    "EVENT_CLEARED_ROCKET_HIDEOUT",
+    "EVENT_BEAT_PRYCE",
+    "EVENT_CLEARED_RADIO_TOWER",
+    "EVENT_BEAT_CLAIR",
+    "EVENT_GOT_HM06_WHIRLPOOL",
+    "EVENT_GOT_HM04_STRENGTH",
+    "EVENT_GOT_HM07_WATERFALL",
+    "EVENT_BEAT_ELITE_4_WILL",
+    "EVENT_BEAT_ELITE_4_KOGA",
+    "EVENT_BEAT_ELITE_4_BRUNO",
+    "EVENT_BEAT_ELITE_4_KAREN",
+    "EVENT_BEAT_CHAMPION_LANCE",
+    "EVENT_BEAT_ELITE_FOUR",
+]}
 
 # ==========================================
 # MEMORIA COMBATE: TU POKÉMON (LÍDER)
@@ -125,11 +103,11 @@ ADDR_LIDER_SP_ATQ     = 0xDA56
 ADDR_LIDER_SP_DEF     = 0xDA58 
 
 # ==========================================
-# MEMORIA COMBATE: POKÉMON RIVAL (¡Corregido!)
+# MEMORIA COMBATE: POKÉMON RIVAL (wEnemyMon)
 # ==========================================
 ADDR_RIVAL_NIVEL      = 0xD0FC
-ADDR_RIVAL_TIPO1      = 0xD0FD
-ADDR_RIVAL_TIPO2      = 0xD0FE
+ADDR_RIVAL_TIPO1      = 0xD10D
+ADDR_RIVAL_TIPO2      = 0xD10E
 ADDR_RIVAL_HP_ACTUAL  = 0xD0FF # Fila ajustada al Big Endian real
 ADDR_RIVAL_HP_MAX     = 0xD101 
 ADDR_RIVAL_ATQ        = 0xD103 
@@ -173,63 +151,41 @@ MOVES_DB = {
 # ==========================================
 # NOMBRES DE MAPAS
 # ==========================================
-MAP_NAMES = {
-    (1, 1): "Ciudad Olivo (Exterior)", (1, 2): "Centro Pokémon de Olivo", (1, 3): "Cafetería de Olivo", (1, 4): "Casa del Pescador", (1, 5): "Gimnasio de Olivo", (1, 6): "Ruta 39 (Entrada a Olivo)", (1, 7): "Faro (Piso 1)", (1, 8): "Faro (Piso 2)", (1, 9): "Faro (Piso 3)", (1, 10): "Faro (Piso 4)", (1, 11): "Faro (Piso 5)", (1, 12): "Faro (Piso 6)",
-    (2, 1): "Ciudad Iris (Exterior)", (2, 2): "Teatro de Danza", (2, 3): "Torre Quemada (PB)", (2, 4): "Torre Quemada (Sótano)", (2, 5): "Centro Pokémon Iris", (2, 6): "Gimnasio de Iris", (2, 7): "Torre Hojalata (Entrada)", (2, 8): "Torre Hojalata (Piso 1)",
-    (3, 1): "Ciudad Trigal (Exterior)", (3, 2): "Gimnasio de Trigal", (3, 3): "Centro Pokémon Trigal", (3, 4): "Centro Comercial (Piso 1)", (3, 5): "Centro Comercial (Piso 2)", (3, 6): "Centro Comercial (Piso 3)", (3, 7): "Centro Comercial (Piso 4)", (3, 8): "Centro Comercial (Piso 5)", (3, 9): "Centro Comercial (Piso 6)", (3, 10): "Centro Comercial (Elevador)", (3, 11): "Centro Comercial (Sótano)", (3, 12): "Radio (Piso 1)", (3, 13): "Radio (Piso 2)", (3, 14): "Radio (Piso 3)", (3, 15): "Radio (Piso 4)", (3, 16): "Radio (Piso 5)", (3, 17): "Subterráneo (Pasillo)", (3, 18): "Subterráneo (Almacén)", (3, 19): "Magnetotren",
-    (4, 1): "Ciudad Orquídea (Exterior)", (4, 2): "Gimnasio Orquídea", (4, 3): "Centro Pokémon Orquídea", (4, 4): "Farmacia Pokémon", (4, 5): "Casa Extra",
-    (5, 1): "Pueblo Caoba (Exterior)", (5, 2): "Gimnasio Caoba", (5, 3): "Tienda Souvenirs", (5, 4): "Escondite Rocket (Sótano 1)", (5, 5): "Escondite Rocket (Sótano 2)", (5, 6): "Escondite Rocket (Sótano 3)",
-    (7, 1): "Ciudad Endrino (Exterior)", (7, 2): "Gimnasio Endrino", (7, 3): "Centro Pokémon Endrino", (7, 4): "Cueva Dragón", (7, 5): "Cueva Dragón (Santuario)",
-    (9, 1): "Ciudad Malva (Exterior)", (9, 2): "Gimnasio Malva", (9, 3): "Escuela Pokémon", (9, 4): "Centro Pokémon Malva", (9, 5): "Torre Bellsprout (Piso 1)", (9, 6): "Torre Bellsprout (Piso 2)", (9, 7): "Torre Bellsprout (Piso 3)",
-    (10, 1): "Pueblo Azalea (Exterior)", (10, 2): "Gimnasio Azalea", (10, 3): "Centro Pokémon Azalea", (10, 4): "Casa de César", (10, 5): "Pozo Slowpoke (Piso 1)", (10, 6): "Pozo Slowpoke (Sótano 1)",
-    (11, 1): "Cueva Unión (Piso 1)", (11, 2): "Cueva Unión (Sótano 1)", (11, 3): "Cueva Unión (Sótano 2)", (13, 1): "Cueva Helada (Piso 1)", (13, 2): "Cueva Helada (Sótano 1)", (13, 3): "Cueva Helada (Sótano 2)", (13, 4): "Cueva Helada (Sótano 3)", (15, 1): "Encinar", (16, 1): "Ruinas Alfa", (16, 2): "Ruinas Alfa (Sótano)", (18, 1): "Monte Mortero (Centro)", (18, 2): "Monte Mortero (Sótano 1)", (18, 3): "Monte Mortero (Lados)", (21, 1): "Islas Remolino (Piso 1)", (21, 2): "Islas Remolino (Sótano 1)", (21, 3): "Islas Remolino (Lugia)",
-    (22, 1): "Ruta 26", (22, 2): "Ruta 27", (22, 3): "Calle Victoria", (22, 4): "Liga Pokémon (Hall)", (22, 5): "Liga Pokémon (Mento)", (22, 6): "Liga Pokémon (Koga)", (22, 7): "Liga Pokémon (Bruno)", (22, 8): "Liga Pokémon (Karen)", (22, 9): "Liga Pokémon (Lance)",
-    (24, 3): "Ruta 29", (24, 4): "Pueblo Primavera (Exterior)", (24, 5): "Laboratorio del Prof. Elm", (24, 6): "Tu Casa (Planta Baja)", (24, 7): "Tu Habitación", (24, 8): "Casa del Vecino",(24, 9): "Casa del Rival",
-    (25, 1): "Ruta 30", (25, 2): "Ruta 31", (25, 3): "Centro Pokémon Ruta 31", (25, 4): "Cueva Oscura", (25, 5): "Casa del Sr. Pokémon", (25, 6): "Casa de los Bonguris",
-    (26, 1): "Ciudad Cerezo (Exterior)", (26, 2): "Centro Pokémon Cerezo", (26, 3): "Tienda Pokémon Cerezo", (26, 4): "Casa del Guía", (26, 5): "Casa Extra Cerezo",
-    (28, 1): "Parque Nacional", (28, 2): "Caseta Ruta 35", (28, 3): "Caseta Ruta 36",
-    (29, 1): "Ruta 43", (29, 2): "Lago de la Furia", (29, 3): "Caseta Ruta 43",
-    (31, 1): "Ruta 32", (31, 2): "Ruta 33", (31, 4): "Centro Pokémon Ruta 32",
-    (32, 1): "Ruta 34", (32, 2): "Ruta 35", (32, 3): "Guardería Pokémon",
-    (33, 1): "Ruta 36", (33, 2): "Ruta 37",
-    (34, 1): "Ruta 38", (34, 2): "Ruta 39", (34, 4): "Granja Mu-mu",
-    (35, 1): "Ruta 40", (35, 2): "Ruta 41",
-    (36, 1): "Ruta 42", (36, 2): "Ruta 44",
-    (37, 1): "Ruta 45", (37, 2): "Ruta 46",
-}
+# Constantes de pret (p. ej. ROUTE_29, PLAYERS_HOUSE_1F), indexadas por (grupo, número)
+MAP_NAMES = dict(rom_catalog.MAPS)
 
 
 # ==========================================
 # 📊 TABLA DE TIPOS - POKÉMON GEN 2 (Oro/Plata)
 # ==========================================
-# 0: Normal, 1: Lucha, 2: Volador, 3: Veneno, 4: Tierra, 5: Roca, 6: Bicho, 7: Fantasma, 8: Acero
+# 0: Normal, 1: Lucha, 2: Volador, 3: Veneno, 4: Tierra, 5: Roca, 7: Bicho, 8: Fantasma, 9: Acero
 # 20: Fuego, 21: Agua, 22: Planta, 23: Eléctrico, 24: Psíquico, 25: Hielo, 26: Dragón, 27: Siniestro
 
 TABLA_TIPOS = {
     # ATACANTE: { DEFENSOR: MULTIPLICADOR }
-    0:  {5: 0.5, 8: 0.5, 7: 0.0},                              # Normal
-    1:  {0: 2.0, 5: 2.0, 8: 2.0, 25: 2.0, 27: 2.0, 2: 0.5, 3: 0.5, 6: 0.5, 24: 0.5, 7: 0.0}, # Lucha
-    2:  {1: 2.0, 6: 2.0, 22: 2.0, 5: 0.5, 8: 0.5, 23: 0.5},   # Volador
-    3:  {22: 2.0, 3: 0.5, 4: 0.5, 5: 0.5, 7: 0.5, 8: 0.0},     # Veneno
-    4:  {3: 2.0, 5: 2.0, 20: 2.0, 23: 2.0, 8: 2.0, 6: 0.5, 22: 0.5, 2: 0.0}, # Tierra
-    5:  {2: 2.0, 6: 2.0, 20: 2.0, 25: 2.0, 1: 0.5, 4: 0.5, 8: 0.5}, # Roca
-    6:  {22: 2.0, 24: 2.0, 27: 2.0, 1: 0.5, 2: 0.5, 3: 0.5, 20: 0.5, 7: 0.5, 8: 0.5}, # Bicho
-    7:  {7: 2.0, 24: 2.0, 27: 0.5, 8: 0.5, 0: 0.0},           # Fantasma
-    8:  {5: 2.0, 25: 2.0, 20: 0.5, 21: 0.5, 23: 0.5, 8: 0.5}, # Acero
-    20: {6: 2.0, 8: 2.0, 22: 2.0, 25: 2.0, 5: 0.5, 20: 0.5, 21: 0.5, 26: 0.5}, # Fuego
+    0:  {5: 0.5, 9: 0.5, 8: 0.0},                              # Normal
+    1:  {0: 2.0, 5: 2.0, 9: 2.0, 25: 2.0, 27: 2.0, 2: 0.5, 3: 0.5, 7: 0.5, 24: 0.5, 8: 0.0}, # Lucha
+    2:  {1: 2.0, 7: 2.0, 22: 2.0, 5: 0.5, 9: 0.5, 23: 0.5},   # Volador
+    3:  {22: 2.0, 3: 0.5, 4: 0.5, 5: 0.5, 8: 0.5, 9: 0.0},     # Veneno
+    4:  {3: 2.0, 5: 2.0, 20: 2.0, 23: 2.0, 9: 2.0, 7: 0.5, 22: 0.5, 2: 0.0}, # Tierra
+    5:  {2: 2.0, 7: 2.0, 20: 2.0, 25: 2.0, 1: 0.5, 4: 0.5, 9: 0.5}, # Roca
+    7:  {22: 2.0, 24: 2.0, 27: 2.0, 1: 0.5, 2: 0.5, 3: 0.5, 20: 0.5, 8: 0.5, 9: 0.5}, # Bicho
+    8:  {8: 2.0, 24: 2.0, 27: 0.5, 9: 0.5, 0: 0.0},           # Fantasma
+    9:  {5: 2.0, 25: 2.0, 20: 0.5, 21: 0.5, 23: 0.5, 9: 0.5}, # Acero
+    20: {7: 2.0, 9: 2.0, 22: 2.0, 25: 2.0, 5: 0.5, 20: 0.5, 21: 0.5, 26: 0.5}, # Fuego
     21: {4: 2.0, 5: 2.0, 20: 2.0, 21: 0.5, 22: 0.5, 26: 0.5}, # Agua
-    22: {4: 2.0, 5: 2.0, 21: 2.0, 2: 0.5, 3: 0.5, 6: 0.5, 8: 0.5, 20: 0.5, 22: 0.5, 26: 0.5}, # Planta
+    22: {4: 2.0, 5: 2.0, 21: 2.0, 2: 0.5, 3: 0.5, 7: 0.5, 9: 0.5, 20: 0.5, 22: 0.5, 26: 0.5}, # Planta
     23: {2: 2.0, 21: 2.0, 22: 0.5, 23: 0.5, 26: 0.5, 4: 0.0}, # Eléctrico
-    24: {1: 2.0, 3: 2.0, 8: 0.5, 24: 0.5, 27: 0.0},           # Psíquico
-    25: {2: 2.0, 4: 2.0, 22: 2.0, 26: 2.0, 8: 0.5, 20: 0.5, 21: 0.5, 25: 0.5}, # Hielo
-    26: {26: 2.0, 8: 0.5},                                     # Dragón
-    27: {7: 2.0, 24: 2.0, 1: 0.5, 27: 0.5}                    # Siniestro
+    24: {1: 2.0, 3: 2.0, 9: 0.5, 24: 0.5, 27: 0.0},           # Psíquico
+    25: {2: 2.0, 4: 2.0, 22: 2.0, 26: 2.0, 9: 0.5, 20: 0.5, 21: 0.5, 25: 0.5}, # Hielo
+    26: {26: 2.0, 9: 0.5},                                     # Dragón
+    27: {8: 2.0, 24: 2.0, 1: 0.5, 27: 0.5}                    # Siniestro
 }
 
 # Diccionario para que los prints queden bonitos en el log
 NOMBRES_TIPOS = {
     0: "Normal", 1: "Lucha", 2: "Volador", 3: "Veneno", 4: "Tierra", 5: "Roca", 
-    6: "Bicho", 7: "Fantasma", 8: "Acero", 20: "Fuego", 21: "Agua", 22: "Planta", 
+    7: "Bicho", 8: "Fantasma", 9: "Acero", 20: "Fuego", 21: "Agua", 22: "Planta", 
     23: "Eléctrico", 24: "Psíquico", 25: "Hielo", 26: "Dragón", 27: "Siniestro"
 }
 
@@ -240,16 +196,16 @@ class GestorCombate:
         
     def leer_stat_2bytes(self, direccion):
         """Lee valores de 2 bytes (Big Endian) como Vida, Ataque, etc."""
-        high = self.pb.memory[direccion]
-        low = self.pb.memory[direccion + 1]
+        high = self.pb.memory[WRAM_BANK, direccion]
+        low = self.pb.memory[WRAM_BANK, direccion + 1]
         return (high << 8) + low
 
     def leer_vida_enemigo(self):
         return self.leer_stat_2bytes(ADDR_RIVAL_HP_ACTUAL)
 
     def leer_tipos_enemigo_nombres(self):
-        tipo1 = self.pb.memory[ADDR_RIVAL_TIPO1]
-        tipo2 = self.pb.memory[ADDR_RIVAL_TIPO2]
+        tipo1 = self.pb.memory[WRAM_BANK, ADDR_RIVAL_TIPO1]
+        tipo2 = self.pb.memory[WRAM_BANK, ADDR_RIVAL_TIPO2]
         t1_nombre = NOMBRES_TIPOS.get(tipo1, "Desconocido")
         t2_nombre = NOMBRES_TIPOS.get(tipo2, "Desconocido")
         return [t1_nombre] if tipo1 == tipo2 else [t1_nombre, t2_nombre]
@@ -258,7 +214,7 @@ class GestorCombate:
         ataques = []
         slots = [ADDR_LIDER_ATK1, ADDR_LIDER_ATK2, ADDR_LIDER_ATK3, ADDR_LIDER_ATK4]
         for i, addr in enumerate(slots):
-            atk_id = self.pb.memory[addr]
+            atk_id = self.pb.memory[WRAM_BANK, addr]
             if atk_id != 0 and atk_id in MOVES_DB:
                 nombre, tipo, _, _, _ = MOVES_DB[atk_id]
                 ataques.append((i + 1, atk_id, nombre, tipo))
@@ -266,8 +222,8 @@ class GestorCombate:
 
     def imprimir_auditoria(self, tipo_combate_id):
         # 1. Recopilar datos del LÍDER
-        esp_id = self.pb.memory[ADDR_LIDER_ESPECIE]
-        lvl_lider = self.pb.memory[ADDR_LIDER_NIVEL]
+        esp_id = self.pb.memory[WRAM_BANK, ADDR_LIDER_ESPECIE]
+        lvl_lider = self.pb.memory[WRAM_BANK, ADDR_LIDER_NIVEL]
         hp_act = self.leer_stat_2bytes(ADDR_LIDER_HP_ACTUAL)
         hp_max = self.leer_stat_2bytes(ADDR_LIDER_HP_MAX)
         atk_l = self.leer_stat_2bytes(ADDR_LIDER_ATQ)
@@ -275,13 +231,7 @@ class GestorCombate:
         vel_l = self.leer_stat_2bytes(ADDR_LIDER_VEL)
         spa_l = self.leer_stat_2bytes(ADDR_LIDER_SP_ATQ)
         spd_l = self.leer_stat_2bytes(ADDR_LIDER_SP_DEF)
-        if tipo_combate_id in [1, 2]:
-            tipo_lbl = "Entrenador"
-        elif tipo_combate_id > 0:
-            tipo_lbl = "Pokémon Salvaje"
-        else:
-            tipo_lbl = "Desconocido"
-        
+
         tipos_lider = POKEDEX_TIPOS.get(esp_id, ("Desconocido", "Desconocido"))
         str_tipos_lider = f"[{tipos_lider[0]}]" if tipos_lider[0] == tipos_lider[1] else f"[{tipos_lider[0]}] [{tipos_lider[1]}]"
         
@@ -290,7 +240,7 @@ class GestorCombate:
             ataques_str += f"\n   🎒 Slot {atk[0]}: ID [{atk[1]}] {atk[2]} (Tipo: {atk[3]})"
 
         # 2. Recopilar datos del RIVAL
-        lvl_rival = self.pb.memory[ADDR_RIVAL_NIVEL]
+        lvl_rival = self.pb.memory[WRAM_BANK, ADDR_RIVAL_NIVEL]
         hp_act_r = self.leer_stat_2bytes(ADDR_RIVAL_HP_ACTUAL)
         hp_max_r = self.leer_stat_2bytes(ADDR_RIVAL_HP_MAX)
         atk_r = self.leer_stat_2bytes(ADDR_RIVAL_ATQ)
