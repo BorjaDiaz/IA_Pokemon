@@ -109,12 +109,14 @@ class PokemonGoldEnvTests(unittest.TestCase):
             self.env.reset()
             self.assertEqual(self.env.mapas_previos, {tuple(m) for m in previos})
             self.assertTrue(self.env.mapas_previos <= self.env.episode_maps)
-            # Moverse por el laboratorio (mapa previo) no suma casillas nuevas
+            # Moverse por el laboratorio (mapa previo) no da recompensa de exploración...
             for accion in [1, 1, 2, 2, 3, 3, 0]:
-                self.env.step(accion)
-            mapa = (self.env.ram.leer(c.ADDR_MAP_GRP), self.env.ram.leer(c.ADDR_MAP_ID))
-            if mapa in self.env.mapas_previos:
-                self.assertFalse(any(t[:2] == mapa for t in self.env.episode_tiles))
+                _, reward, *_ = self.env.step(accion)
+                mapa = (self.env.ram.leer(c.ADDR_MAP_GRP), self.env.ram.leer(c.ADDR_MAP_ID))
+                if mapa in self.env.mapas_previos and not self.env.h_story.hubo_progreso:
+                    self.assertLessEqual(reward, 0)
+            # ...pero moverse por casillas no pisadas sí cuenta como no estar atascado
+            self.assertLess(self.env.h_movement.steps_sin_progreso, 7)
         finally:
             config.CURRICULUM_STATES = estados
 

@@ -27,13 +27,17 @@ class MovementHandlerTests(unittest.TestCase):
         self.assertEqual(reward, c.PENALTY_NO_PROGRESS)
 
     def test_maps_before_the_start_milestone_are_not_explorable(self):
-        # Empezando en un hito, volver a casa no da recompensa de exploración ni reinicia el contador
+        # Empezando en un hito, volver a casa no da recompensa de exploración, pero moverse por casillas
+        # no pisadas sí reinicia el contador: si no, el episodio se cortaba antes de llegar a la ruta
         handler, visited = MovementHandler(rank=0), set()
         handler.steps_sin_progreso = 10
         reward, _ = paso(handler, visited, pos=(2, 1), explorable=False)
         self.assertLess(reward, 0)
-        self.assertEqual(visited, set())
-        self.assertEqual(handler.steps_sin_progreso, 11)
+        self.assertEqual(visited, {(24, 7, 2, 1)})
+        self.assertEqual(handler.steps_sin_progreso, 0)
+        # La segunda vez en la misma casilla ya no reinicia nada
+        paso(handler, visited, pos=(2, 1), last_pos=(1, 1), explorable=False)
+        self.assertEqual(handler.steps_sin_progreso, 1)
 
     def test_game_events_reset_no_progress_counter(self):
         handler, visited = MovementHandler(rank=0), {(24, 7, 1, 1)}

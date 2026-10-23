@@ -15,8 +15,10 @@ class MovementHandler:
         """El contador de pasos sin progreso avanza en todos los pasos, también en diálogos y combates:
         si se pausara en ellos, repetir un diálogo sin fin evitaría el corte del episodio.
         Lo reinicia una casilla nueva o registrar_progreso() (eventos nuevos del juego).
-        explorable=False: mapa ya recorrido antes del hito desde el que empezó el episodio; sus casillas
-        no cuentan como nuevas (volver atrás no es progreso)."""
+        explorable=False: mapa ya recorrido antes del hito desde el que empezó el episodio. Pisar una
+        casilla suya por primera vez reinicia el contador (se está moviendo, no atascado) pero no da
+        recompensa (volver atrás no es avanzar). Si tampoco reiniciara el contador, el episodio se cortaba
+        antes de poder llegar a la Ruta 29 y descubrir que allí sí hay recompensa."""
         reward = 0.0
         sin_progreso = False
         self.steps_sin_progreso += 1
@@ -27,9 +29,9 @@ class MovementHandler:
                 reward += c.PENALTY_SAME_TILE
 
             # 🗺️ Recompensa por explorar nuevos tiles (visited_tiles se vacía en cada episodio)
-            if explorable and curr_tile not in visited_tiles:
+            if curr_tile not in visited_tiles:
                 visited_tiles.add(curr_tile)
-                reward += c.REWARD_NEW_TILE
+                reward += c.REWARD_NEW_TILE if explorable else c.PENALTY_REVISIT_TILE
                 self.steps_sin_progreso = 0
             else:
                 reward += c.PENALTY_REVISIT_TILE
