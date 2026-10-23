@@ -387,6 +387,7 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         L.append(f" {tipo}{split:38s} {len(puntos):4d} ({100 * len(puntos) / total:3.0f}%) {min(pasos):7d} {ini:15.0f} {fin:11.0f}  {cambio}")
     L.append("  ★ = hito del speedrun")
     L.append("")
+    L.extend(estado_tramos(metrics))
 
     # Combates
     con_datos = [r for r in metrics if "combates" in r]
@@ -409,7 +410,9 @@ def generar_resumen(fuentes, metrics, splits, mapas):
 
     # TensorBoard
     tb = _metricas_tensorboard(desde, hasta) if (desde is not None or not infos) else {}
-    L.append("APRENDIZAJE (TensorBoard" + (f", pasos {desde:,}–{hasta:,})" if desde is not None else ")"))
+    # Con la ejecución aún en curso, run.json no tiene pasos_al_terminar (hasta = None)
+    tramo = f", pasos {desde:,}–{f'{hasta:,}' if hasta is not None else 'ahora'}" if desde is not None else ""
+    L.append(f"APRENDIZAJE (TensorBoard{tramo})")
     if not tb:
         L.append("  Sin datos de TensorBoard para este tramo.")
     else:
@@ -445,6 +448,56 @@ def generar_resumen(fuentes, metrics, splits, mapas):
     for visitas_totales, nombre, casillas in mapas:
         L.append(f"  {nombre:28s} {visitas_totales:7d} visitas · {len(casillas):2d} clones lo pisaron")
     return "\n".join(L) + "\n"
+
+
+# Criterios para considerar dominado el tramo hasta un hito (ver estado_tramos)
+VENTANA_TRAMO = 50       # episodios recientes que se miran
+MIN_EPISODIOS_TRAMO = 20  # con menos, no hay datos suficientes
+EXITO_OBJETIVO = 0.75    # lo consigue en al menos el 75% de los episodios
+RAPIDEZ_OBJETIVO = 1.5   # la mediana reciente está a menos de 1,5 veces su récord
+MAS_ALLA_OBJETIVO = 0.30  # en el 30% de los episodios llega a mapas nuevos después del hito
+
+
+def estado_tramos(metrics):
+    """¿Domina el agente el tramo desde el inicio hasta cada hito? Tres señales en los últimos episodios:
+    1) lo consigue casi siempre, 2) ya va casi tan rápido como su récord, 3) sigue más allá del hito."""
+    L = ["¿TRAMO DOMINADO? (últimos %d episodios)" % VENTANA_TRAMO]
+    ordenados = sorted(metrics, key=lambda r: r["_orden"])
+    recientes = ordenados[-VENTANA_TRAMO:]
+    hitos = [h for h in FLAGS if any(h in r.get("splits", {}) for r in ordenados)]
+    if not hitos:
+        L.append("  Aún no se ha conseguido ningún hito.")
+    if len(recientes) < MIN_EPISODIOS_TRAMO and hitos:
+        L.append(f"  ⏳ Pocos datos: {len(recientes)} episodios (hacen falta {MIN_EPISODIOS_TRAMO}).")
+        hitos = []
+    for hito in hitos:
+        con_hito = [r for r in recientes if hito in r["splits"]]
+        exito = len(con_hito) / len(recientes)
+        record = min(r["splits"][hito] for r in ordenados if hito in r.get("splits", {}))
+        mediana = float(np.median([r["splits"][hito] for r in con_hito[-10:]])) if con_hito else None
+        # "Más allá": tras el hito llega a algún mapa que no había pisado antes en ese episodio
+        mas_alla = sum(1 for r in con_hito
+                       if any(paso > r["splits"][hito] for nombre, paso in r["splits"].items() if nombre not in FLAGS))
+        mas_alla_frac = mas_alla / len(recientes)
+
+        ok_exito = exito >= EXITO_OBJETIVO
+        ok_rapidez = mediana is not None and mediana <= RAPIDEZ_OBJETIVO * record
+        ok_mas_alla = mas_alla_frac >= MAS_ALLA_OBJETIVO
+        senales = [
+            f"{'✅' if ok_exito else '❌'} éxito {100 * exito:.0f}% (objetivo {100 * EXITO_OBJETIVO:.0f}%)",
+            f"{'✅' if ok_rapidez else '❌'} rapidez: mediana {mediana:.0f} pasos vs récord {record}"
+            f" (objetivo ≤ {RAPIDEZ_OBJETIVO:g}×)" if mediana is not None else "❌ rapidez: sin datos",
+            f"{'✅' if ok_mas_alla else '❌'} sigue más allá en {100 * mas_alla_frac:.0f}% (objetivo {100 * MAS_ALLA_OBJETIVO:.0f}%)",
+        ]
+        if ok_exito and ok_rapidez:
+            veredicto = "✅ DOMINADO: ya puede practicar desde este hito (curriculum)"
+        else:
+            veredicto = "⏳ aún no"
+        L.append(f"  Hasta {hito}: {veredicto}")
+        for senal in senales:
+            L.append(f"      {senal}")
+    L.append("")
+    return L
 
 
 def _flecha(diferencia, umbral):
