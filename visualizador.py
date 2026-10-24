@@ -406,6 +406,8 @@ def por_salida(metrics):
 
 
 def nombre_salida(salida):
+    if salida == config.SALIDA_SIMULACRO:
+        return "el simulacro de combate"
     if salida == salida_base():
         return f"el inicio ({salida})"
     return "el hito " + salida.replace("best_speedrun_", "").replace(".state", "")
@@ -444,7 +446,8 @@ def generar_resumen(fuentes, metrics, splits, mapas):
     L.append(f"EPISODIOS TERMINADOS: {n}")
     if n:
         razones = Counter(r.get("reason") for r in metrics)
-        nombres_razon = {"no_progress": "sin progreso", "fainted": "debilitado", "max_steps": "límite de pasos"}
+        nombres_razon = {"no_progress": "sin progreso", "fainted": "debilitado", "max_steps": "límite de pasos",
+                         "fin_combate": "fin del simulacro"}
         L.append("  Cómo terminan: " + " · ".join(f"{nombres_razon.get(k, k)} {100 * v / n:.0f}%" for k, v in razones.most_common()))
         # Por salida: los episodios que empiezan en un hito no cobran ese hito, así que sus
         # recompensas no son comparables con las de los que empiezan en el inicio
@@ -465,6 +468,8 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         L.append("SALIDAS: " + " · ".join(f"{nombre_salida(s)} {len(g)} ({100 * len(g) / n:.0f}%)" for s, g in grupos.items()))
         L.append("")
     for salida, grupo in grupos.items():
+        if salida == config.SALIDA_SIMULACRO:
+            continue  # termina al acabar el combate: no tiene hitos ni mapas (ver COMBATES)
         L.append(f"HITOS Y MAPAS desde {nombre_salida(salida)} (en qué paso del episodio se llega; más bajo = más rápido)")
         L.append(f"  {'':38s} {'episodios':>12s} {'récord':>7s} {'mediana 1ºs 10':>15s} {'últimos 10':>11s}")
         for split, puntos, total in resumen_splits(grupo):
@@ -494,6 +499,13 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         pasos_c = sum(r["combates"]["pasos_en_combate"] for r in con_datos)
         pasos_t = sum(r["steps"] for r in con_datos)
         L.append(f"  Tiempo en combate: {100 * pasos_c / max(pasos_t, 1):.1f}% de los pasos")
+        simulacros = sorted((r for r in con_datos if r.get("salida") == config.SALIDA_SIMULACRO), key=lambda r: r["_orden"])
+        if simulacros:
+            k = max(1, len(simulacros) // 5)
+            ganados = lambda grupo: 100 * np.mean([r["combates"]["salvaje"]["ganado"] > 0 for r in grupo])
+            ini, fin = ganados(simulacros[:k]), ganados(simulacros[-k:])
+            L.append(f"  Simulacro de combate: {len(simulacros)} episodios · gana el {ini:.0f}% (primer 20%) → "
+                     f"{fin:.0f}% (último 20%)  {_flecha(fin - ini, 5)}")
         penalizadas = sum(r["combates"].get("huidas_penalizadas", 0) for r in con_datos)
         if penalizadas:
             L.append(f"  Huidas penalizadas (huyó cuando le hacía falta entrenar): {penalizadas}")

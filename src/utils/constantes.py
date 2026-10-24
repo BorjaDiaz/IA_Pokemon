@@ -46,7 +46,11 @@ REWARD_KO_SOBRE_OBJETIVO = 0.5
 # Tras ~10 M de pasos huyendo de todo (6.592 de 6.592), sin esto nunca probaba a luchar.
 PENALTY_HUIR_BAJO_OBJETIVO = -3.0
 VIDA_MIN_PARA_LUCHAR = 0.5
-REWARD_DAMAGE_MULT = 0.05           # Por cada PS de daño causado
+REWARD_DAMAGE_MULT = 0.05           # Por cada PS de daño causado (por encima del objetivo)
+# Por debajo del objetivo, cada golpe vale su fracción de los PS máximos del rival: quitárselos todos
+# suma 3,0 además del K.O. Al azar se dan ~0,9 golpes por combate pero casi nunca se gana (0 de 47 en
+# el emulador): sin premio por golpe no había ninguna señal de que atacar era lo bueno.
+REWARD_DAMAGE_FRAC_BAJO_OBJETIVO = 3.0
 
 # Historia (Flags)
 REWARD_FLAG_STORY = 100.0           # Por conseguir un hito de FLAGS
@@ -277,6 +281,9 @@ class GestorCombate:
 
     def leer_vida_enemigo(self):
         return self.leer_stat_2bytes(ADDR_RIVAL_HP_ACTUAL)
+
+    def leer_vida_max_enemigo(self):
+        return self.leer_stat_2bytes(ADDR_RIVAL_HP_MAX)
 
     def leer_tipos_enemigo_nombres(self):
         tipo1 = self.pb.memory[WRAM_BANK, ADDR_RIVAL_TIPO1]

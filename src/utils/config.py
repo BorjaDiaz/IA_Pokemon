@@ -36,11 +36,24 @@ CURRICULUM_STATES = [
 CURRENT_STAGE = 0
 
 # Salidas mezcladas: en cada episodio, con probabilidad PROB_SALIDA_INICIO se empieza en
-# CURRICULUM_STATES[CURRENT_STAGE]; si no, desde el savestate best_speedrun_<hito>.state del hito más
-# avanzado conseguido (o, a veces, de uno anterior). Practica lo nuevo sin olvidar el principio.
+# CURRICULUM_STATES[CURRENT_STAGE]; si no, desde el savestate best_speedrun_<hito>.state de uno de los
+# hitos conseguidos, todos con la misma probabilidad. Antes el más avanzado salía el 60%: cuando fue el
+# Huevo Misterioso, el 30% de los episodios empezaban en un tramo imposible (vencer al rival sin saber
+# combatir). Practica lo nuevo sin olvidar el principio.
 SALIDAS_MEZCLADAS = True
 PROB_SALIDA_INICIO = 0.5
-PROB_HITO_MAS_AVANZADO = 0.6   # entre las salidas desde hitos, cuántas desde el más avanzado
+
+# Simulacro de combate: con esta probabilidad el episodio empieza en un combate salvaje guardado
+# (state/combates/, los crea tools/crear_simulacros.py) y termina al acabar el combate. Al azar casi
+# siempre acaba eligiendo HUIR antes de ganar; repitiendo combates descubre que atacar compensa.
+SIMULACRO_DIR = "combates"
+SALIDA_SIMULACRO = "simulacro_combate"  # cómo se registran sus episodios (salida en metrics.jsonl)
+PROB_SIMULACRO_COMBATE = 0.25
+# Cuando gana al menos SIMULACRO_EXITO de los últimos SIMULACRO_VENTANA simulacros, se retira (pasa a
+# PROB_SIMULACRO_DOMINADO) y sigue aprendiendo con los combates que le salen en la ruta
+SIMULACRO_VENTANA = 100
+SIMULACRO_EXITO = 0.8
+PROB_SIMULACRO_DOMINADO = 0.0
 
 # ==========================================
 # ENTRENAMIENTO (PPO)

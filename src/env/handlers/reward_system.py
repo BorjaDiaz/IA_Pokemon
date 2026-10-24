@@ -11,11 +11,13 @@ class RewardSystem:
             return 0.0
         return c.REWARD_HEAL_FRAC * min(1.0, curacion / max_vida_equipo)
 
-    def calcular_premio_danio(self, danio_causado):
-        """Calcula el premio por golpear al rival."""
+    def calcular_premio_danio(self, danio_causado, vida_max_rival=0, bajo_objetivo=False):
+        """Premio por golpear al rival: por debajo del nivel objetivo, proporcional a la fracción de sus PS
+        máximos quitada; por encima, bajo, para que no prefiera quedarse pegando eternamente."""
         if danio_causado <= 0:
             return 0.0
-        # Multiplicador bajo para que no prefiera quedarse pegando eternamente
+        if bajo_objetivo and vida_max_rival > 0:
+            return c.REWARD_DAMAGE_FRAC_BAJO_OBJETIVO * min(1.0, danio_causado / vida_max_rival)
         return danio_causado * c.REWARD_DAMAGE_MULT
 
     def calcular_penalizacion_danio_recibido(self, danio_recibido, max_vida_equipo):

@@ -16,17 +16,15 @@ HITOS = list(c.HITOS)
 class SalidasTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.originales = (config.STATES_DIR, config.SALIDAS_MEZCLADAS, config.PROB_SALIDA_INICIO,
-                           config.PROB_HITO_MAS_AVANZADO, config.CURRENT_STAGE)
+        self.originales = (config.STATES_DIR, config.SALIDAS_MEZCLADAS, config.PROB_SALIDA_INICIO, config.CURRENT_STAGE)
         config.STATES_DIR = self.tmp.name
-        config.SALIDAS_MEZCLADAS, config.PROB_SALIDA_INICIO, config.PROB_HITO_MAS_AVANZADO = True, 0.5, 0.6
+        config.SALIDAS_MEZCLADAS, config.PROB_SALIDA_INICIO = True, 0.5
         config.CURRENT_STAGE = 0
         # _elegir_salida solo usa self.rng: no hace falta arrancar el emulador
         self.env = SimpleNamespace(rng=random.Random(0), salida_fija=None)
 
     def tearDown(self):
-        (config.STATES_DIR, config.SALIDAS_MEZCLADAS, config.PROB_SALIDA_INICIO,
-         config.PROB_HITO_MAS_AVANZADO, config.CURRENT_STAGE) = self.originales
+        config.STATES_DIR, config.SALIDAS_MEZCLADAS, config.PROB_SALIDA_INICIO, config.CURRENT_STAGE = self.originales
         self.tmp.cleanup()
 
     def crear_hito(self, hito):
@@ -44,15 +42,24 @@ class SalidasTests(unittest.TestCase):
         self.assertAlmostEqual(salidas["inicio.state"] / 4000, 0.5, delta=0.04)
         self.assertAlmostEqual(salidas[f"best_speedrun_{HITOS[0]}.state"] / 4000, 0.5, delta=0.04)
 
-    def test_most_advanced_milestone_is_preferred(self):
+    def test_milestones_share_the_other_half_equally(self):
         for hito in HITOS[:3]:
             self.crear_hito(hito)
         salidas = self.elegir()
-        mas_avanzado = salidas[f"best_speedrun_{HITOS[2]}.state"] / 4000
-        # Mitad desde hitos; de esa mitad, el 60% desde el más avanzado y el resto entre los anteriores
-        self.assertAlmostEqual(mas_avanzado, 0.5 * 0.6, delta=0.04)
-        for anterior in HITOS[:2]:
-            self.assertAlmostEqual(salidas[f"best_speedrun_{anterior}.state"] / 4000, 0.5 * 0.4 / 2, delta=0.04)
+        # Un tramo bloqueado (p. ej. el rival desde el huevo) no se lleva más episodios que los demás
+        for hito in HITOS[:3]:
+            self.assertAlmostEqual(salidas[f"best_speedrun_{hito}.state"] / 4000, 0.5 / 3, delta=0.04)
+
+    def test_a_quarter_of_episodes_are_battle_drills_when_there_are_battle_states(self):
+        self.crear_hito(HITOS[0])
+        os.makedirs(os.path.join(self.tmp.name, config.SIMULACRO_DIR))
+        for n in (1, 2):
+            open(os.path.join(self.tmp.name, config.SIMULACRO_DIR, f"combate_{HITOS[0]}_0{n}.state"), "wb").close()
+        salidas = self.elegir()
+        simulacros = sum(v for k, v in salidas.items() if os.path.dirname(k) == config.SIMULACRO_DIR)
+        self.assertAlmostEqual(simulacros / 4000, config.PROB_SIMULACRO_COMBATE, delta=0.04)
+        self.assertEqual(len([k for k in salidas if os.path.dirname(k) == config.SIMULACRO_DIR]), 2)  # usa todos
+        self.assertAlmostEqual(salidas["inicio.state"] / 4000, (1 - config.PROB_SIMULACRO_COMBATE) * 0.5, delta=0.04)
 
     def test_disabled_uses_curriculum_stage(self):
         self.crear_hito(HITOS[0])

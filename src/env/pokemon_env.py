@@ -1,6 +1,7 @@
 import gymnasium as gym
 import numpy as np
 import os
+import glob
 import json
 import random
 import time
@@ -33,6 +34,8 @@ def nuevas_estadisticas_combate():
             "pasos_en_combate": 0, "huidas_penalizadas": 0}
 
 class PokemonGoldEnv(gym.Env):
+    simulacro = fin_simulacro = False  # episodio de simulacro de combate (ver reset)
+
     def __init__(self, rank=0, ventana=None, velocidad=None, salida_fija=None):
         """ventana: True para ver el juego en una ventana (por defecto, según SPEEDRUN_MODE).
         velocidad: 1 = tiempo real, 2 = el doble... 0 = sin límite (por defecto, según SPEEDRUN_MODE).
@@ -68,6 +71,7 @@ class PokemonGoldEnv(gym.Env):
         self.combate_actual = None
         # Generador propio para elegir la salida de cada episodio (distinto en cada clon)
         self.rng = random.Random(time.time_ns() + rank)
+        self.prob_simulacro = config.PROB_SIMULACRO_COMBATE  # SimulacroCallback lo baja cuando ya gana
         self.salida = config.CURRICULUM_STATES[config.CURRENT_STAGE]
         self.mapas_previos = set()
 
@@ -154,21 +158,35 @@ class PokemonGoldEnv(gym.Env):
         self.combate_actual = None
 
         # Sistema de Curriculum Learning (Cargar partida avanzada)
-        self.salida = self._elegir_salida()
-        # Si se empieza en un hito, los mapas recorridos para llegar a él ya cuentan como visitados:
-        # volver a casa no debe dar recompensa de exploración
-        self.mapas_previos = self._mapas_previos(self.salida)
+        ruta_salida = self._elegir_salida()
+        # Simulacro: combate_<HITO>_NN.state, guardado en la hierba después de ese hito. Todos sus
+        # episodios se registran juntos como "simulacro_combate"
+        self.simulacro = os.path.dirname(ruta_salida) == config.SIMULACRO_DIR
+        self.fin_simulacro = False
+        if self.simulacro:
+            hito_simulacro = os.path.basename(ruta_salida)[len("combate_"):].rsplit("_", 1)[0]
+            self.salida = config.SALIDA_SIMULACRO
+            self.mapas_previos = self._mapas_previos(f"best_speedrun_{hito_simulacro}.state")
+        else:
+            self.salida = ruta_salida
+            # Si se empieza en un hito, los mapas recorridos para llegar a él ya cuentan como visitados:
+            # volver a casa no debe dar recompensa de exploración
+            self.mapas_previos = self._mapas_previos(self.salida)
         # Los hitos hasta el de la salida (incluido) ya están conseguidos: no se vuelven a premiar
-        hito_salida = self.salida[len("best_speedrun_"):-len(".state")] if self.salida.startswith("best_speedrun_") else None
+        hito_salida = hito_simulacro if self.simulacro else (
+            self.salida[len("best_speedrun_"):-len(".state")] if self.salida.startswith("best_speedrun_") else None)
         self.hitos_previos = set(c.HITOS[:c.HITOS.index(hito_salida) + 1]) if hito_salida in c.HITOS else set()
         self.episode_maps = set(self.mapas_previos)
         self.h_story.mapas_episodio = self.episode_maps
         if config.USE_CURRICULUM:
-            path = os.path.join(config.STATES_DIR, self.salida)
+            path = os.path.join(config.STATES_DIR, ruta_salida)
             # Sin el savestate el episodio seguiría donde acabó el anterior sin avisar
             if not os.path.exists(path):
                 raise FileNotFoundError(f"No existe el savestate del curriculum: {path}")
             with open(path, "rb") as f: self.pb.load_state(f)
+        if self.simulacro:
+            # El mapa del combate ya es conocido: no da recompensa de mapa nuevo ni dispara hitos de llegada
+            self.episode_maps.add((self.ram.leer(c.ADDR_MAP_GRP), self.ram.leer(c.ADDR_MAP_ID)))
 
         # Reseteo de variables de control del speedrun
         self.steps_count = 0
@@ -313,6 +331,10 @@ class PokemonGoldEnv(gym.Env):
             self.splits[map_name] = self.steps_count
             if rom_catalog.es_explorable(current_speedrun_map):
                 reward += c.REWARD_NEW_MAP
+            # Entrar por primera vez en un mapa (también interiores) da margen de pasos, sin recompensa:
+            # el principio es casa → Pueblo Primavera → laboratorio, y con 1.000 pasos sin ninguna pista
+            # dentro de las casas no llegaba nunca. Una vez por mapa y episodio: no sirve de refugio
+            self.h_movement.registrar_progreso()
             if config.VERBOSE: print(f"🌍 [Clon {self.rank}] ¡Mapa descubierto! -> {map_name}")
             if self.logger: self.logger.log_step({"evento": "NUEVO_MAPA", "mapa": map_name, "step": self.steps_count})
 
@@ -348,6 +370,8 @@ class PokemonGoldEnv(gym.Env):
             reason = "fainted"
         elif sin_progreso:
             reason = "no_progress"
+        elif self.fin_simulacro:
+            reason = "fin_combate"
         elif self.steps_count >= config.MAX_STEPS_PER_EPISODE:
             reason = "max_steps"
         else:
@@ -360,11 +384,13 @@ class PokemonGoldEnv(gym.Env):
             hitos = [f"{h} @ {p}" for h, p in self.splits.items() if h in c.HITOS]
             if hitos:
                 print(f"⏱️ [Clon {self.rank}] Hitos del episodio: {' | '.join(hitos)}")
-            self.capturer.episode_end(pantalla, self.episode_counter, reason, map_name, (x, y),
-                                      self.steps_count, self.total_speedrun_reward, self.ram.leer_tiempo_juego())
+            if not self.simulacro:  # los simulacros, cortos y muchos, desplazarían las capturas de la ruta
+                self.capturer.episode_end(pantalla, self.episode_counter, reason, map_name, (x, y),
+                                          self.steps_count, self.total_speedrun_reward, self.ram.leer_tiempo_juego())
 
         terminated = reason in ("fainted", "no_progress")
-        truncated = reason == "max_steps"
+        # Al acabar el simulacro la partida seguiría: corte por tiempo, PPO estima lo que vendría después
+        truncated = reason in ("max_steps", "fin_combate")
         info = {"splits": dict(self.splits), "combates": self.combates, "salida": self.salida} if reason else {}
         return self._get_obs(), reward, terminated, truncated, info
 
@@ -378,11 +404,16 @@ class PokemonGoldEnv(gym.Env):
         # Hitos conseguidos hasta ahora por cualquier clon, en orden de la ruta (se revisa en cada episodio)
         hitos = [f"best_speedrun_{h}.state" for h in c.HITOS
                  if os.path.exists(os.path.join(config.STATES_DIR, f"best_speedrun_{h}.state"))]
+        simulacros = sorted(glob.glob(os.path.join(config.STATES_DIR, config.SIMULACRO_DIR, "combate_*.state")))
+        if simulacros and self.rng.random() < getattr(self, "prob_simulacro", config.PROB_SIMULACRO_COMBATE):
+            return os.path.join(config.SIMULACRO_DIR, os.path.basename(self.rng.choice(simulacros)))
         if not hitos or self.rng.random() < config.PROB_SALIDA_INICIO:
             return base
-        if len(hitos) == 1 or self.rng.random() < config.PROB_HITO_MAS_AVANZADO:
-            return hitos[-1]
-        return self.rng.choice(hitos[:-1])
+        return self.rng.choice(hitos)
+
+    def fijar_prob_simulacro(self, prob):
+        """Lo llama SimulacroCallback (desde el proceso principal) para retirar el simulacro de combate."""
+        self.prob_simulacro = prob
 
     def _mapas_previos(self, salida):
         """Mapas recorridos para llegar al hito de la salida (guardados con su récord en records.json)."""
@@ -394,6 +425,7 @@ class PokemonGoldEnv(gym.Env):
 
     def _cerrar_combate(self, resultado):
         combate, self.combate_actual = self.combate_actual, None
+        self.fin_simulacro = self.simulacro
         pasos = self.steps_count - combate["inicio"]
         self.combates[combate["tipo"]][resultado] += 1
         self.combates["pasos_en_combate"] += pasos

@@ -29,7 +29,7 @@ class CombatHandler:
         elif 0 <= vida_actual_enemigo < self.vida_enemigo_anterior and self.vida_enemigo_anterior != 999:
             daño = self.vida_enemigo_anterior - vida_actual_enemigo
             if 0 < daño < 500:
-                premio_daño = rewards.calcular_premio_danio(daño)
+                premio_daño = rewards.calcular_premio_danio(daño, gestor.leer_vida_max_enemigo(), self.bajo_objetivo)
                 reward += premio_daño
                 if config.VERBOSE: print(f"🗡️ [Clon {self.rank}] ¡Ataque! {daño} HP. Premio: +{round(premio_daño, 2)}")
                 if self.logger: self.logger.log_step({"evento": "DAÑO_CAUSADO", "daño": daño, "hp_enemigo": vida_actual_enemigo, "step": step_count})

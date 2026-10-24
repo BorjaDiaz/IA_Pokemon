@@ -23,21 +23,29 @@ class KOTests(unittest.TestCase):
         h = CombatHandler(rank=0, logger=None)
         h.bajo_objetivo = bajo_objetivo
         h.vida_enemigo_anterior = 5
-        gestor = SimpleNamespace(leer_vida_enemigo=lambda: 0)
+        gestor = SimpleNamespace(leer_vida_enemigo=lambda: 0, leer_vida_max_enemigo=lambda: 20)
         ram = SimpleNamespace(leer_max_vida_total_equipo=lambda: 20)
         reward, _ = h.procesar(None, ram, RewardSystem(), gestor, True, 20, 20, 1, "ROUTE_29")
         return reward
 
     def test_knockouts_are_worth_more_while_below_the_target_level(self):
+        # El último golpe quita 5 de 20 PS: por debajo vale su fracción, por encima el multiplicador bajo
+        golpe = c.REWARD_DAMAGE_FRAC_BAJO_OBJETIVO * 5 / 20 - 5 * c.REWARD_DAMAGE_MULT
         extra = c.REWARD_KO_BAJO_OBJETIVO - c.REWARD_KO_SOBRE_OBJETIVO
-        self.assertAlmostEqual(self.ko(True) - self.ko(False), extra)
+        self.assertAlmostEqual(self.ko(True) - self.ko(False), extra + golpe)
+
+    def test_each_hit_below_target_is_worth_its_share_of_the_rival_hp(self):
+        r = RewardSystem()
+        self.assertAlmostEqual(r.calcular_premio_danio(10, 40, bajo_objetivo=True), c.REWARD_DAMAGE_FRAC_BAJO_OBJETIVO / 4)
+        self.assertAlmostEqual(r.calcular_premio_danio(99, 40, bajo_objetivo=True), c.REWARD_DAMAGE_FRAC_BAJO_OBJETIVO)
+        self.assertAlmostEqual(r.calcular_premio_danio(10, 40, bajo_objetivo=False), 10 * c.REWARD_DAMAGE_MULT)
 
     def test_a_knockout_below_target_is_flagged_as_progress(self):
         h = CombatHandler(rank=0, logger=None)
         for bajo in (True, False):
             h.bajo_objetivo, h.vida_enemigo_anterior = bajo, 5
             h.procesar(None, SimpleNamespace(leer_max_vida_total_equipo=lambda: 20), RewardSystem(),
-                       SimpleNamespace(leer_vida_enemigo=lambda: 0), True, 20, 20, 1, "ROUTE_29")
+                       SimpleNamespace(leer_vida_enemigo=lambda: 0, leer_vida_max_enemigo=lambda: 20), True, 20, 20, 1, "ROUTE_29")
             self.assertEqual(h.ko_bajo_objetivo, bajo)
 
 

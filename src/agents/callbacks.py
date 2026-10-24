@@ -114,9 +114,38 @@ class SplitsCallback(BaseCallback):
         return True
 
 
+class SimulacroCallback(BaseCallback):
+    """Retira el simulacro de combate cuando ya gana: con SIMULACRO_EXITO de victorias en los últimos
+    SIMULACRO_VENTANA simulacros, los clones pasan a PROB_SIMULACRO_DOMINADO. Así no se queda dependiendo
+    del simulacro y sigue aprendiendo con los combates de la ruta."""
+
+    def __init__(self):
+        super().__init__()
+        self.recientes = deque(maxlen=config.SIMULACRO_VENTANA)
+        self.retirado = False
+
+    def _on_step(self):
+        for info in self.locals["infos"]:
+            if info.get("salida") != config.SALIDA_SIMULACRO:
+                continue
+            ganado = info["combates"]["salvaje"]["ganado"] > 0
+            self.recientes.append(ganado)
+            self.logger.record_mean("simulacro/ganados", float(ganado))
+        if (not self.retirado and len(self.recientes) == self.recientes.maxlen
+                and sum(self.recientes) / len(self.recientes) >= config.SIMULACRO_EXITO):
+            self.retirado = True
+            self.training_env.env_method("fijar_prob_simulacro", config.PROB_SIMULACRO_DOMINADO)
+            print(f"\n🎓 Simulacro de combate dominado ({100 * sum(self.recientes) / len(self.recientes):.0f}% "
+                  f"de victorias): se retira, sigue con los combates de la ruta")
+        return True
+
+
+PAUSA_MAX_S = 300  # un hueco mayor entre comprobaciones del vigilante es una suspensión del PC
+
+
 class VigilanteCallback(BaseCallback):
     """Para el entrenamiento solo, de forma ordenada (como PARAR), si:
-    - se supera MAX_MINUTOS;
+    - se supera MAX_MINUTOS de entrenamiento (sin contar suspensiones ni hibernaciones del PC);
     - empeora lo ya dominado: desde el inicio, VIGILAR_HITO se consigue en menos de VIGILAR_EXITO_MIN
       (solo si en esta ejecución ya había llegado a dominarlo: una IA nueva empieza en 0%)
       de los últimos VIGILAR_VENTANA episodios;
@@ -133,7 +162,8 @@ class VigilanteCallback(BaseCallback):
         super().__init__()
         self.motivo = None
         self.degradado = False
-        self.inicio = None
+        self.ultimo_reloj = None
+        self.segundos_activo = 0.0
         self.recientes = deque(maxlen=config.VIGILAR_VENTANA)  # hitos conseguidos por episodio desde el inicio
         self.mejor = None
         self.rondas_inestable = 0
@@ -153,7 +183,16 @@ class VigilanteCallback(BaseCallback):
         return False
 
     def _on_training_start(self):
-        self.inicio = time.time()
+        self.ultimo_reloj = time.time()
+
+    def _sumar_tiempo_activo(self):
+        """Suma el tiempo desde la última comprobación, salvo si es un hueco largo: el PC estuvo
+        suspendido o hibernando (con 12 clones, 100 pasos son ~2 s y una actualización de PPO, ~30 s)."""
+        ahora = time.time()
+        hueco = ahora - self.ultimo_reloj
+        if hueco < PAUSA_MAX_S:
+            self.segundos_activo += hueco
+        self.ultimo_reloj = ahora
 
     def _on_step(self):
         if self.motivo_pendiente:
@@ -169,7 +208,9 @@ class VigilanteCallback(BaseCallback):
                 self.novedad = True
             if info.get("salida", base) == base:
                 self.recientes.append({h for h in splits if h in c.HITOS})
-        if config.MAX_MINUTOS and self.n_calls % 100 == 0 and time.time() - self.inicio > config.MAX_MINUTOS * 60:
+        if self.n_calls % 100 == 0:
+            self._sumar_tiempo_activo()
+        if config.MAX_MINUTOS and self.n_calls % 100 == 0 and self.segundos_activo > config.MAX_MINUTOS * 60:
             return self._parar(f"alcanzado el tiempo máximo ({config.MAX_MINUTOS} min)")
         return True
 

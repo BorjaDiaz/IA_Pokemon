@@ -19,7 +19,7 @@ class VigilanteTests(unittest.TestCase):
         self.v = VigilanteCallback()
         self.v.model = SimpleNamespace(logger=Logger(folder=None, output_formats=[]),
                                        save=lambda path: self.guardados.append(path))
-        self.v.inicio = time.time()
+        self.v.ultimo_reloj = time.time()
 
     def tearDown(self):
         config.MAX_MINUTOS, config.VIGILAR_VENTANA, config.VIGILAR_RONDAS_ESTANCADO = self.originales
@@ -46,12 +46,23 @@ class VigilanteTests(unittest.TestCase):
         self.assertIsNone(self.v.motivo)
 
     def test_stops_after_the_time_limit(self):
-        self.v.inicio = time.time() - 181 * 60
+        self.v.segundos_activo = 181 * 60
         self.v.n_calls = 100  # comprueba el tiempo cada 100 pasos (SB3 incrementa n_calls antes de _on_step)
         self.v.locals = {"infos": []}
         self.assertFalse(self.v._on_step())
         self.assertIn("tiempo máximo", self.v.motivo)
         self.assertFalse(self.v.degradado)
+
+    def test_time_while_the_pc_sleeps_does_not_count(self):
+        self.v.ultimo_reloj = time.time() - 4 * 3600  # 4 h hibernando
+        self.v.n_calls = 100
+        self.v.locals = {"infos": []}
+        self.assertTrue(self.v._on_step())
+        self.assertLess(self.v.segundos_activo, 1)
+        self.v.ultimo_reloj = time.time() - 30        # 30 s entrenando sí cuentan
+        self.v.n_calls = 200
+        self.assertTrue(self.v._on_step())
+        self.assertAlmostEqual(self.v.segundos_activo, 30, delta=1)
 
     def test_stops_when_the_mastered_milestone_gets_worse(self):
         self.episodios(10, con_hito=True)

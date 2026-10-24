@@ -6,7 +6,7 @@ import time
 
 from src.agents.env_builder import build_vectorized_env
 from src.agents.agent_manager import AgentManager
-from src.agents.callbacks import (AnalisisCallback, SplitsCallback, StopFileCallback, VigilanteCallback, STOP_FILE,
+from src.agents.callbacks import (AnalisisCallback, SimulacroCallback, SplitsCallback, StopFileCallback, VigilanteCallback, STOP_FILE,
                                   lanzar_analisis, quitar_parar)
 import src.utils.config as config
 
@@ -101,7 +101,7 @@ def main():
     try:
         model.learn(total_timesteps=config.TOTAL_TIMESTEPS,
                     callback=[gestor_agente.checkpoint_callback(), SplitsCallback(), StopFileCallback(),
-                              AnalisisCallback(run_dir, config.CHECKPOINT_FREQ), vigilante],
+                              AnalisisCallback(run_dir, config.CHECKPOINT_FREQ), SimulacroCallback(), vigilante],
                     reset_num_timesteps=not gestor_agente.cargado, tb_log_name="PPO")
     except KeyboardInterrupt:
         print("\n🛑 Entrenamiento detenido por el usuario. Guardando progreso...")
