@@ -423,6 +423,9 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         c = info.get("config", {})
         L.append(f"Inicio {info.get('inicio', '?')}  ·  fin {info.get('fin', 'en curso')}  ·  código {info.get('git_commit', '?')}"
                  f"  ·  modelo {info.get('modelo', '?')}")
+        if info.get("motivo_fin"):
+            mejor = info.get("mejor_media_hitos")
+            L.append(f"Motivo de fin: {info['motivo_fin']}" + (f"  ·  mejor modelo: {mejor:.2f} hitos por episodio" if mejor else ""))
         a, b = info.get("pasos_al_empezar"), info.get("pasos_al_terminar")
         if a is not None:
             desde = a if desde is None else min(desde, a)

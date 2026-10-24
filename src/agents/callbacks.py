@@ -2,6 +2,8 @@ import os
 import shutil
 import subprocess
 import sys
+import time
+from collections import deque
 
 from stable_baselines3.common.callbacks import BaseCallback
 
@@ -109,3 +111,98 @@ class SplitsCallback(BaseCallback):
                         self.logger.record_mean(f"combate/{tipo}_{resultado}", n)
                 self.logger.record_mean("combate/pasos_en_combate", combates["pasos_en_combate"])
         return True
+
+
+class VigilanteCallback(BaseCallback):
+    """Para el entrenamiento solo, de forma ordenada (como PARAR), si:
+    - se supera MAX_MINUTOS;
+    - empeora lo ya dominado: desde el inicio, VIGILAR_HITO se consigue en menos de VIGILAR_EXITO_MIN
+      de los últimos VIGILAR_VENTANA episodios;
+    - el aprendizaje es inestable (approx_kl > VIGILAR_KL_MAX o explained_variance < VIGILAR_EV_MIN)
+      durante VIGILAR_RONDAS_INESTABLE rondas seguidas;
+    - (opcional) VIGILAR_RONDAS_ESTANCADO rondas sin hitos ni récords nuevos.
+
+    Además guarda en MODELO_MEJOR el modelo con la mejor media de hitos por episodio desde el inicio.
+    `motivo` dice por qué paró (None si terminó normal o lo paró el usuario); `degradado` es True si
+    paró por empeorar o por inestabilidad (train.py deja entonces el mejor modelo para el siguiente arranque).
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.motivo = None
+        self.degradado = False
+        self.inicio = None
+        self.recientes = deque(maxlen=config.VIGILAR_VENTANA)  # hitos conseguidos por episodio desde el inicio
+        self.mejor = None
+        self.rondas_inestable = 0
+        self.rondas_sin_novedad = 0
+        self.hitos_vistos = set()
+        self.novedad = False
+        self.records_mtime = self._mtime_records()
+
+    @staticmethod
+    def _mtime_records():
+        return os.path.getmtime(config.RECORDS_PATH) if os.path.exists(config.RECORDS_PATH) else None
+
+    def _parar(self, motivo, degradado=False):
+        self.motivo, self.degradado = motivo, degradado
+        print(f"\n🛑 Vigilante: {motivo}. Deteniendo el entrenamiento y guardando...")
+        return False
+
+    def _on_training_start(self):
+        self.inicio = time.time()
+
+    def _on_step(self):
+        if self.motivo_pendiente:
+            return self._parar(*self.motivo_pendiente)
+        base = config.CURRICULUM_STATES[config.CURRENT_STAGE]
+        for info in self.locals["infos"]:
+            splits = info.get("splits")
+            if splits is None:
+                continue
+            nuevos = {h for h in splits if h in c.HITOS} - self.hitos_vistos
+            if nuevos:
+                self.hitos_vistos |= nuevos
+                self.novedad = True
+            if info.get("salida", base) == base:
+                self.recientes.append({h for h in splits if h in c.HITOS})
+        if config.MAX_MINUTOS and self.n_calls % 100 == 0 and time.time() - self.inicio > config.MAX_MINUTOS * 60:
+            return self._parar(f"alcanzado el tiempo máximo ({config.MAX_MINUTOS} min)")
+        return True
+
+    def _on_rollout_start(self):
+        # Aquí ya están las métricas de la última actualización de la red (antes de volcarlas a TensorBoard)
+        valores = self.model.logger.name_to_value
+        kl, ev = valores.get("train/approx_kl"), valores.get("train/explained_variance")
+        if kl is not None and ev is not None:
+            inestable = kl > config.VIGILAR_KL_MAX or ev < config.VIGILAR_EV_MIN or kl != kl or ev != ev  # NaN
+            self.rondas_inestable = self.rondas_inestable + 1 if inestable else 0
+
+        mtime = self._mtime_records()
+        if mtime != self.records_mtime:
+            self.records_mtime, self.novedad = mtime, True
+        self.rondas_sin_novedad = 0 if self.novedad else self.rondas_sin_novedad + 1
+        self.novedad = False
+
+        if len(self.recientes) == self.recientes.maxlen:
+            media = sum(len(h) for h in self.recientes) / len(self.recientes)
+            if self.mejor is None or media > self.mejor:
+                self.mejor = media
+                self.model.save(config.MODELO_MEJOR)
+                print(f"⭐ Vigilante: mejor modelo hasta ahora ({media:.2f} hitos por episodio desde el inicio) "
+                      f"guardado en {os.path.basename(config.MODELO_MEJOR)}")
+
+    def _on_rollout_end(self):
+        # Las comprobaciones que paran van aquí: SB3 solo hace caso al valor de _on_step, así que se marca
+        # y el siguiente _on_step devuelve False
+        if len(self.recientes) == self.recientes.maxlen:
+            exito = sum(config.VIGILAR_HITO in h for h in self.recientes) / len(self.recientes)
+            if exito < config.VIGILAR_EXITO_MIN:
+                self.motivo_pendiente = (f"{config.VIGILAR_HITO} ha bajado al {100 * exito:.0f}% "
+                                         f"(mínimo {100 * config.VIGILAR_EXITO_MIN:.0f}%)", True)
+        if self.rondas_inestable >= config.VIGILAR_RONDAS_INESTABLE:
+            self.motivo_pendiente = (f"aprendizaje inestable {self.rondas_inestable} rondas seguidas", True)
+        if config.VIGILAR_RONDAS_ESTANCADO and self.rondas_sin_novedad >= config.VIGILAR_RONDAS_ESTANCADO:
+            self.motivo_pendiente = (f"{self.rondas_sin_novedad} rondas sin hitos ni récords nuevos", False)
+
+    motivo_pendiente = None

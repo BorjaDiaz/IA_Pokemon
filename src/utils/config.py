@@ -56,3 +56,16 @@ FRAME_STACK = 3            # frames apilados en la observación (da sensación d
 CHECKPOINT_FREQ = 100_000  # pasos totales entre copias de seguridad del modelo
 CHECKPOINT_DIR = os.path.join(IA_DIR, "checkpoints")
 TENSORBOARD_DIR = os.path.join(LOG_DIR, "tensorboard")
+
+# ==========================================
+# VIGILANTE: para el entrenamiento solo (de forma ordenada, como PARAR) y guarda el mejor modelo
+# ==========================================
+MAX_MINUTOS = 180                 # duración máxima de una ejecución (None = sin límite)
+VIGILAR_HITO = "EVENT_GOT_A_POKEMON_FROM_ELM"  # hito ya dominado que no debe empeorar...
+VIGILAR_EXITO_MIN = 0.80          # ...parar si, desde el inicio, se consigue en menos de este % ...
+VIGILAR_VENTANA = 50              # ...de los últimos N episodios que empiezan en el inicio
+VIGILAR_KL_MAX = 0.05             # inestable si approx_kl supera esto...
+VIGILAR_EV_MIN = 0.30             # ...o explained_variance baja de esto...
+VIGILAR_RONDAS_INESTABLE = 5      # ...durante tantas rondas seguidas
+VIGILAR_RONDAS_ESTANCADO = None   # parar si en tantas rondas no hay hito ni récord nuevo (None = no)
+MODELO_MEJOR = os.path.join(IA_DIR, "modelo_mejor.zip")  # copia del mejor modelo de la ejecución

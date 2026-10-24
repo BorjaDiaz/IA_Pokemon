@@ -1,11 +1,13 @@
 import json
 import os
+import shutil
 import subprocess
 import time
 
 from src.agents.env_builder import build_vectorized_env
 from src.agents.agent_manager import AgentManager
-from src.agents.callbacks import AnalisisCallback, SplitsCallback, StopFileCallback, STOP_FILE, lanzar_analisis, quitar_parar
+from src.agents.callbacks import (AnalisisCallback, SplitsCallback, StopFileCallback, VigilanteCallback, STOP_FILE,
+                                  lanzar_analisis, quitar_parar)
 import src.utils.config as config
 
 
@@ -91,16 +93,30 @@ def main():
     # 3. Bucle de entrenamiento con control explícito de parada/guardado.
     # Si se continúa un modelo, el contador de pasos sigue (curva continua en TensorBoard y
     # nombres de checkpoints que no se pisan)
+    # Copia de seguridad del modelo inicial como "mejor" provisional: si la ejecución solo empeora,
+    # el vigilante tiene algo a lo que volver (luego la sustituye por el mejor de esta ejecución)
+    if gestor_agente.cargado:
+        shutil.copy(gestor_agente.model_path, config.MODELO_MEJOR)
+    vigilante = VigilanteCallback()
     try:
         model.learn(total_timesteps=config.TOTAL_TIMESTEPS,
                     callback=[gestor_agente.checkpoint_callback(), SplitsCallback(), StopFileCallback(),
-                              AnalisisCallback(run_dir, config.CHECKPOINT_FREQ)],
+                              AnalisisCallback(run_dir, config.CHECKPOINT_FREQ), vigilante],
                     reset_num_timesteps=not gestor_agente.cargado, tb_log_name="PPO")
     except KeyboardInterrupt:
         print("\n🛑 Entrenamiento detenido por el usuario. Guardando progreso...")
     finally:
         shutdown_training(env, gestor_agente=gestor_agente, model=model)
-        guardar_info_run(run_dir, fin=time.strftime("%Y-%m-%d %H:%M:%S"), pasos_al_terminar=model.num_timesteps)
+        if vigilante.degradado and os.path.exists(config.MODELO_MEJOR):
+            # Ha empeorado: el siguiente arranque continuará desde el mejor modelo, no desde el empeorado
+            apartado = gestor_agente.model_path.replace(".zip", f"_degradado_{time.strftime('%Y%m%d_%H%M%S')}.zip")
+            os.replace(gestor_agente.model_path, apartado)
+            shutil.copy(config.MODELO_MEJOR, gestor_agente.model_path)
+            print(f"♻️ El modelo empeorado se ha apartado como {os.path.basename(apartado)}; "
+                  f"el siguiente arranque continuará desde el mejor ({os.path.basename(config.MODELO_MEJOR)}).")
+        guardar_info_run(run_dir, fin=time.strftime("%Y-%m-%d %H:%M:%S"), pasos_al_terminar=model.num_timesteps,
+                         motivo_fin=vigilante.motivo or "terminado o parado por el usuario",
+                         mejor_media_hitos=vigilante.mejor)
         print(f"📊 Generando el análisis final en runs/{os.path.basename(run_dir)}/analisis/ ...")
         lanzar_analisis(run_dir).wait()
 
