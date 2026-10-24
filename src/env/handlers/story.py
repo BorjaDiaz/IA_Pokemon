@@ -39,9 +39,11 @@ class StoryHandler:
                     reward += self.conseguir_hito(pb, ram, rewards, tuplas_historia[f_id], step_count)
 
                 elif rom_catalog.is_story_flag(*f_id):
-                    # Evento de historia menor; los de visibilidad, entrenador y temporales no puntúan
+                    # Evento de historia menor; los de visibilidad, entrenador y temporales no puntúan,
+                    # ni los desvíos (objetos ocultos, volver a casa con mamá...): enseñarían a volver atrás
                     nombre_evento = rom_catalog.flag_name(*f_id)
-                    reward += c.REWARD_FLAG_UNKNOWN
+                    if not c.es_desvio(nombre_evento):
+                        reward += c.REWARD_FLAG_UNKNOWN
                     if config.VERBOSE:
                         print(f"🧭 [Clon {self.rank}] Evento de historia: {nombre_evento}")
                     if self.logger:

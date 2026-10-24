@@ -100,17 +100,45 @@ FLAGS = {name: rom_catalog.EVENT_FLAGS[name] for name in [
 # Hitos intermedios de ruta: primera llegada del episodio a mapas clave entre dos hitos de historia
 # (entre el primer Pokémon y el Huevo Misterioso no hay ningún evento que guíe al agente).
 # Cuentan como hitos: premio, savestate de récord y salidas mezcladas.
+# Cada hito de mapa puede exigir un evento ya activo (requisito). Así se guía también la VUELTA a Elm
+# con el huevo (por mapas ya visitados, que no dan recompensa de exploración) y los hitos hacia Malva
+# no cuentan antes de entregar el huevo (no compensa saltarse la vuelta).
 _MAPA_POR_NOMBRE = {nombre: clave for clave, nombre in rom_catalog.MAPS.items()}
-HITOS_MAPA = {f"LLEGADA_{nombre}": _MAPA_POR_NOMBRE[nombre] for nombre in [
-    "CHERRYGROVE_CITY",
-    "ROUTE_30",
-    "MR_POKEMONS_HOUSE",
+_HUEVO, _HUEVO_ENTREGADO = "EVENT_GOT_MYSTERY_EGG_FROM_MR_POKEMON", "EVENT_GAVE_MYSTERY_EGG_TO_ELM"
+# (mapa, requisito, prohibido): el hito solo cuenta con el evento `requisito` activo y `prohibido` sin activar.
+# Así la vuelta solo se premia mientras se lleva el huevo, y una vez entregado lo único que da puntos es
+# avanzar hacia Malva (volver atrás ya no da nada).
+HITOS_MAPA = {nombre: (_MAPA_POR_NOMBRE[mapa], requisito, prohibido) for nombre, mapa, requisito, prohibido in [
+    ("LLEGADA_CHERRYGROVE_CITY", "CHERRYGROVE_CITY", None, _HUEVO),
+    ("LLEGADA_ROUTE_30", "ROUTE_30", None, _HUEVO),
+    ("LLEGADA_MR_POKEMONS_HOUSE", "MR_POKEMONS_HOUSE", None, _HUEVO),
+    ("VUELTA_CHERRYGROVE_CITY", "CHERRYGROVE_CITY", _HUEVO, _HUEVO_ENTREGADO),
+    ("VUELTA_ROUTE_29", "ROUTE_29", _HUEVO, _HUEVO_ENTREGADO),
+    ("VUELTA_NEW_BARK_TOWN", "NEW_BARK_TOWN", _HUEVO, _HUEVO_ENTREGADO),
+    ("VUELTA_ELMS_LAB", "ELMS_LAB", _HUEVO, _HUEVO_ENTREGADO),
+    ("LLEGADA_ROUTE_31", "ROUTE_31", _HUEVO_ENTREGADO, None),
+    ("LLEGADA_VIOLET_CITY", "VIOLET_CITY", _HUEVO_ENTREGADO, None),
+    ("LLEGADA_VIOLET_GYM", "VIOLET_GYM", _HUEVO_ENTREGADO, None),
 ]}
 
-# Todos los hitos en orden de la ruta (eventos y llegadas a mapas). El orden importa: la salida
-# mezclada empieza desde el más avanzado conseguido
+# Eventos de historia menores que NO dan su pequeña recompensa: son desvíos que un speedrun no hace
+# (volver a casa a hablar con mamá, objetos ocultos fuera de la ruta). Premiarlos enseñaría a volver atrás.
+EVENTOS_DESVIO = {"EVENT_TALKED_TO_MOM_AFTER_MYSTERY_EGG_QUEST"}
+def es_desvio(nombre_evento):
+    return nombre_evento in EVENTOS_DESVIO or "_HIDDEN_" in nombre_evento
+# Ganar al rival en Ciudad Cerezo, a la vuelta con el huevo (su evento de visibilidad ya está activo al
+# empezar la partida, así que se detecta como "combate contra entrenador ganado en CHERRYGROVE_CITY")
+HITO_RIVAL_CEREZO = "RIVAL_CHERRYGROVE_SUPERADO"
+
+# Todos los hitos en orden de la ruta (eventos, llegadas a mapas y el rival). El orden importa: la salida
+# mezclada empieza desde el más avanzado conseguido, y al empezar en un hito no cuentan los anteriores
 HITOS = list(FLAGS)
-HITOS[HITOS.index("EVENT_GOT_A_POKEMON_FROM_ELM") + 1:HITOS.index("EVENT_GOT_A_POKEMON_FROM_ELM") + 1] = list(HITOS_MAPA)
+def _insertar_tras(hito, nuevos):
+    i = HITOS.index(hito) + 1
+    HITOS[i:i] = nuevos
+_insertar_tras("EVENT_GOT_A_POKEMON_FROM_ELM", ["LLEGADA_CHERRYGROVE_CITY", "LLEGADA_ROUTE_30", "LLEGADA_MR_POKEMONS_HOUSE"])
+_insertar_tras(_HUEVO, ["VUELTA_CHERRYGROVE_CITY", HITO_RIVAL_CEREZO, "VUELTA_ROUTE_29", "VUELTA_NEW_BARK_TOWN", "VUELTA_ELMS_LAB"])
+_insertar_tras(_HUEVO_ENTREGADO, ["LLEGADA_ROUTE_31", "LLEGADA_VIOLET_CITY", "LLEGADA_VIOLET_GYM"])
 
 # ==========================================
 # MEMORIA COMBATE: TU POKÉMON (LÍDER)

@@ -10,6 +10,7 @@ from pyboy.utils import WindowEvent
 
 import src.utils.config as config
 import src.utils.constantes as c
+from src.utils import rom_catalog
 from src.utils.logger import Logger
 from src.utils.frame_capturer import FrameCapturer
 from src.utils.map_atlas import MapAtlas
@@ -113,7 +114,10 @@ class PokemonGoldEnv(gym.Env):
 
         # Mapeo invertido de flags para saber qué evento ocurrió
         self.tuplas_historia = {(int(v[0]), v[1]): k for k, v in c.FLAGS.items()}
-        self.hito_por_mapa = {mapa: hito for hito, mapa in c.HITOS_MAPA.items()}
+        self.hitos_por_mapa = {}
+        for hito, (mapa, requisito, prohibido) in c.HITOS_MAPA.items():
+            self.hitos_por_mapa.setdefault(mapa, []).append((hito, requisito, prohibido))
+        self.hitos_previos = set()
 
     def _log_episode_summary(self, reward, reason):
         payload = {
@@ -150,6 +154,9 @@ class PokemonGoldEnv(gym.Env):
         # Si se empieza en un hito, los mapas recorridos para llegar a él ya cuentan como visitados:
         # volver a casa no debe dar recompensa de exploración
         self.mapas_previos = self._mapas_previos(self.salida)
+        # Los hitos hasta el de la salida (incluido) ya están conseguidos: no se vuelven a premiar
+        hito_salida = self.salida[len("best_speedrun_"):-len(".state")] if self.salida.startswith("best_speedrun_") else None
+        self.hitos_previos = set(c.HITOS[:c.HITOS.index(hito_salida) + 1]) if hito_salida in c.HITOS else set()
         self.episode_maps = set(self.mapas_previos)
         self.h_story.mapas_episodio = self.episode_maps
         if config.USE_CURRICULUM:
@@ -253,7 +260,7 @@ class PokemonGoldEnv(gym.Env):
             self.combate_actual["ps_rival"] = self.gestor.leer_vida_enemigo()
         elif self.combate_actual is not None:
             # Rival a 0 PS al acabar = ganado; si no, ha huido (o capturado)
-            self._cerrar_combate("ganado" if self.combate_actual["ps_rival"] == 0 else "huido")
+            reward += self._cerrar_combate("ganado" if self.combate_actual["ps_rival"] == 0 else "huido")
         self.ultimo_tipo_combate = tipo_combate
 
         # ⚔️ 2. GESTIÓN DE COMBATE (Delegado)
@@ -287,10 +294,9 @@ class PokemonGoldEnv(gym.Env):
             reward += c.REWARD_NEW_MAP
             if config.VERBOSE: print(f"🌍 [Clon {self.rank}] ¡Mapa descubierto! -> {map_name}")
             if self.logger: self.logger.log_step({"evento": "NUEVO_MAPA", "mapa": map_name, "step": self.steps_count})
-            # Hito intermedio de ruta: primera llegada a un mapa clave (Ciudad Cerezo, Ruta 30...)
-            hito_mapa = self.hito_por_mapa.get(current_speedrun_map)
-            if hito_mapa:
-                reward += self.h_story.conseguir_hito(self.pb, self.ram, self.rewards, hito_mapa, self.steps_count)
+
+        # Hitos de ruta: llegar a un mapa clave (con su requisito, p. ej. tener ya el huevo para la vuelta)
+        reward += self._comprobar_hitos_mapa(current_speedrun_map)
 
 
         # 📸 Capturas: pantalla en memoria cada pocos pasos y foto de cada hito
@@ -374,6 +380,34 @@ class PokemonGoldEnv(gym.Env):
             self.logger.log_step({"evento": "FIN_COMBATE", "tipo": combate["tipo"], "resultado": resultado, "pasos": pasos,
                                   "rival": combate["rival"], "nivel_rival": combate["nivel_rival"],
                                   "mapa": combate["mapa"], "step": self.steps_count})
+        # Ganar al rival en Ciudad Cerezo (el único entrenador de ese mapa) es un hito de la vuelta a Elm
+        if (combate["tipo"] == "entrenador" and resultado == "ganado" and combate["mapa"] == "CHERRYGROVE_CITY"):
+            return self._hito(c.HITO_RIVAL_CEREZO)
+        return 0.0
+
+    def _hito(self, hito):
+        """Premia un hito una sola vez por episodio (y nunca si ya estaba conseguido en la salida)."""
+        if hito in self.splits or hito in self.hitos_previos:
+            return 0.0
+        self.splits[hito] = self.steps_count
+        self.h_movement.registrar_progreso()
+        return self.h_story.conseguir_hito(self.pb, self.ram, self.rewards, hito, self.steps_count)
+
+    def _evento_activo(self, nombre):
+        addr, bit = rom_catalog.EVENT_FLAGS[nombre]
+        return bool((self.ram.leer(addr) >> bit) & 1)
+
+    def _comprobar_hitos_mapa(self, mapa):
+        """Hitos de llegada a mapas clave: exigen su evento `requisito` activo y `prohibido` sin activar
+        (p. ej. la vuelta a Elm solo cuenta llevando el huevo y antes de entregarlo)."""
+        reward = 0.0
+        for hito, requisito, prohibido in self.hitos_por_mapa.get(mapa, []):
+            if requisito is not None and not self._evento_activo(requisito):
+                continue
+            if prohibido is not None and self._evento_activo(prohibido):
+                continue
+            reward += self._hito(hito)
+        return reward
 
     def _get_obs(self):
         # Grises (pesos 77/150/29 ≈ 0.299/0.587/0.114) y media de cada bloque 2x2: 144x160 -> 72x80
