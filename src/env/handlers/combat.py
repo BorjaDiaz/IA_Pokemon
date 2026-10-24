@@ -6,6 +6,9 @@ class CombatHandler:
         self.rank = rank
         self.logger = logger
         self.vida_enemigo_anterior = 999
+        # El entorno lo actualiza en cada paso: True si el Pokémon más fuerte está por debajo del nivel
+        # objetivo del tramo (ganar combates vale más mientras necesita subir de nivel)
+        self.bajo_objetivo = False
 
     def procesar(self, pb, ram, rewards, gestor, en_combate, vida_actual_equipo, vida_equipo_anterior, step_count, map_name):
         reward = 0.0
@@ -29,7 +32,7 @@ class CombatHandler:
                 if self.logger: self.logger.log_step({"evento": "DAÑO_CAUSADO", "daño": daño, "hp_enemigo": vida_actual_enemigo, "step": step_count})
             
             if vida_actual_enemigo == 0:
-                reward += c.REWARD_COMBAT_ENEMY_FAINTED
+                reward += c.REWARD_COMBAT_ENEMY_FAINTED * (c.MULT_KO_BAJO_OBJETIVO if self.bajo_objetivo else 1.0)
                 if config.VERBOSE: print(f"🏆 [Clon {self.rank}] ¡Rival Debilitado!")
                 vida_enemigo_out = 999
             else:
@@ -39,7 +42,7 @@ class CombatHandler:
         if 0 <= vida_actual_equipo < vida_equipo_anterior and vida_equipo_anterior != 999:
             daño_recibido = vida_equipo_anterior - vida_actual_equipo
             if 0 < daño_recibido < 500:
-                castigo = rewards.calcular_penalizacion_danio_recibido(daño_recibido)
+                castigo = rewards.calcular_penalizacion_danio_recibido(daño_recibido, ram.leer_max_vida_total_equipo())
                 reward += castigo 
                 if config.VERBOSE: print(f"💥 [Clon {self.rank}] ¡Recibes daño! (-{daño_recibido} HP).")
             

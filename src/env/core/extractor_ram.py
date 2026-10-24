@@ -47,6 +47,14 @@ class RamExtractor:
                 nivel_total += nivel_actual
         return nivel_total
 
+    def leer_nivel_max_equipo(self):
+        """Nivel del Pokémon más fuerte del equipo (0 si no hay equipo)."""
+        party_count = self.leer_party_count()
+        if party_count > 6 or party_count == 0:
+            return 0
+        niveles = [self.leer(0xDA2A + i * 0x30 + 0x1F) for i in range(party_count)]
+        return max((n for n in niveles if 1 <= n <= 100), default=0)
+
     def leer_max_vida_total_equipo(self):
         hp_max_total = 0
         party_count = self.leer_party_count()

@@ -8,6 +8,15 @@ with open(CATALOG_PATH, encoding="utf-8") as _f:
 
 RAM = {name: int(addr, 16) for name, addr in _catalog["ram"].items()}
 MAPS = {tuple(int(x) for x in key.split(",")): name for key, name in _catalog["maps"].items()}
+# Entorno de cada mapa según pret: TOWN, ROUTE, CAVE, DUNGEON (exteriores y cuevas) o INDOOR, GATE...
+ENTORNOS = {tuple(int(x) for x in key.split(",")): env for key, env in _catalog.get("entornos", {}).items()}
+ENTORNOS_EXPLORABLES = {"TOWN", "ROUTE", "CAVE", "DUNGEON"}
+
+
+def es_explorable(mapa):
+    """True si el mapa es exterior o cueva/mazmorra; False en interiores (casas, Centros Pokémon,
+    tiendas...) y casetas, que en un speedrun no se exploran."""
+    return ENTORNOS.get(mapa, "ROUTE") in ENTORNOS_EXPLORABLES
 EVENT_FLAGS = {name: (int(info["addr"], 16), info["bit"]) for name, info in _catalog["event_flags"].items()}
 EVENT_FLAG_NAMES = {pos: name for name, pos in EVENT_FLAGS.items()}
 EVENT_FLAG_KIND = {name: info["kind"] for name, info in _catalog["event_flags"].items()}

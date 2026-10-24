@@ -86,6 +86,20 @@ def parse_maps(lines):
     return maps
 
 
+def parse_entornos(lines):
+    """Entorno de cada mapa (TOWN, ROUTE, INDOOR, CAVE, GATE, DUNGEON...) desde data/maps/maps.asm.
+    Allí los mapas van por grupos (MapGroup_X:) en el mismo orden que map_constants.asm."""
+    group, number, entornos = 0, 0, {}
+    for line in lines:
+        s = line.split(";")[0].strip()
+        if s.startswith("MapGroup_") and s.endswith(":"):
+            group, number = group + 1, 0
+        elif s.startswith("map "):
+            number += 1
+            entornos[f"{group},{number}"] = s.split(",")[2].strip()
+    return entornos
+
+
 def flag_kind(index):
     # Rangos según los comentarios de event_flags.asm
     if index < 8:
@@ -100,6 +114,8 @@ def flag_kind(index):
 def main():
     flags = parse_event_flags(fetch("constants/event_flags.asm"))
     maps = parse_maps(fetch("constants/map_constants.asm"))
+    entornos = parse_entornos(fetch("data/maps/maps.asm"))
+    assert set(entornos) == set(maps), "maps.asm y map_constants.asm no cuadran"
 
     catalog = {
         "rom": "POKEMON_GLDAAUS",
@@ -115,6 +131,7 @@ def main():
             for name, i in sorted(flags.items(), key=lambda kv: kv[1])
         },
         "maps": maps,
+        "entornos": entornos,
     }
 
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)

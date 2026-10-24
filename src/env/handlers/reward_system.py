@@ -5,14 +5,11 @@ class RewardSystem:
         self.rank = rank
 
     def calcular_premio_curacion(self, curacion, max_vida_equipo):
-        """Calcula el premio por curarse. Modificado para evitar granjeo."""
+        """Premio proporcional a la fracción de PS del equipo recuperada (Centro Pokémon, pociones...).
+        Es algo menor que la penalización por perder esos PS, así que no compensa hacerse daño para curarse."""
         if max_vida_equipo <= 0 or curacion <= 0:
             return 0.0
-            
-        # 🛑 Reducimos drásticamente el peso de la curación. 
-        # Es una pequeña ayuda para no morir, no un farmeo.
-        porcentaje_curado = curacion / max_vida_equipo
-        return porcentaje_curado * (c.REWARD_HEAL * 0.2)
+        return c.REWARD_HEAL_FRAC * min(1.0, curacion / max_vida_equipo)
 
     def calcular_premio_danio(self, danio_causado):
         """Calcula el premio por golpear al rival."""
@@ -21,11 +18,11 @@ class RewardSystem:
         # Multiplicador bajo para que no prefiera quedarse pegando eternamente
         return danio_causado * c.REWARD_DAMAGE_MULT
 
-    def calcular_penalizacion_danio_recibido(self, danio_recibido):
-        """Calcula una penalización proporcional por recibir daño."""
-        if danio_recibido <= 0:
+    def calcular_penalizacion_danio_recibido(self, danio_recibido, max_vida_equipo):
+        """Penalización proporcional a la fracción de PS del equipo perdida."""
+        if danio_recibido <= 0 or max_vida_equipo <= 0:
             return 0.0
-        return c.PENALTY_COMBAT_DAMAGE_RECEIVED
+        return c.PENALTY_DAMAGE_FRAC * min(1.0, danio_recibido / max_vida_equipo)
 
     def calcular_bonus_prisa_flag(self, steps_actuales):
         """Bonus por conseguir un hito rápido: hasta REWARD_FLAG_STORY si es al principio del episodio."""

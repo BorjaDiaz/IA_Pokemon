@@ -17,16 +17,27 @@ PENALTY_SAME_TILE = -0.005          # Por quedarse en la misma baldosa fuera de 
 PENALTY_REVISIT_TILE = -0.001       # Por volver a una baldosa ya pisada
 PENALTY_NO_PROGRESS = -10.0         # Al cortar el episodio por no avanzar
 
-# Supervivencia y Progreso
-REWARD_HEAL = 10.0
-REWARD_LEVEL_UP = 5.0               # Por cada nivel ganado (no cuenta al entrar un Pokémon nuevo en el equipo)
+# Supervivencia: daño y curación proporcionales a la fracción de PS del equipo. Curarse da algo menos
+# de lo que quita el daño (no compensa hacerse daño para curarse), pero con la vida baja ir al Centro
+# Pokémon vale la pena, y quedarse sin Pokémon corta el episodio
+PENALTY_DAMAGE_FRAC = -5.0          # Por perder el 100% de los PS del equipo (proporcional)
+REWARD_HEAL_FRAC = 4.0              # Por recuperar el 100% de los PS del equipo (proporcional)
+PENALTY_TEAM_FAINTED = -15.0        # Equipo debilitado: fin del episodio
 
-# Combate: un combate salvaje típico sale aproximadamente neutro (daño + K.O. ≈ pasos en combate),
-# para que el agente no aprenda a farmear combates en la hierba en lugar de avanzar
-REWARD_COMBAT_ENEMY_FAINTED = 2.0   # Por debilitar a un Pokémon rival
-PENALTY_COMBAT_DAMAGE_RECEIVED = -1.0 # Por recibir daño
+# Nivel objetivo por tramo: subir de nivel y ganar combates se premia mientras el Pokémon más fuerte
+# esté por debajo del nivel adecuado para el siguiente reto; por encima, ya no (nada de farmear sin fin).
+# El objetivo de cada fila vale hasta conseguir su hito.
+NIVELES_OBJETIVO = [
+    ("RIVAL_CHERRYGROVE_SUPERADO", 8),   # rival con su inicial a nivel 5
+    ("EVENT_BEAT_FALKNER", 12),          # Pidgeotto nv. 9
+    ("EVENT_BEAT_BUGSY", 17),            # Scyther nv. 16
+    ("EVENT_BEAT_WHITNEY", 21),          # Miltank nv. 19
+    ("EVENT_BEAT_MORTY", 26),            # Gengar nv. 25
+]
+REWARD_LEVEL_UP = 15.0              # Por cada nivel ganado por debajo del objetivo
+REWARD_COMBAT_ENEMY_FAINTED = 2.0   # Por debilitar a un Pokémon rival...
+MULT_KO_BAJO_OBJETIVO = 3.0         # ...multiplicado por esto si aún está por debajo del nivel objetivo
 PENALTY_COMBAT_STEP = -0.05         # Penalización por paso en combate (para que no alargue batallas)
-PENALTY_TEAM_FAINTED = -15.0        # Game Over (equipo debilitado)
 REWARD_DAMAGE_MULT = 0.05           # Por cada PS de daño causado
 
 # Historia (Flags)

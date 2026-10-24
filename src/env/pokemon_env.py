@@ -74,7 +74,10 @@ class PokemonGoldEnv(gym.Env):
         self.vida_equipo_anterior = 999
         self.max_vida_equipo_anterior = 0
         self.party_count_anterior = 0
-        self.nivel_total_previo = 0
+        self.nivel_max_previo = 0
+        # Para las barras de la observación: PS del equipo y nivel respecto al objetivo del tramo (0..1)
+        self.fraccion_vida = 0.0
+        self.fraccion_nivel = 0.0
 
         # Inicialización del emulador (sin sonido: no se usa y cuesta tiempo de CPU)
         self.pb = PyBoy(config.ROM_PATH, window="SDL2" if self.ventana else "null", sound_emulated=False)
@@ -174,7 +177,9 @@ class PokemonGoldEnv(gym.Env):
         self.vida_equipo_anterior = self.ram.leer_vida_total_equipo()
         self.max_vida_equipo_anterior = self.ram.leer_max_vida_total_equipo()
         self.party_count_anterior = self.ram.leer_party_count()
-        self.nivel_total_previo = self.ram.leer_nivel_total_equipo()
+        self.nivel_max_previo = self.ram.leer_nivel_max_equipo()
+        self.fraccion_vida = self.vida_equipo_anterior / self.max_vida_equipo_anterior if self.max_vida_equipo_anterior > 0 else 0.0
+        self.fraccion_nivel = min(1.0, self.nivel_max_previo / self._nivel_objetivo())
         self.active_flags = self.ram.get_flag_bytes()
 
         # Resetear también las vidas que guardan los handlers internamente
@@ -224,7 +229,7 @@ class PokemonGoldEnv(gym.Env):
         vida_actual_equipo = self.ram.leer_vida_total_equipo()
         max_vida_equipo = self.ram.leer_max_vida_total_equipo()
         party_count = self.ram.leer_party_count()
-        nivel_actual_total = self.ram.leer_nivel_total_equipo()
+        nivel_max = self.ram.leer_nivel_max_equipo()
 
         # Si cambia el equipo (captura, Pokémon nuevo) o la vida máxima (subida de nivel),
         # el salto de PS no es curación ni daño, y un Pokémon nuevo no es una subida de nivel:
@@ -232,7 +237,7 @@ class PokemonGoldEnv(gym.Env):
         if party_count != self.party_count_anterior or max_vida_equipo != self.max_vida_equipo_anterior:
             self.vida_equipo_anterior = vida_actual_equipo
         if party_count != self.party_count_anterior:
-            self.nivel_total_previo = nivel_actual_total
+            self.nivel_max_previo = nivel_max
         self.party_count_anterior, self.max_vida_equipo_anterior = party_count, max_vida_equipo
 
         # 📜 Eventos del juego (antes que el movimiento: un evento nuevo cuenta como progreso)
@@ -243,7 +248,9 @@ class PokemonGoldEnv(gym.Env):
         # 🗺️ 1. GESTIÓN DE MOVIMIENTO Y ATASCOS (Delegado)
         r_mov, sin_progreso = self.h_movement.procesar(
             x, y, self.last_speedrun_pos, current_speedrun_tile, self.episode_tiles, map_name, en_combate, en_script,
-            explorable=current_speedrun_map not in self.mapas_previos
+            # Solo exteriores y cuevas fuera de los mapas ya recorridos antes de la salida: casas, Centros
+            # Pokémon y tiendas no dan recompensa de exploración (al Centro Pokémon se va a curarse)
+            explorable=current_speedrun_map not in self.mapas_previos and rom_catalog.es_explorable(current_speedrun_map)
         )
         reward += r_mov
 
@@ -264,6 +271,10 @@ class PokemonGoldEnv(gym.Env):
         self.ultimo_tipo_combate = tipo_combate
 
         # ⚔️ 2. GESTIÓN DE COMBATE (Delegado)
+        objetivo = self._nivel_objetivo()
+        self.h_combat.bajo_objetivo = nivel_max < objetivo
+        self.fraccion_vida = vida_actual_equipo / max_vida_equipo if max_vida_equipo > 0 else 0.0
+        self.fraccion_nivel = min(1.0, nivel_max / objetivo)
         r_comb, _ = self.h_combat.procesar(
             self.pb, self.ram, self.rewards, self.gestor,
             en_combate, vida_actual_equipo, self.vida_equipo_anterior,
@@ -278,20 +289,20 @@ class PokemonGoldEnv(gym.Env):
             if config.VERBOSE: print(f"💊 [Clon {self.rank}] ¡Curación! (+{curacion} HP).")
         self.vida_equipo_anterior = vida_actual_equipo
 
-        if self.nivel_total_previo > 0 and nivel_actual_total > self.nivel_total_previo:
-            subida = nivel_actual_total - self.nivel_total_previo
-            reward += c.REWARD_LEVEL_UP * subida
-            if config.VERBOSE: print(f"🌟 [Clon {self.rank}] ¡Aumento de Nivel! (+{subida} niveles)")
-            self.nivel_total_previo = nivel_actual_total
-        elif self.nivel_total_previo == 0 and nivel_actual_total > 0:
-            self.nivel_total_previo = nivel_actual_total
+        # Solo cuentan los niveles ganados por debajo del objetivo del tramo (sin farmear de más)
+        if self.nivel_max_previo > 0 and nivel_max > self.nivel_max_previo:
+            premiados = max(0, min(nivel_max, objetivo) - self.nivel_max_previo)
+            reward += c.REWARD_LEVEL_UP * premiados
+            if config.VERBOSE: print(f"🌟 [Clon {self.rank}] ¡Nivel {nivel_max}! (objetivo {objetivo})")
+        self.nivel_max_previo = nivel_max
 
         # 🌍 3. GESTIÓN DE MAPAS Y FLAGS DE HISTORIA (Delegado)
         if current_speedrun_map not in self.episode_maps:
             self.episode_maps.add(current_speedrun_map)
             self.all_maps_seen.add(current_speedrun_map)
             self.splits[map_name] = self.steps_count
-            reward += c.REWARD_NEW_MAP
+            if rom_catalog.es_explorable(current_speedrun_map):
+                reward += c.REWARD_NEW_MAP
             if config.VERBOSE: print(f"🌍 [Clon {self.rank}] ¡Mapa descubierto! -> {map_name}")
             if self.logger: self.logger.log_step({"evento": "NUEVO_MAPA", "mapa": map_name, "step": self.steps_count})
 
@@ -393,6 +404,18 @@ class PokemonGoldEnv(gym.Env):
         self.h_movement.registrar_progreso()
         return self.h_story.conseguir_hito(self.pb, self.ram, self.rewards, hito, self.steps_count)
 
+    def _hito_conseguido(self, hito):
+        if hito in self.splits or hito in self.hitos_previos:
+            return True
+        return hito in rom_catalog.EVENT_FLAGS and self._evento_activo(hito)
+
+    def _nivel_objetivo(self):
+        """Nivel adecuado para el siguiente reto: el de la primera fila de NIVELES_OBJETIVO sin conseguir."""
+        for hito, nivel in c.NIVELES_OBJETIVO:
+            if not self._hito_conseguido(hito):
+                return nivel
+        return 100
+
     def _evento_activo(self, nombre):
         addr, bit = rom_catalog.EVENT_FLAGS[nombre]
         return bool((self.ram.leer(addr) >> bit) & 1)
@@ -426,6 +449,12 @@ class PokemonGoldEnv(gym.Env):
                         visitadas[fila, col] = 255
         exploracion = np.kron(visitadas, np.ones((8, 8), dtype=np.uint8))
 
+        # Barras arriba del canal 2 (la pantalla no muestra la vida fuera de combate): filas 0-1 = PS del
+        # equipo, filas 2-3 = nivel respecto al objetivo del tramo. Sirven para decidir curarse o entrenar
+        exploracion[0:2, :] = 0
+        exploracion[0:2, :int(round(80 * self.fraccion_vida))] = 255
+        exploracion[2:4, :] = 0
+        exploracion[2:4, :int(round(80 * self.fraccion_nivel))] = 255
         return np.stack([gris.astype(np.uint8), exploracion])
 
     def close(self):

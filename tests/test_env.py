@@ -65,7 +65,7 @@ class PokemonGoldEnvTests(unittest.TestCase):
                 break
         else:
             self.fail("No hubo encuentro salvaje")
-        self.assertFalse(obs[1].any())
+        self.assertFalse(obs[1][4:].any())  # filas 0-3: barras de PS y nivel; el resto, vacío en combate
 
         # Pulsando A se lucha con el primer ataque hasta acabar: el combate queda registrado
         for _ in range(1500):
@@ -119,6 +119,15 @@ class PokemonGoldEnvTests(unittest.TestCase):
             self.assertLess(self.env.h_movement.steps_sin_progreso, 7)
         finally:
             config.CURRICULUM_STATES = estados
+
+    def test_hp_and_level_bars_in_observation(self):
+        config.CURRENT_STAGE = 2  # ruta_29.state: Cyndaquil nv. 5 con la vida llena
+        obs, _ = self.env.reset()
+        vida = self.env.ram.leer_vida_total_equipo() / self.env.ram.leer_max_vida_total_equipo()
+        nivel = self.env.ram.leer_nivel_max_equipo()
+        self.assertEqual(int((obs[1][0] == 255).sum()), round(80 * vida))
+        self.assertEqual(int((obs[1][2] == 255).sum()), round(80 * min(1.0, nivel / self.env._nivel_objetivo())))
+        self.assertEqual(self.env._nivel_objetivo(), 8)  # aún no ha superado al rival de Ciudad Cerezo
 
     def test_no_progress_terminates_episode(self):
         self.env.h_movement.max_steps_sin_progreso = 3
