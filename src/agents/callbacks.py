@@ -118,6 +118,7 @@ class VigilanteCallback(BaseCallback):
     """Para el entrenamiento solo, de forma ordenada (como PARAR), si:
     - se supera MAX_MINUTOS;
     - empeora lo ya dominado: desde el inicio, VIGILAR_HITO se consigue en menos de VIGILAR_EXITO_MIN
+      (solo si en esta ejecución ya había llegado a dominarlo: una IA nueva empieza en 0%)
       de los últimos VIGILAR_VENTANA episodios;
     - el aprendizaje es inestable (approx_kl > VIGILAR_KL_MAX o explained_variance < VIGILAR_EV_MIN)
       durante VIGILAR_RONDAS_INESTABLE rondas seguidas;
@@ -137,6 +138,7 @@ class VigilanteCallback(BaseCallback):
         self.mejor = None
         self.rondas_inestable = 0
         self.rondas_sin_novedad = 0
+        self.hito_dominado = False  # VIGILAR_HITO llegó a VIGILAR_EXITO_MIN en esta ejecución
         self.hitos_vistos = set()
         self.novedad = False
         self.records_mtime = self._mtime_records()
@@ -198,7 +200,9 @@ class VigilanteCallback(BaseCallback):
         # y el siguiente _on_step devuelve False
         if len(self.recientes) == self.recientes.maxlen:
             exito = sum(config.VIGILAR_HITO in h for h in self.recientes) / len(self.recientes)
-            if exito < config.VIGILAR_EXITO_MIN:
+            if exito >= config.VIGILAR_EXITO_MIN:
+                self.hito_dominado = True
+            elif self.hito_dominado:
                 self.motivo_pendiente = (f"{config.VIGILAR_HITO} ha bajado al {100 * exito:.0f}% "
                                          f"(mínimo {100 * config.VIGILAR_EXITO_MIN:.0f}%)", True)
         if self.rondas_inestable >= config.VIGILAR_RONDAS_INESTABLE:

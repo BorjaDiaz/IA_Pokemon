@@ -32,6 +32,14 @@ class KOTests(unittest.TestCase):
         extra = c.REWARD_KO_BAJO_OBJETIVO - c.REWARD_KO_SOBRE_OBJETIVO
         self.assertAlmostEqual(self.ko(True) - self.ko(False), extra)
 
+    def test_a_knockout_below_target_is_flagged_as_progress(self):
+        h = CombatHandler(rank=0, logger=None)
+        for bajo in (True, False):
+            h.bajo_objetivo, h.vida_enemigo_anterior = bajo, 5
+            h.procesar(None, SimpleNamespace(leer_max_vida_total_equipo=lambda: 20), RewardSystem(),
+                       SimpleNamespace(leer_vida_enemigo=lambda: 0), True, 20, 20, 1, "ROUTE_29")
+            self.assertEqual(h.ko_bajo_objetivo, bajo)
+
 
 class HuidaTests(unittest.TestCase):
     """Huir solo se penaliza si hacía falta entrenar y el combate era razonable."""

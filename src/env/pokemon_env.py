@@ -285,6 +285,10 @@ class PokemonGoldEnv(gym.Env):
             self.steps_count, map_name
         )
         reward += r_comb
+        # Entrenar cuando hace falta es progreso: sin esto, subir de nv 5 a 8 (~12 combates, ~1.560 pasos)
+        # se cortaba por "sin progreso" a los 1.000 pasos, a mitad del entrenamiento
+        if self.h_combat.ko_bajo_objetivo:
+            self.h_movement.registrar_progreso()
 
         # 🏥 Curación y niveles
         if not en_combate and vida_actual_equipo > self.vida_equipo_anterior and self.vida_equipo_anterior != 999:
@@ -297,6 +301,8 @@ class PokemonGoldEnv(gym.Env):
         if self.nivel_max_previo > 0 and nivel_max > self.nivel_max_previo:
             premiados = max(0, min(nivel_max, objetivo) - self.nivel_max_previo)
             reward += c.REWARD_LEVEL_UP * premiados
+            if premiados:
+                self.h_movement.registrar_progreso()
             if config.VERBOSE: print(f"🌟 [Clon {self.rank}] ¡Nivel {nivel_max}! (objetivo {objetivo})")
         self.nivel_max_previo = nivel_max
 

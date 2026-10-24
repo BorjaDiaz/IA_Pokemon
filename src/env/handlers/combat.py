@@ -9,9 +9,12 @@ class CombatHandler:
         # El entorno lo actualiza en cada paso: True si el Pokémon más fuerte está por debajo del nivel
         # objetivo del tramo (ganar combates vale más mientras necesita subir de nivel)
         self.bajo_objetivo = False
+        # True si en este paso debilitó a un rival estando por debajo del objetivo (cuenta como progreso)
+        self.ko_bajo_objetivo = False
 
     def procesar(self, pb, ram, rewards, gestor, en_combate, vida_actual_equipo, vida_equipo_anterior, step_count, map_name):
         reward = 0.0
+        self.ko_bajo_objetivo = False
         vida_enemigo_out = self.vida_enemigo_anterior
 
         if not en_combate:
@@ -33,6 +36,7 @@ class CombatHandler:
             
             if vida_actual_enemigo == 0:
                 reward += c.REWARD_KO_BAJO_OBJETIVO if self.bajo_objetivo else c.REWARD_KO_SOBRE_OBJETIVO
+                self.ko_bajo_objetivo = self.bajo_objetivo
                 if config.VERBOSE: print(f"🏆 [Clon {self.rank}] ¡Rival Debilitado!")
                 vida_enemigo_out = 999
             else:

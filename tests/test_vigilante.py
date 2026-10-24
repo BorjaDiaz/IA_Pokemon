@@ -61,6 +61,11 @@ class VigilanteTests(unittest.TestCase):
         self.assertIn(HITO, self.v.motivo)
         self.assertTrue(self.v.degradado)
 
+    def test_a_fresh_ai_that_has_not_mastered_the_milestone_is_not_stopped(self):
+        self.episodios(10, con_hito=False)  # 0%: nunca lo ha dominado, no es empeorar
+        self.assertTrue(self.ronda())
+        self.assertIsNone(self.v.motivo)
+
     def test_stops_when_learning_is_unstable_for_several_rounds(self):
         for _ in range(config.VIGILAR_RONDAS_INESTABLE - 1):
             self.assertTrue(self.ronda(kl=0.2))
