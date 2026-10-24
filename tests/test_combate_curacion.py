@@ -29,7 +29,7 @@ class KOTests(unittest.TestCase):
         return reward
 
     def test_knockouts_are_worth_more_while_below_the_target_level(self):
-        extra = c.REWARD_COMBAT_ENEMY_FAINTED * (c.MULT_KO_BAJO_OBJETIVO - 1)
+        extra = c.REWARD_KO_BAJO_OBJETIVO - c.REWARD_KO_SOBRE_OBJETIVO
         self.assertAlmostEqual(self.ko(True) - self.ko(False), extra)
 
 

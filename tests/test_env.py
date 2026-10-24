@@ -115,8 +115,8 @@ class PokemonGoldEnvTests(unittest.TestCase):
                 mapa = (self.env.ram.leer(c.ADDR_MAP_GRP), self.env.ram.leer(c.ADDR_MAP_ID))
                 if mapa in self.env.mapas_previos and not self.env.h_story.hubo_progreso:
                     self.assertLessEqual(reward, 0)
-            # ...pero moverse por casillas no pisadas sí cuenta como no estar atascado
-            self.assertLess(self.env.h_movement.steps_sin_progreso, 7)
+            # ...y como el laboratorio es un interior, moverse por él tampoco reinicia el contador
+            self.assertGreaterEqual(self.env.h_movement.steps_sin_progreso, 7)
         finally:
             config.CURRICULUM_STATES = estados
 

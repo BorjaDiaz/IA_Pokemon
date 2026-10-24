@@ -11,14 +11,17 @@ class MovementHandler:
         """Algo nuevo ha pasado en la partida (p. ej. un evento del juego): reinicia el contador."""
         self.steps_sin_progreso = 0
 
-    def procesar(self, x, y, last_pos, curr_tile, visited_tiles, map_name, en_combate, en_script, explorable=True):
+    def procesar(self, x, y, last_pos, curr_tile, visited_tiles, map_name, en_combate, en_script,
+                 explorable=True, cuenta_progreso=True):
         """El contador de pasos sin progreso avanza en todos los pasos, también en diálogos y combates:
         si se pausara en ellos, repetir un diálogo sin fin evitaría el corte del episodio.
-        Lo reinicia una casilla nueva o registrar_progreso() (eventos nuevos del juego).
-        explorable=False: mapa ya recorrido antes del hito desde el que empezó el episodio. Pisar una
-        casilla suya por primera vez reinicia el contador (se está moviendo, no atascado) pero no da
-        recompensa (volver atrás no es avanzar). Si tampoco reiniciara el contador, el episodio se cortaba
-        antes de poder llegar a la Ruta 29 y descubrir que allí sí hay recompensa."""
+        Lo reinicia una casilla nueva (si cuenta_progreso) o registrar_progreso() (eventos nuevos del juego).
+        explorable=False: la casilla nueva no da recompensa (mapa ya recorrido antes del hito de salida,
+        o interior).
+        cuenta_progreso=False (interiores: casas, Centros Pokémon, tiendas): la casilla nueva tampoco
+        reinicia el contador; si no, los interiores eran un refugio donde el episodio no se cortaba. En
+        exteriores ya recorridos sí lo reinicia: hace falta para atravesarlos (p. ej. la vuelta a Elm)
+        sin que el episodio se corte antes de llegar a donde hay recompensa."""
         reward = 0.0
         sin_progreso = False
         self.steps_sin_progreso += 1
@@ -32,7 +35,8 @@ class MovementHandler:
             if curr_tile not in visited_tiles:
                 visited_tiles.add(curr_tile)
                 reward += c.REWARD_NEW_TILE if explorable else c.PENALTY_REVISIT_TILE
-                self.steps_sin_progreso = 0
+                if cuenta_progreso:
+                    self.steps_sin_progreso = 0
             else:
                 reward += c.PENALTY_REVISIT_TILE
 

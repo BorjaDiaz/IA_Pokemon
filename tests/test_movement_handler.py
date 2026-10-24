@@ -4,9 +4,10 @@ from src.env.handlers.movement import MovementHandler
 import src.utils.constantes as c
 
 
-def paso(handler, visited, pos=(1, 1), last_pos=(1, 1), en_combate=False, en_script=False, explorable=True):
+def paso(handler, visited, pos=(1, 1), last_pos=(1, 1), en_combate=False, en_script=False, explorable=True,
+         cuenta_progreso=True):
     return handler.procesar(pos[0], pos[1], last_pos, (24, 7) + pos, visited, "PLAYERS_HOUSE_2F", en_combate, en_script,
-                            explorable=explorable)
+                            explorable=explorable, cuenta_progreso=cuenta_progreso)
 
 
 class MovementHandlerTests(unittest.TestCase):
@@ -38,6 +39,14 @@ class MovementHandlerTests(unittest.TestCase):
         # La segunda vez en la misma casilla ya no reinicia nada
         paso(handler, visited, pos=(2, 1), last_pos=(1, 1), explorable=False)
         self.assertEqual(handler.steps_sin_progreso, 1)
+
+    def test_interiors_neither_reward_nor_reset_the_counter(self):
+        # Casas, Centros Pokémon y tiendas: pisar casillas nuevas no es progreso (no sirven de refugio)
+        handler, visited = MovementHandler(rank=0), set()
+        handler.steps_sin_progreso = 10
+        reward, _ = paso(handler, visited, pos=(2, 1), explorable=False, cuenta_progreso=False)
+        self.assertLess(reward, 0)
+        self.assertEqual(handler.steps_sin_progreso, 11)
 
     def test_game_events_reset_no_progress_counter(self):
         handler, visited = MovementHandler(rank=0), {(24, 7, 1, 1)}

@@ -35,9 +35,11 @@ NIVELES_OBJETIVO = [
     ("EVENT_BEAT_MORTY", 26),            # Gengar nv. 25
 ]
 REWARD_LEVEL_UP = 15.0              # Por cada nivel ganado por debajo del objetivo
-REWARD_COMBAT_ENEMY_FAINTED = 2.0   # Por debilitar a un Pokémon rival...
-MULT_KO_BAJO_OBJETIVO = 3.0         # ...multiplicado por esto si aún está por debajo del nivel objetivo
-PENALTY_COMBAT_STEP = -0.05         # Penalización por paso en combate (para que no alargue batallas)
+# K.O. a un rival. Un combate salvaje dura ~130 pasos (casi todo pasar textos): con una penalización
+# extra por paso en combate, ganarlo salía en -0,17 y el agente aprendió a huir siempre (0 de 4.299).
+# Ahora, por debajo del objetivo ganar vale ~+0,5 y por encima lo mejor sigue siendo huir.
+REWARD_KO_BAJO_OBJETIVO = 6.0
+REWARD_KO_SOBRE_OBJETIVO = 0.5
 REWARD_DAMAGE_MULT = 0.05           # Por cada PS de daño causado
 
 # Historia (Flags)

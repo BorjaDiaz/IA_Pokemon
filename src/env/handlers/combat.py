@@ -32,7 +32,7 @@ class CombatHandler:
                 if self.logger: self.logger.log_step({"evento": "DAÑO_CAUSADO", "daño": daño, "hp_enemigo": vida_actual_enemigo, "step": step_count})
             
             if vida_actual_enemigo == 0:
-                reward += c.REWARD_COMBAT_ENEMY_FAINTED * (c.MULT_KO_BAJO_OBJETIVO if self.bajo_objetivo else 1.0)
+                reward += c.REWARD_KO_BAJO_OBJETIVO if self.bajo_objetivo else c.REWARD_KO_SOBRE_OBJETIVO
                 if config.VERBOSE: print(f"🏆 [Clon {self.rank}] ¡Rival Debilitado!")
                 vida_enemigo_out = 999
             else:
@@ -53,7 +53,5 @@ class CombatHandler:
                 reward += premio
                 if config.VERBOSE: print(f"💚 [Clon {self.rank}] ¡Curación en combate! (+{curacion} HP).")
 
-        reward += c.PENALTY_COMBAT_STEP 
-        
         self.vida_enemigo_anterior = vida_enemigo_out
         return reward, vida_enemigo_out

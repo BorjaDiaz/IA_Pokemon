@@ -250,7 +250,8 @@ class PokemonGoldEnv(gym.Env):
             x, y, self.last_speedrun_pos, current_speedrun_tile, self.episode_tiles, map_name, en_combate, en_script,
             # Solo exteriores y cuevas fuera de los mapas ya recorridos antes de la salida: casas, Centros
             # Pokémon y tiendas no dan recompensa de exploración (al Centro Pokémon se va a curarse)
-            explorable=current_speedrun_map not in self.mapas_previos and rom_catalog.es_explorable(current_speedrun_map)
+            explorable=current_speedrun_map not in self.mapas_previos and rom_catalog.es_explorable(current_speedrun_map),
+            cuenta_progreso=rom_catalog.es_explorable(current_speedrun_map),
         )
         reward += r_mov
 
