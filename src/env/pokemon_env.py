@@ -238,8 +238,9 @@ class PokemonGoldEnv(gym.Env):
         current_speedrun_tile, current_speedrun_map = (grp, mid, x, y), (grp, mid)
         map_name = c.MAP_NAMES.get(current_speedrun_map, f"Mapa {grp}-{mid}")
 
-        # Registrar cada cambio de casilla para el mapa de calor (episodio,grupo,mapa,x,y)
-        if (x, y) != self.last_speedrun_pos or current_speedrun_map != self.last_speedrun_map:
+        # Registrar cada cambio de casilla para el mapa de calor (episodio,grupo,mapa,x,y). Los simulacros
+        # no: empiezan en la hierba y no se mueven, y en el mapa salían casillas sueltas en medio de la nada
+        if not self.simulacro and ((x, y) != self.last_speedrun_pos or current_speedrun_map != self.last_speedrun_map):
             with open(self.coords_path, "a") as f:
                 f.write(f"{self.episode_counter},{grp},{mid},{x},{y}\n")
 

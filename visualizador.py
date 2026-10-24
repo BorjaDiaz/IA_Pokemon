@@ -86,8 +86,18 @@ def _load_metrics(fuentes):
     return rows
 
 
-def _load_coordinates(coords_dir):
-    """{rank: [(episodio, grp, mid, x, y), ...]} en orden de visita."""
+def _episodios_simulacro(metrics_path):
+    """{(rank, episodio)} de los simulacros de combate (las ejecuciones anteriores al arreglo los registraban)."""
+    if not os.path.exists(metrics_path):
+        return set()
+    with open(metrics_path, encoding="utf-8") as f:
+        filas = [json.loads(l) for l in f if l.strip()]
+    return {(r["rank"], r["episode"]) for r in filas if r.get("salida") == config.SALIDA_SIMULACRO}
+
+
+def _load_coordinates(coords_dir, excluir=frozenset()):
+    """{rank: [(episodio, grp, mid, x, y), ...]} en orden de visita, sin los episodios de `excluir`
+    ({(rank, episodio)}: los simulacros de combate, que no recorren nada)."""
     paths = {}
     for path in glob.glob(os.path.join(coords_dir, "coords_clon_*.txt")):
         rank = int(re.search(r"coords_clon_(\d+)", path).group(1))
@@ -96,7 +106,9 @@ def _load_coordinates(coords_dir):
             for line in f:
                 parts = line.strip().split(",")
                 if len(parts) == 5:
-                    puntos.append(tuple(int(p) for p in parts))
+                    punto = tuple(int(p) for p in parts)
+                    if (rank, punto[0]) not in excluir:
+                        puntos.append(punto)
         paths[rank] = puntos
     return paths
 
@@ -660,7 +672,8 @@ def main():
     plot_progress(metrics)
     plot_splits(splits)
     orden = orden_ruta(metrics)
-    mapas = plot_maps([_load_coordinates(f["coords"]) for f in fuentes], args.episodios, orden)
+    mapas = plot_maps([_load_coordinates(f["coords"], _episodios_simulacro(f["metrics"])) for f in fuentes],
+                      args.episodios, orden)
 
     texto = generar_resumen(fuentes, metrics, splits, mapas)
     with open(os.path.join(OUTPUT_DIR, "resumen.txt"), "w", encoding="utf-8") as f:
