@@ -110,6 +110,7 @@ class SplitsCallback(BaseCallback):
                     for resultado, n in combates[tipo].items():
                         self.logger.record_mean(f"combate/{tipo}_{resultado}", n)
                 self.logger.record_mean("combate/pasos_en_combate", combates["pasos_en_combate"])
+                self.logger.record_mean("combate/huidas_penalizadas", combates.get("huidas_penalizadas", 0))
         return True
 
 

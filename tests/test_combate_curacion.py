@@ -33,6 +33,34 @@ class KOTests(unittest.TestCase):
         self.assertAlmostEqual(self.ko(True) - self.ko(False), extra)
 
 
+class HuidaTests(unittest.TestCase):
+    """Huir solo se penaliza si hacía falta entrenar y el combate era razonable."""
+
+    def setUp(self):
+        from src.env.pokemon_env import PokemonGoldEnv, nuevas_estadisticas_combate
+        self.env = PokemonGoldEnv.__new__(PokemonGoldEnv)
+        self.env.combates = nuevas_estadisticas_combate()
+        self.env.logger, self.env.steps_count = None, 100
+        self.env.h_combat = SimpleNamespace(bajo_objetivo=True)
+        self.env.nivel_max_previo, self.env.fraccion_vida = 5, 1.0
+
+    def huir(self, nivel_rival=3, tipo="salvaje"):
+        self.env.combate_actual = {"tipo": tipo, "inicio": 40, "rival": 16, "nivel_rival": nivel_rival, "mapa": "ROUTE_29"}
+        return self.env._cerrar_combate("huido")
+
+    def test_fleeing_an_easy_battle_while_under_level_is_penalized(self):
+        self.assertEqual(self.huir(), c.PENALTY_HUIR_BAJO_OBJETIVO)
+        self.assertEqual(self.env.combates["huidas_penalizadas"], 1)
+
+    def test_fleeing_is_free_otherwise(self):
+        self.assertEqual(self.huir(nivel_rival=6), 0.0)              # el salvaje es más fuerte
+        self.env.fraccion_vida = 0.4
+        self.assertEqual(self.huir(), 0.0)                           # con la vida baja
+        self.env.fraccion_vida, self.env.h_combat.bajo_objetivo = 1.0, False
+        self.assertEqual(self.huir(), 0.0)                           # ya tiene nivel suficiente
+        self.assertEqual(self.env.combates["huidas_penalizadas"], 0)
+
+
 class NivelObjetivoTests(unittest.TestCase):
     def env(self, splits=(), previos=()):
         from src.env.pokemon_env import PokemonGoldEnv

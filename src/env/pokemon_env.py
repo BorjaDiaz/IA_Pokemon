@@ -26,10 +26,11 @@ CASILLAS_X, CASILLAS_Y, JUGADOR_COL, JUGADOR_FILA = 10, 9, 4, 4
 
 
 def nuevas_estadisticas_combate():
-    """Combates de un episodio por tipo y resultado (huido incluye capturas)."""
+    """Combates de un episodio por tipo y resultado (huido incluye capturas), y cuántas huidas se
+    penalizaron por huir cuando hacía falta entrenar."""
     return {"salvaje": {"ganado": 0, "huido": 0, "perdido": 0},
             "entrenador": {"ganado": 0, "huido": 0, "perdido": 0},
-            "pasos_en_combate": 0}
+            "pasos_en_combate": 0, "huidas_penalizadas": 0}
 
 class PokemonGoldEnv(gym.Env):
     def __init__(self, rank=0, ventana=None, velocidad=None, salida_fija=None):
@@ -266,6 +267,8 @@ class PokemonGoldEnv(gym.Env):
                 self.logger.log_step({"evento": "INICIO_COMBATE", "tipo": self.combate_actual["tipo"], "mapa": map_name, "step": self.steps_count})
         if en_combate:
             self.combate_actual["ps_rival"] = self.gestor.leer_vida_enemigo()
+            # El nivel del rival se relee en cada paso: al empezar el combate puede no estar cargado aún
+            self.combate_actual["nivel_rival"] = self.ram.leer(c.ADDR_RIVAL_NIVEL)
         elif self.combate_actual is not None:
             # Rival a 0 PS al acabar = ganado; si no, ha huido (o capturado)
             reward += self._cerrar_combate("ganado" if self.combate_actual["ps_rival"] == 0 else "huido")
@@ -388,14 +391,24 @@ class PokemonGoldEnv(gym.Env):
         pasos = self.steps_count - combate["inicio"]
         self.combates[combate["tipo"]][resultado] += 1
         self.combates["pasos_en_combate"] += pasos
+        penalizada = resultado == "huido" and self._huida_penalizable(combate)
+        if penalizada:
+            self.combates["huidas_penalizadas"] += 1
         if self.logger:
             self.logger.log_step({"evento": "FIN_COMBATE", "tipo": combate["tipo"], "resultado": resultado, "pasos": pasos,
                                   "rival": combate["rival"], "nivel_rival": combate["nivel_rival"],
-                                  "mapa": combate["mapa"], "step": self.steps_count})
+                                  "huida_penalizada": penalizada, "mapa": combate["mapa"], "step": self.steps_count})
         # Ganar al rival en Ciudad Cerezo (el único entrenador de ese mapa) es un hito de la vuelta a Elm
         if (combate["tipo"] == "entrenador" and resultado == "ganado" and combate["mapa"] == "CHERRYGROVE_CITY"):
             return self._hito(c.HITO_RIVAL_CEREZO)
-        return 0.0
+        return c.PENALTY_HUIR_BAJO_OBJETIVO if penalizada else 0.0
+
+    def _huida_penalizable(self, combate):
+        """Huir de un salvaje solo se penaliza si hacía falta entrenar y el combate era razonable."""
+        return (combate["tipo"] == "salvaje"
+                and self.h_combat.bajo_objetivo                          # le falta nivel para el siguiente reto
+                and combate["nivel_rival"] <= self.nivel_max_previo     # el salvaje no es más fuerte
+                and self.fraccion_vida > c.VIDA_MIN_PARA_LUCHAR)        # y tiene vida para pelear
 
     def _hito(self, hito):
         """Premia un hito una sola vez por episodio (y nunca si ya estaba conseguido en la salida)."""

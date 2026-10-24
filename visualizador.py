@@ -494,6 +494,9 @@ def generar_resumen(fuentes, metrics, splits, mapas):
         pasos_c = sum(r["combates"]["pasos_en_combate"] for r in con_datos)
         pasos_t = sum(r["steps"] for r in con_datos)
         L.append(f"  Tiempo en combate: {100 * pasos_c / max(pasos_t, 1):.1f}% de los pasos")
+        penalizadas = sum(r["combates"].get("huidas_penalizadas", 0) for r in con_datos)
+        if penalizadas:
+            L.append(f"  Huidas penalizadas (huyó cuando le hacía falta entrenar): {penalizadas}")
     L.append("")
 
     # TensorBoard

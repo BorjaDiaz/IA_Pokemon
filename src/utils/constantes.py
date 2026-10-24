@@ -40,6 +40,12 @@ REWARD_LEVEL_UP = 15.0              # Por cada nivel ganado por debajo del objet
 # Ahora, por debajo del objetivo ganar vale ~+0,5 y por encima lo mejor sigue siendo huir.
 REWARD_KO_BAJO_OBJETIVO = 6.0
 REWARD_KO_SOBRE_OBJETIVO = 0.5
+# Huir de un salvaje se penaliza solo si hacía falta entrenar y el combate era razonable: el Pokémon
+# propio está por debajo del nivel objetivo, el salvaje no es de mayor nivel y el equipo tiene más del
+# 50% de PS. Si no, huir es gratis (de uno más fuerte, con la vida baja o con nivel suficiente).
+# Tras ~10 M de pasos huyendo de todo (6.592 de 6.592), sin esto nunca probaba a luchar.
+PENALTY_HUIR_BAJO_OBJETIVO = -3.0
+VIDA_MIN_PARA_LUCHAR = 0.5
 REWARD_DAMAGE_MULT = 0.05           # Por cada PS de daño causado
 
 # Historia (Flags)
