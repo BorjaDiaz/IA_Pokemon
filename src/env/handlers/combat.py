@@ -11,6 +11,8 @@ class CombatHandler:
         self.bajo_objetivo = False
         # True si en este paso debilitó a un rival estando por debajo del objetivo (cuenta como progreso)
         self.ko_bajo_objetivo = False
+        # Premios por golpe del combate en curso: si huye, el entorno los descuenta (golpear y huir no paga)
+        self.premio_golpes_combate = 0.0
 
     def procesar(self, pb, ram, rewards, gestor, en_combate, vida_actual_equipo, vida_equipo_anterior, step_count, map_name):
         reward = 0.0
@@ -18,7 +20,11 @@ class CombatHandler:
         vida_enemigo_out = self.vida_enemigo_anterior
 
         if not en_combate:
-            return reward, 999 # Reset de vida enemiga si no hay combate
+            # Fuera de combate se olvida la vida del rival: si no, al empezar el siguiente combate su vida
+            # aún sin cargar (0) parecía un K.O. del anterior. La IA lo explotó: golpe, huir y otro combate
+            self.vida_enemigo_anterior = 999
+            self.premio_golpes_combate = 0.0
+            return reward, 999
 
         vida_actual_enemigo = gestor.leer_vida_enemigo()
         
@@ -31,6 +37,7 @@ class CombatHandler:
             if 0 < daño < 500:
                 premio_daño = rewards.calcular_premio_danio(daño, gestor.leer_vida_max_enemigo(), self.bajo_objetivo)
                 reward += premio_daño
+                self.premio_golpes_combate += premio_daño
                 if config.VERBOSE: print(f"🗡️ [Clon {self.rank}] ¡Ataque! {daño} HP. Premio: +{round(premio_daño, 2)}")
                 if self.logger: self.logger.log_step({"evento": "DAÑO_CAUSADO", "daño": daño, "hp_enemigo": vida_actual_enemigo, "step": step_count})
             

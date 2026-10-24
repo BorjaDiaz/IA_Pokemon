@@ -40,6 +40,25 @@ class KOTests(unittest.TestCase):
         self.assertAlmostEqual(r.calcular_premio_danio(99, 40, bajo_objetivo=True), c.REWARD_DAMAGE_FRAC_BAJO_OBJETIVO)
         self.assertAlmostEqual(r.calcular_premio_danio(10, 40, bajo_objetivo=False), 10 * c.REWARD_DAMAGE_MULT)
 
+    def test_a_new_battle_is_not_a_knockout_of_the_previous_rival(self):
+        # Golpea, huye, pasa por el mapa y empieza otro combate con la vida del rival aún sin cargar (0)
+        h = CombatHandler(rank=0, logger=None)
+        h.bajo_objetivo = True
+        ram = SimpleNamespace(leer_max_vida_total_equipo=lambda: 20)
+        vida = {"v": 12}
+        gestor = SimpleNamespace(leer_vida_enemigo=lambda: vida["v"], leer_vida_max_enemigo=lambda: 12)
+        h.procesar(None, ram, RewardSystem(), gestor, True, 20, 20, 1, "ROUTE_30")
+        vida["v"] = 7
+        golpe, _ = h.procesar(None, ram, RewardSystem(), gestor, True, 20, 20, 2, "ROUTE_30")
+        self.assertGreater(golpe, 0)
+        self.assertAlmostEqual(h.premio_golpes_combate, golpe)
+        h.procesar(None, ram, RewardSystem(), gestor, False, 20, 20, 3, "ROUTE_30")    # huyó
+        self.assertEqual(h.premio_golpes_combate, 0.0)
+        vida["v"] = 0
+        falso, _ = h.procesar(None, ram, RewardSystem(), gestor, True, 20, 20, 4, "ROUTE_30")  # combate nuevo
+        self.assertEqual(falso, 0.0)
+        self.assertFalse(h.ko_bajo_objetivo)
+
     def test_a_knockout_below_target_is_flagged_as_progress(self):
         h = CombatHandler(rank=0, logger=None)
         for bajo in (True, False):
@@ -66,7 +85,7 @@ class HuidaTests(unittest.TestCase):
         self.env = PokemonGoldEnv.__new__(PokemonGoldEnv)
         self.env.combates = nuevas_estadisticas_combate()
         self.env.logger, self.env.steps_count = None, 100
-        self.env.h_combat = SimpleNamespace(bajo_objetivo=True)
+        self.env.h_combat = SimpleNamespace(bajo_objetivo=True, premio_golpes_combate=0.0)
         self.env.nivel_max_previo, self.env.fraccion_vida = 5, 1.0
 
     def huir(self, nivel_rival=3, tipo="salvaje"):
@@ -76,6 +95,10 @@ class HuidaTests(unittest.TestCase):
     def test_fleeing_an_easy_battle_while_under_level_is_penalized(self):
         self.assertEqual(self.huir(), c.PENALTY_HUIR_BAJO_OBJETIVO)
         self.assertEqual(self.env.combates["huidas_penalizadas"], 1)
+
+    def test_fleeing_gives_back_what_the_hits_earned(self):
+        self.env.fraccion_vida, self.env.h_combat.premio_golpes_combate = 0.4, 1.2  # huida gratis, pero golpeó
+        self.assertAlmostEqual(self.huir(), -1.2)
 
     def test_fleeing_is_free_otherwise(self):
         self.assertEqual(self.huir(nivel_rival=6), 0.0)              # el salvaje es más fuerte

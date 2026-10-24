@@ -452,7 +452,10 @@ class PokemonGoldEnv(gym.Env):
         # Ganar al rival en Ciudad Cerezo (el único entrenador de ese mapa) es un hito de la vuelta a Elm
         if (combate["tipo"] == "entrenador" and resultado == "ganado" and combate["mapa"] == "CHERRYGROVE_CITY"):
             return self._hito(c.HITO_RIVAL_CEREZO)
-        return c.PENALTY_HUIR_BAJO_OBJETIVO if penalizada else 0.0
+        # Huir devuelve lo cobrado por golpear en ese combate: si no, golpear una vez y huir (gratis con
+        # menos del 50% de vida) daba puntos combate tras combate sin ganar ninguno
+        devolver = -self.h_combat.premio_golpes_combate if resultado == "huido" else 0.0
+        return devolver + (c.PENALTY_HUIR_BAJO_OBJETIVO if penalizada else 0.0)
 
     def _huida_penalizable(self, combate):
         """Huir de un salvaje solo se penaliza si hacía falta entrenar y el combate era razonable."""
