@@ -49,6 +49,15 @@ class KOTests(unittest.TestCase):
             self.assertEqual(h.ko_bajo_objetivo, bajo)
 
 
+class CaerTests(unittest.TestCase):
+    def test_fighting_until_fainting_does_not_pay(self):
+        # 5 victorias (golpes por todos los PS del rival + K.O.), perder toda la vida del equipo y caer
+        victorias = 5 * (c.REWARD_DAMAGE_FRAC_BAJO_OBJETIVO + c.REWARD_KO_BAJO_OBJETIVO)
+        self.assertLess(victorias + c.PENALTY_DAMAGE_FRAC + c.PENALTY_TEAM_FAINTED, 0)
+        # ...pero un hito sigue valiendo más que el castigo por caer: arriesgarse por avanzar compensa
+        self.assertGreater(c.REWARD_FLAG_STORY, -c.PENALTY_TEAM_FAINTED)
+
+
 class HuidaTests(unittest.TestCase):
     """Huir solo se penaliza si hacía falta entrenar y el combate era razonable."""
 

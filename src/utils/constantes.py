@@ -22,7 +22,9 @@ PENALTY_NO_PROGRESS = -10.0         # Al cortar el episodio por no avanzar
 # Pokémon vale la pena, y quedarse sin Pokémon corta el episodio
 PENALTY_DAMAGE_FRAC = -5.0          # Por perder el 100% de los PS del equipo (proporcional)
 REWARD_HEAL_FRAC = 4.0              # Por recuperar el 100% de los PS del equipo (proporcional)
-PENALTY_TEAM_FAINTED = -15.0        # Equipo debilitado: fin del episodio
+# Equipo debilitado: fin del episodio. Con -15, combatir sin curarse hasta caer salía a cuenta (5 victorias
+# ≈ +3,0, daño -0,5, caer -1,5: +1,0) y de vuelta con el huevo caía en la Ruta 30 en vez de ir a curarse
+PENALTY_TEAM_FAINTED = -60.0
 
 # Nivel objetivo por tramo: subir de nivel y ganar combates se premia mientras el Pokémon más fuerte
 # esté por debajo del nivel adecuado para el siguiente reto; por encima, ya no (nada de farmear sin fin).

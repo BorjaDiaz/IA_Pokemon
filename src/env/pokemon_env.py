@@ -140,6 +140,8 @@ class PokemonGoldEnv(gym.Env):
             "tiempo_juego_s": round(self.ram.leer_tiempo_juego(), 1),
             "timestamp": round(time.time(), 1),
             "salida": self.salida,
+            "nivel_inicio": self.nivel_inicio,
+            "nivel_fin": self.ram.leer_nivel_max_equipo(),
             "splits": self.splits,
             "combates": self.combates,
         }
@@ -196,7 +198,7 @@ class PokemonGoldEnv(gym.Env):
         self.vida_equipo_anterior = self.ram.leer_vida_total_equipo()
         self.max_vida_equipo_anterior = self.ram.leer_max_vida_total_equipo()
         self.party_count_anterior = self.ram.leer_party_count()
-        self.nivel_max_previo = self.ram.leer_nivel_max_equipo()
+        self.nivel_max_previo = self.nivel_inicio = self.ram.leer_nivel_max_equipo()
         self.fraccion_vida = self.vida_equipo_anterior / self.max_vida_equipo_anterior if self.max_vida_equipo_anterior > 0 else 0.0
         self.fraccion_nivel = min(1.0, self.nivel_max_previo / self._nivel_objetivo())
         self.active_flags = self.ram.get_flag_bytes()
@@ -285,11 +287,22 @@ class PokemonGoldEnv(gym.Env):
                 self.logger.log_step({"evento": "INICIO_COMBATE", "tipo": self.combate_actual["tipo"], "mapa": map_name, "step": self.steps_count})
         if en_combate:
             self.combate_actual["ps_rival"] = self.gestor.leer_vida_enemigo()
+            # Debilitado alguna vez en este combate (al final del combate la RAM del rival puede cambiar)
+            self.combate_actual["ko"] = self.combate_actual.get("ko") or (
+                self.combate_actual["ps_rival"] == 0 and self.combate_actual.get("ps_visto", False))
+            self.combate_actual["ps_visto"] = self.combate_actual.get("ps_visto") or self.combate_actual["ps_rival"] > 0
             # El nivel del rival se relee en cada paso: al empezar el combate puede no estar cargado aún
             self.combate_actual["nivel_rival"] = self.ram.leer(c.ADDR_RIVAL_NIVEL)
         elif self.combate_actual is not None:
-            # Rival a 0 PS al acabar = ganado; si no, ha huido (o capturado)
-            reward += self._cerrar_combate("ganado" if self.combate_actual["ps_rival"] == 0 else "huido")
+            # El equipo cae en el mismo paso en que acaba el combate: eso es perder, no huir. Si no,
+            # rival debilitado = ganado; si no, ha huido (o capturado)
+            if vida_actual_equipo <= 0 and party_count > 0:
+                resultado = "perdido"
+            elif self.combate_actual.get("ko") or self.combate_actual["ps_rival"] == 0:
+                resultado = "ganado"
+            else:
+                resultado = "huido"
+            reward += self._cerrar_combate(resultado)
         self.ultimo_tipo_combate = tipo_combate
 
         # ⚔️ 2. GESTIÓN DE COMBATE (Delegado)

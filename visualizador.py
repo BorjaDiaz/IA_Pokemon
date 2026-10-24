@@ -459,6 +459,12 @@ def generar_resumen(fuentes, metrics, splits, mapas):
             L.append(f"  Desde {nombre_salida(salida)} ({len(grupo)} episodios):")
             L.append(f"    Recompensa media: primer 20% {rec_ini:.2f} → último 20% {rec_fin:.2f}  {_flecha(rec_fin - rec_ini, 0.1)}")
             L.append(f"    Duración media:   {len_ini:.0f} → {len_fin:.0f} pasos")
+            con_nivel = [r for r in ordenados if "nivel_fin" in r]
+            if con_nivel:
+                k = max(1, len(con_nivel) // 5)
+                fin_ini = np.mean([r["nivel_fin"] for r in con_nivel[:k]]); fin_fin = np.mean([r["nivel_fin"] for r in con_nivel[-k:]])
+                L.append(f"    Nivel al acabar:  {fin_ini:.1f} → {fin_fin:.1f} (empieza en {np.median([r['nivel_inicio'] for r in con_nivel]):.0f}, "
+                         f"máximo {max(r['nivel_fin'] for r in con_nivel)})")
     L.append("")
 
     # Hitos y mapas, por separado según desde dónde empieza el episodio (salidas mezcladas):
