@@ -146,6 +146,21 @@ HITOS_MAPA = {nombre: (_MAPA_POR_NOMBRE[mapa], requisito, prohibido) for nombre,
     ("LLEGADA_VIOLET_GYM", "VIOLET_GYM", _HUEVO_ENTREGADO, None),
 ]}
 
+# Guía de la vuelta a Elm con el huevo: en estos mapas ya recorridos no hay recompensa de exploración y
+# encontrar el camino solo por el hito de llegada no salía (0 de ~150 episodios). Llevando el huevo (y
+# sin haberlo entregado), cada casilla que se acerca a la salida más que nunca en el episodio vale
+# REWARD_VUELTA_AVANCE. Objetivo (x, y) de cada mapa, None = ese eje no cuenta; sacados de los cambios de
+# mapa reales: la Ruta 30 sale a Cerezo por el sur (y=54), Cerezo y la Ruta 29 por el este (x=40, x=59)
+# y la puerta del laboratorio de Elm está en (6, 3). Solo premia superar la mejor marca: ir y volver no paga.
+VUELTA_GUIA = {_MAPA_POR_NOMBRE[mapa]: objetivo for mapa, objetivo in [
+    ("ROUTE_30", (None, 54)),
+    ("CHERRYGROVE_CITY", (40, None)),
+    ("ROUTE_29", (59, None)),
+    ("NEW_BARK_TOWN", (6, 3)),
+]}
+VUELTA_REQUISITO, VUELTA_PROHIBIDO = _HUEVO, _HUEVO_ENTREGADO
+REWARD_VUELTA_AVANCE = 0.3   # por casilla (Ruta 30 + Cerezo + Ruta 29 + Pueblo Primavera ≈ 130 casillas ≈ +4)
+
 # Eventos de historia menores que NO dan su pequeña recompensa: son desvíos que un speedrun no hace
 # (volver a casa a hablar con mamá, objetos ocultos fuera de la ruta). Premiarlos enseñaría a volver atrás.
 EVENTOS_DESVIO = {"EVENT_TALKED_TO_MOM_AFTER_MYSTERY_EGG_QUEST"}

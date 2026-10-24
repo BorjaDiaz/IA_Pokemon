@@ -158,6 +158,7 @@ class PokemonGoldEnv(gym.Env):
         self.splits = {}
         self.combates = nuevas_estadisticas_combate()
         self.combate_actual = None
+        self.mejor_vuelta = {}  # mapa -> mejor progreso hacia la salida en la vuelta a Elm (ver _guia_vuelta)
 
         # Sistema de Curriculum Learning (Cargar partida avanzada)
         ruta_salida = self._elegir_salida()
@@ -276,6 +277,8 @@ class PokemonGoldEnv(gym.Env):
             cuenta_progreso=rom_catalog.es_explorable(current_speedrun_map),
         )
         reward += r_mov
+        if not (en_combate or en_script):
+            reward += self._guia_vuelta(current_speedrun_map, x, y)
 
         # ⚔️ Seguimiento de combates: tipo, duración y resultado (para medir si aprende a combatir)
         if en_combate and self.combate_actual is None:
@@ -488,6 +491,25 @@ class PokemonGoldEnv(gym.Env):
     def _evento_activo(self, nombre):
         addr, bit = rom_catalog.EVENT_FLAGS[nombre]
         return bool((self.ram.leer(addr) >> bit) & 1)
+
+    def _guia_vuelta(self, mapa, x, y):
+        """Vuelta a Elm con el huevo (VUELTA_GUIA): premia cada casilla que se acerca a la salida del mapa
+        más que nunca en el episodio. La primera casilla de cada mapa solo fija la marca."""
+        objetivo = c.VUELTA_GUIA.get(mapa)
+        if objetivo is None or 255 in (x, y):  # 255: coordenada de transición entre mapas
+            return 0.0
+        if not self._evento_activo(c.VUELTA_REQUISITO) or self._evento_activo(c.VUELTA_PROHIBIDO):
+            return 0.0
+        ox, oy = objetivo
+        progreso = -((abs(x - ox) if ox is not None else 0) + (abs(y - oy) if oy is not None else 0))
+        anterior = self.mejor_vuelta.get(mapa)
+        if anterior is not None and progreso <= anterior:
+            return 0.0
+        self.mejor_vuelta[mapa] = progreso
+        # Un salto de más de 2 casillas en un paso es una lectura rara (warp): fija la marca sin premiar
+        if anterior is None or progreso - anterior > 2:
+            return 0.0
+        return c.REWARD_VUELTA_AVANCE * (progreso - anterior)
 
     def _comprobar_hitos_mapa(self, mapa):
         """Hitos de llegada a mapas clave: exigen su evento `requisito` activo y `prohibido` sin activar
