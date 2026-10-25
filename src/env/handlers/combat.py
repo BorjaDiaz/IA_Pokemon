@@ -9,14 +9,24 @@ class CombatHandler:
         # El entorno lo actualiza en cada paso: True si el Pokémon más fuerte está por debajo del nivel
         # objetivo del tramo (ganar combates vale más mientras necesita subir de nivel)
         self.bajo_objetivo = False
+        # El entorno lo actualiza en cada paso: True en combates contra entrenadores. Hay que ganarlos
+        # sea cual sea el nivel (no se puede huir): con nivel suficiente, el rival de Cerezo no recibía casi
+        # premio por golpe y la IA se quedaba quieta hasta el corte por "sin progreso" (14 de 16 combates)
+        self.entrenador = False
         # True si en este paso debilitó a un rival estando por debajo del objetivo (cuenta como progreso)
         self.ko_bajo_objetivo = False
+        # True si en este paso hubo progreso en combate: un K.O. que hacía falta o un golpe a un entrenador
+        self.progreso = False
         # Premios por golpe del combate en curso: si huye, el entorno los descuenta (golpear y huir no paga)
         self.premio_golpes_combate = 0.0
 
+    def _tarifa_completa(self):
+        """Golpes y K.O. valen lo máximo si hace falta subir de nivel o si es un entrenador (hay que ganar)."""
+        return self.bajo_objetivo or self.entrenador
+
     def procesar(self, pb, ram, rewards, gestor, en_combate, vida_actual_equipo, vida_equipo_anterior, step_count, map_name):
         reward = 0.0
-        self.ko_bajo_objetivo = False
+        self.ko_bajo_objetivo = self.progreso = False
         vida_enemigo_out = self.vida_enemigo_anterior
 
         if not en_combate:
@@ -35,15 +45,17 @@ class CombatHandler:
         elif 0 <= vida_actual_enemigo < self.vida_enemigo_anterior and self.vida_enemigo_anterior != 999:
             daño = self.vida_enemigo_anterior - vida_actual_enemigo
             if 0 < daño < 500:
-                premio_daño = rewards.calcular_premio_danio(daño, gestor.leer_vida_max_enemigo(), self.bajo_objetivo)
+                premio_daño = rewards.calcular_premio_danio(daño, gestor.leer_vida_max_enemigo(), self._tarifa_completa())
+                self.progreso = self.progreso or self.entrenador
                 reward += premio_daño
                 self.premio_golpes_combate += premio_daño
                 if config.VERBOSE: print(f"🗡️ [Clon {self.rank}] ¡Ataque! {daño} HP. Premio: +{round(premio_daño, 2)}")
                 if self.logger: self.logger.log_step({"evento": "DAÑO_CAUSADO", "daño": daño, "hp_enemigo": vida_actual_enemigo, "step": step_count})
             
             if vida_actual_enemigo == 0:
-                reward += c.REWARD_KO_BAJO_OBJETIVO if self.bajo_objetivo else c.REWARD_KO_SOBRE_OBJETIVO
+                reward += c.REWARD_KO_BAJO_OBJETIVO if self._tarifa_completa() else c.REWARD_KO_SOBRE_OBJETIVO
                 self.ko_bajo_objetivo = self.bajo_objetivo
+                self.progreso = self.progreso or self._tarifa_completa()
                 if config.VERBOSE: print(f"🏆 [Clon {self.rank}] ¡Rival Debilitado!")
                 vida_enemigo_out = 999
             else:

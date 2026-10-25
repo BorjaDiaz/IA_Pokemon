@@ -40,6 +40,19 @@ class KOTests(unittest.TestCase):
         self.assertAlmostEqual(r.calcular_premio_danio(99, 40, bajo_objetivo=True), c.REWARD_DAMAGE_FRAC_BAJO_OBJETIVO)
         self.assertAlmostEqual(r.calcular_premio_danio(10, 40, bajo_objetivo=False), 10 * c.REWARD_DAMAGE_MULT)
 
+    def test_trainers_pay_full_rate_and_each_hit_is_progress_even_at_target_level(self):
+        def golpe(entrenador):
+            h = CombatHandler(rank=0, logger=None)
+            h.bajo_objetivo, h.entrenador, h.vida_enemigo_anterior = False, entrenador, 20
+            gestor = SimpleNamespace(leer_vida_enemigo=lambda: 15, leer_vida_max_enemigo=lambda: 20)
+            reward, _ = h.procesar(None, SimpleNamespace(leer_max_vida_total_equipo=lambda: 20), RewardSystem(),
+                                   gestor, True, 20, 20, 1, "CHERRYGROVE_CITY")
+            return reward, h.progreso
+        self.assertAlmostEqual(golpe(True)[0], c.REWARD_DAMAGE_FRAC_BAJO_OBJETIVO * 5 / 20)
+        self.assertTrue(golpe(True)[1])
+        self.assertAlmostEqual(golpe(False)[0], 5 * c.REWARD_DAMAGE_MULT)  # salvaje con nivel de sobra
+        self.assertFalse(golpe(False)[1])
+
     def test_a_new_battle_is_not_a_knockout_of_the_previous_rival(self):
         # Golpea, huye, pasa por el mapa y empieza otro combate con la vida del rival aún sin cargar (0)
         h = CombatHandler(rank=0, logger=None)

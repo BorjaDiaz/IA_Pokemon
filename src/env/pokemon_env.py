@@ -316,6 +316,7 @@ class PokemonGoldEnv(gym.Env):
         # ⚔️ 2. GESTIÓN DE COMBATE (Delegado)
         objetivo = self._nivel_objetivo()
         self.h_combat.bajo_objetivo = nivel_max < objetivo
+        self.h_combat.entrenador = tipo_combate == 2
         self.fraccion_vida = vida_actual_equipo / max_vida_equipo if max_vida_equipo > 0 else 0.0
         self.fraccion_nivel = min(1.0, nivel_max / objetivo)
         self.mision = self._mision_actual()
@@ -326,8 +327,9 @@ class PokemonGoldEnv(gym.Env):
         )
         reward += r_comb
         # Entrenar cuando hace falta es progreso: sin esto, subir de nv 5 a 8 (~12 combates, ~1.560 pasos)
-        # se cortaba por "sin progreso" a los 1.000 pasos, a mitad del entrenamiento
-        if self.h_combat.ko_bajo_objetivo:
+        # se cortaba por "sin progreso" a los 1.000 pasos, a mitad del entrenamiento. Golpear a un
+        # entrenador también: su combate (diálogos incluidos) puede pasar de 1.000 pasos
+        if self.h_combat.progreso:
             self.h_movement.registrar_progreso()
 
         # 🏥 Curación y niveles
