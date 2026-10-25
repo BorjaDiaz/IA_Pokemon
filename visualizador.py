@@ -420,6 +420,8 @@ def por_salida(metrics):
 def nombre_salida(salida):
     if salida == config.SALIDA_SIMULACRO:
         return "el simulacro de combate"
+    if salida == config.SALIDA_FRONTERA:
+        return "la frontera (lo más lejos conseguido)"
     if salida == salida_base():
         return f"el inicio ({salida})"
     return "el hito " + salida.replace("best_speedrun_", "").replace(".state", "")

@@ -61,6 +61,18 @@ class SalidasTests(unittest.TestCase):
         self.assertEqual(len([k for k in salidas if os.path.dirname(k) == config.SIMULACRO_DIR]), 2)  # usa todos
         self.assertAlmostEqual(salidas["inicio.state"] / 4000, (1 - config.PROB_SIMULACRO_COMBATE) * 0.5, delta=0.04)
 
+    def test_frontier_states_are_used_and_the_least_chosen_weigh_more(self):
+        self.crear_hito(HITOS[0])
+        os.makedirs(os.path.join(self.tmp.name, config.FRONTERA_DIR))
+        for nombre in ("m01_24_3_1_0.state", "m01_24_3_2_0.state"):
+            open(os.path.join(self.tmp.name, config.FRONTERA_DIR, nombre), "wb").close()
+        salidas = self.elegir()
+        frontera = {k: v for k, v in salidas.items() if os.path.dirname(k) == config.FRONTERA_DIR}
+        self.assertAlmostEqual(sum(frontera.values()) / 4000, config.PROB_FRONTERA, delta=0.04)
+        self.assertEqual(len(frontera), 2)
+        a, b = frontera.values()
+        self.assertLess(abs(a - b) / (a + b), 0.15)  # se reparten: la menos elegida pasa a pesar más
+
     def test_disabled_uses_curriculum_stage(self):
         self.crear_hito(HITOS[0])
         config.SALIDAS_MEZCLADAS = False

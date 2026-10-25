@@ -36,6 +36,7 @@ def nuevas_estadisticas_combate():
 
 class PokemonGoldEnv(gym.Env):
     simulacro = fin_simulacro = False  # episodio de simulacro de combate (ver reset)
+    frontera = False                   # episodio que empieza en un savestate de frontera (ver reset)
 
     def __init__(self, rank=0, ventana=None, velocidad=None, salida_fija=None):
         """ventana: True para ver el juego en una ventana (por defecto, según SPEEDRUN_MODE).
@@ -170,17 +171,25 @@ class PokemonGoldEnv(gym.Env):
         # episodios se registran juntos como "simulacro_combate"
         self.simulacro = os.path.dirname(ruta_salida) == config.SIMULACRO_DIR
         self.fin_simulacro = False
+        # Frontera: m<misión>_<grupo>_<mapa>_<cx>_<cy>.state. Los hitos anteriores a su misión ya están
+        # conseguidos y los mapas previos son los del último de ellos
+        self.frontera = os.path.dirname(ruta_salida) == config.FRONTERA_DIR
         if self.simulacro:
             hito_simulacro = os.path.basename(ruta_salida)[len("combate_"):].rsplit("_", 1)[0]
             self.salida = config.SALIDA_SIMULACRO
             self.mapas_previos = self._mapas_previos(f"best_speedrun_{hito_simulacro}.state")
+        elif self.frontera:
+            mision_frontera = int(os.path.basename(ruta_salida)[1:3])
+            hito_frontera = c.HITOS[mision_frontera - 1] if mision_frontera > 0 else None
+            self.salida = config.SALIDA_FRONTERA
+            self.mapas_previos = self._mapas_previos(f"best_speedrun_{hito_frontera}.state") if hito_frontera else set()
         else:
             self.salida = ruta_salida
             # Si se empieza en un hito, los mapas recorridos para llegar a él ya cuentan como visitados:
             # volver a casa no debe dar recompensa de exploración
             self.mapas_previos = self._mapas_previos(self.salida)
         # Los hitos hasta el de la salida (incluido) ya están conseguidos: no se vuelven a premiar
-        hito_salida = hito_simulacro if self.simulacro else (
+        hito_salida = hito_simulacro if self.simulacro else hito_frontera if self.frontera else (
             self.salida[len("best_speedrun_"):-len(".state")] if self.salida.startswith("best_speedrun_") else None)
         self.hitos_previos = set(c.HITOS[:c.HITOS.index(hito_salida) + 1]) if hito_salida in c.HITOS else set()
         self.episode_maps = set(self.mapas_previos)
@@ -191,9 +200,10 @@ class PokemonGoldEnv(gym.Env):
             if not os.path.exists(path):
                 raise FileNotFoundError(f"No existe el savestate del curriculum: {path}")
             with open(path, "rb") as f: self.pb.load_state(f)
-        if self.simulacro:
-            # El mapa del combate ya es conocido: no da recompensa de mapa nuevo ni dispara hitos de llegada
+        if self.simulacro or self.frontera:
+            # El mapa de la salida ya es conocido: no da recompensa de mapa nuevo ni dispara hitos de llegada
             self.episode_maps.add((self.ram.leer(c.ADDR_MAP_GRP), self.ram.leer(c.ADDR_MAP_ID)))
+        self.frontera_conocida = self._frontera_guardada()
 
         # Reseteo de variables de control del speedrun
         self.steps_count = 0
@@ -369,6 +379,7 @@ class PokemonGoldEnv(gym.Env):
 
         # Hitos de ruta: llegar a un mapa clave (con su requisito, p. ej. tener ya el huevo para la vuelta)
         reward += self._comprobar_hitos_mapa(current_speedrun_map)
+        self._guardar_frontera(current_speedrun_map, x, y, en_combate, en_script)
 
 
         # 📸 Capturas: pantalla en memoria cada pocos pasos y foto de cada hito
@@ -436,9 +447,47 @@ class PokemonGoldEnv(gym.Env):
         simulacros = sorted(glob.glob(os.path.join(config.STATES_DIR, config.SIMULACRO_DIR, "combate_*.state")))
         if simulacros and self.rng.random() < getattr(self, "prob_simulacro", config.PROB_SIMULACRO_COMBATE):
             return os.path.join(config.SIMULACRO_DIR, os.path.basename(self.rng.choice(simulacros)))
+        frontera = PokemonGoldEnv._frontera_guardada()
+        if frontera and self.rng.random() < config.PROB_FRONTERA:
+            # Las menos elegidas por este clon pesan más (Go-Explore: explorar desde lo menos practicado)
+            veces = self.__dict__.setdefault("veces_frontera", {})
+            nombres = sorted(frontera)
+            elegida = self.rng.choices(nombres, weights=[1 / (1 + veces.get(n, 0)) ** 0.5 for n in nombres])[0]
+            veces[elegida] = veces.get(elegida, 0) + 1
+            return os.path.join(config.FRONTERA_DIR, elegida)
         if not hitos or self.rng.random() < config.PROB_SALIDA_INICIO:
             return base
         return self.rng.choice(hitos)
+
+    @staticmethod
+    def _frontera_guardada():
+        """Nombres de los savestates de frontera (los de todos los clones y ejecuciones)."""
+        carpeta = os.path.join(config.STATES_DIR, config.FRONTERA_DIR)
+        return {n for n in os.listdir(carpeta) if n.endswith(".state")} if os.path.isdir(carpeta) else set()
+
+    def _guardar_frontera(self, mapa, x, y, en_combate, en_script):
+        """Guarda la partida si es la primera vez (de cualquier clon) que se llega a esta zona del mapa con la
+        misión actual. Solo exteriores y cuevas, fuera de combates y escenas, con PS y PP >= 50%: una salida
+        sin PP era una trampa (el rival de Cerezo imposible con Placaje a 0 PP)."""
+        if (self.simulacro or en_combate or en_script or not config.GUARDAR_RECORDS or 255 in (x, y)
+                or not rom_catalog.es_explorable(mapa) or self.fraccion_vida < 0.5 or self.fraccion_pp < 0.5
+                or len(self.frontera_conocida) >= config.FRONTERA_MAX):
+            return
+        # La misión se recalcula: si en este paso se ha conseguido un hito, la salida no debe volver a darlo
+        self.mision = self._mision_actual()
+        nombre = f"m{self.mision:02d}_{mapa[0]}_{mapa[1]}_{x // config.FRONTERA_CELDA}_{y // config.FRONTERA_CELDA}.state"
+        if nombre in self.frontera_conocida:
+            return
+        self.frontera_conocida.add(nombre)
+        carpeta = os.path.join(config.STATES_DIR, config.FRONTERA_DIR)
+        os.makedirs(carpeta, exist_ok=True)
+        ruta = os.path.join(carpeta, nombre)
+        if os.path.exists(ruta):  # la guardó otro clon desde el último reset
+            return
+        tmp = f"{ruta}.{self.rank}.tmp"
+        with open(tmp, "wb") as f:
+            self.pb.save_state(f)
+        os.replace(tmp, ruta)
 
     def fijar_prob_simulacro(self, prob):
         """Lo llama SimulacroCallback (desde el proceso principal) para retirar el simulacro de combate."""

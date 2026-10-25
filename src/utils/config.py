@@ -50,6 +50,15 @@ PROB_SALIDA_INICIO = 0.5
 # (state/combates/, los crea tools/crear_simulacros.py) y termina al acabar el combate. Al azar casi
 # siempre acaba eligiendo HUIR antes de ganar; repitiendo combates descubre que atacar compensa.
 SIMULACRO_DIR = "combates"
+# Frontera (Go-Explore): cuando un clon llega por primera vez a una zona de FRONTERA_CELDA x FRONTERA_CELDA
+# casillas de un exterior con su misión actual (sano: PS y PP >= 50%), se guarda la partida en
+# state/frontera/. Con PROB_FRONTERA el episodio empieza en una de ellas: practica desde lo más lejos
+# conseguido sin guías a mano (no cruzaba la Ruta 29 ni la 30: los episodios se acababan antes)
+FRONTERA_DIR = "frontera"
+SALIDA_FRONTERA = "frontera"
+PROB_FRONTERA = 0.2
+FRONTERA_CELDA = 8
+FRONTERA_MAX = 500            # tope de savestates (~200 KB cada uno)
 SALIDA_SIMULACRO = "simulacro_combate"  # cómo se registran sus episodios (salida en metrics.jsonl)
 PROB_SIMULACRO_COMBATE = 0.25
 # Cuando gana al menos SIMULACRO_EXITO de los últimos SIMULACRO_VENTANA simulacros, se retira (pasa a
