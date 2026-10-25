@@ -62,7 +62,10 @@ PROB_SIMULACRO_DOMINADO = 0.0
 # ENTRENAMIENTO (PPO)
 # ==========================================
 TOTAL_TIMESTEPS = 5_000_000
-PPO_LEARNING_RATE = 0.0001   # con 0.0003 approx_kl ~0.035 y clip_fraction ~0.25: actualizaciones demasiado bruscas
+# Con 0.0003 approx_kl ~0.035 y clip_fraction ~0.25: actualizaciones demasiado bruscas. Con 0.0001,
+# approx_kl siempre ~0.018 (casi en el tope de 0.02) y dos runs seguidas olvidaron el principio (Elm del
+# 96% al 68%) mientras aprendían tramos más avanzados: con el modelo ya avanzado, pasos más pequeños
+PPO_LEARNING_RATE = 0.00005
 PPO_TARGET_KL = 0.02         # corta las vueltas de una actualización si la política ya cambió bastante
 PPO_GAMMA = 0.998          # horizonte largo: los hitos están a miles de pasos
 PPO_ENT_COEF = 0.02        # algo más que el 0.01 habitual: la IA nueva debe probar a luchar en los menús de combate
