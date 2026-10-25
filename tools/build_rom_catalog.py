@@ -10,6 +10,7 @@ Uso:
 """
 import json
 import os
+import re
 import urllib.request
 
 PRET_BASE = "https://raw.githubusercontent.com/pret/pokegold/master/"
@@ -100,6 +101,18 @@ def parse_entornos(lines):
     return entornos
 
 
+def parse_moves(lines):
+    """{id: [nombre, potencia, pp]} desde data/moves/moves.asm: una línea `move` por ataque, en orden de id
+    (POUND = 1). Potencia 0 = no hace daño (Malicioso, Pantallahumo...)."""
+    moves, n = {}, 0
+    for line in lines:
+        m = re.match(r"\s*move\s+(\w+),\s*\w+,\s*(\d+),\s*\w+,\s*\d+,\s*(\d+),", line)
+        if m:
+            n += 1
+            moves[str(n)] = [m.group(1), int(m.group(2)), int(m.group(3))]
+    return moves
+
+
 def flag_kind(index):
     # Rangos según los comentarios de event_flags.asm
     if index < 8:
@@ -115,6 +128,8 @@ def main():
     flags = parse_event_flags(fetch("constants/event_flags.asm"))
     maps = parse_maps(fetch("constants/map_constants.asm"))
     entornos = parse_entornos(fetch("data/maps/maps.asm"))
+    moves = parse_moves(fetch("data/moves/moves.asm"))
+    assert moves["33"][0] == "TACKLE" and moves["43"][1] == 0, "moves.asm no cuadra con los ids de ataque"
     assert set(entornos) == set(maps), "maps.asm y map_constants.asm no cuadran"
 
     catalog = {
@@ -132,12 +147,13 @@ def main():
         },
         "maps": maps,
         "entornos": entornos,
+        "moves": moves,
     }
 
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         json.dump(catalog, f, indent=1, ensure_ascii=False)
-    print(f"{len(flags)} event flags y {len(maps)} mapas -> {OUT_PATH}")
+    print(f"{len(flags)} event flags, {len(maps)} mapas y {len(moves)} ataques -> {OUT_PATH}")
 
 
 if __name__ == "__main__":

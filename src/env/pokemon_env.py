@@ -84,6 +84,7 @@ class PokemonGoldEnv(gym.Env):
         # Para las barras de la observación: PS del equipo y nivel respecto al objetivo del tramo (0..1)
         self.fraccion_vida = 0.0
         self.fraccion_nivel = 0.0
+        self.fraccion_pp, self.pp_maximos = 1.0, 0
         self.mision = 0
 
         # Inicialización del emulador (sin sonido: no se usa y cuesta tiempo de CPU)
@@ -205,6 +206,7 @@ class PokemonGoldEnv(gym.Env):
         self.nivel_max_previo = self.nivel_inicio = self.ram.leer_nivel_max_equipo()
         self.fraccion_vida = self.vida_equipo_anterior / self.max_vida_equipo_anterior if self.max_vida_equipo_anterior > 0 else 0.0
         self.fraccion_nivel = min(1.0, self.nivel_max_previo / self._nivel_objetivo())
+        self.fraccion_pp, self.pp_maximos = self._leer_pp()
         self.mision = self._mision_actual()
         self.active_flags = self.ram.get_flag_bytes()
 
@@ -338,6 +340,7 @@ class PokemonGoldEnv(gym.Env):
             reward += self.rewards.calcular_premio_curacion(curacion, max_vida_equipo)
             if config.VERBOSE: print(f"💊 [Clon {self.rank}] ¡Curación! (+{curacion} HP).")
         self.vida_equipo_anterior = vida_actual_equipo
+        reward += self._premio_pp(en_combate)
 
         # Solo cuentan los niveles ganados por debajo del objetivo del tramo (sin farmear de más)
         if self.nivel_max_previo > 0 and nivel_max > self.nivel_max_previo:
@@ -488,6 +491,23 @@ class PokemonGoldEnv(gym.Env):
             return True
         return hito in rom_catalog.EVENT_FLAGS and self._evento_activo(hito)
 
+    def _leer_pp(self):
+        """(fracción de PP que quedan en los ataques que hacen daño, PP máximos). Sin ataques que hagan
+        daño (o sin Pokémon) es 0: no puede ganar ningún combate."""
+        actuales, maximos = self.ram.leer_pp_ataques()
+        return (actuales / maximos if maximos else 0.0), maximos
+
+    def _premio_pp(self, en_combate):
+        """Premia recuperar PP fuera de combate (Centro Pokémon), solo la parte por debajo de PP_UMBRAL.
+        Si cambian los PP máximos (ataque nuevo, Pokémon nuevo) se toma como nueva referencia."""
+        fraccion, maximos = self._leer_pp()
+        premio = 0.0
+        if not en_combate and maximos == self.pp_maximos and fraccion > self.fraccion_pp:
+            premio = c.REWARD_PP_FRAC * max(0.0, min(fraccion, c.PP_UMBRAL) - min(self.fraccion_pp, c.PP_UMBRAL))
+            if premio and config.VERBOSE: print(f"🔋 [Clon {self.rank}] ¡PP recuperados! ({self.fraccion_pp:.0%} → {fraccion:.0%})")
+        self.fraccion_pp, self.pp_maximos = fraccion, maximos
+        return premio
+
     def _mision_actual(self):
         """Índice en HITOS del primer hito sin conseguir: la "misión" en curso (p. ej. volver con Elm
         llevando el huevo). Va en la observación porque la pantalla no lo muestra: la Ruta 30 se ve igual
@@ -562,6 +582,10 @@ class PokemonGoldEnv(gym.Env):
         exploracion[0:2, :int(round(80 * self.fraccion_vida))] = 255
         exploracion[2:4, :] = 0
         exploracion[2:4, :int(round(80 * self.fraccion_nivel))] = 255
+        # Filas 6-7 = PP que quedan en los ataques que hacen daño: sin ellos no puede ganar (fuera de
+        # combate la pantalla no lo muestra), así sabe cuándo toca ir al Centro Pokémon
+        exploracion[6:8, :] = 0
+        exploracion[6:8, :int(round(80 * self.fraccion_pp))] = 255
         # Filas 4-5 = misión en curso en binario: 8 bloques de 10 columnas, encendido = bit a 1 (hasta 255
         # misiones). En binario y no como barra, para que añadir hitos al final no cambie las anteriores
         exploracion[4:6, :] = 0

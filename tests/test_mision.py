@@ -23,6 +23,7 @@ class MisionTests(unittest.TestCase):
         self.assertGreaterEqual(2 ** BITS_MISION, len(c.HITOS) + 1)
         e = self.env()
         e.mision, e.fraccion_vida, e.fraccion_nivel = 5, 1.0, 0.5   # 5 = 0b101
+        e.fraccion_pp = 1.0
         e.episode_tiles = set()
         e.ram = SimpleNamespace(leer=lambda addr: 1 if addr == c.ADDR_BATTLE_MODE else 0)
         import numpy as np

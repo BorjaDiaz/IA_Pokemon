@@ -22,6 +22,10 @@ PENALTY_NO_PROGRESS = -10.0         # Al cortar el episodio por no avanzar
 # Pokémon vale la pena, y quedarse sin Pokémon corta el episodio
 PENALTY_DAMAGE_FRAC = -5.0          # Por perder el 100% de los PS del equipo (proporcional)
 REWARD_HEAL_FRAC = 4.0              # Por recuperar el 100% de los PS del equipo (proporcional)
+# PP de los ataques que hacen daño (Centro Pokémon): solo se premia lo recuperado por debajo de PP_UMBRAL,
+# así ir a curarse con los PP casi llenos no da nada y gastar PP para recuperarlos no es un bucle rentable
+REWARD_PP_FRAC = 4.0
+PP_UMBRAL = 0.5
 # Equipo debilitado: fin del episodio. Con -15, combatir sin curarse hasta caer salía a cuenta (5 victorias
 # ≈ +3,0, daño -0,5, caer -1,5: +1,0) y de vuelta con el huevo caía en la Ruta 30 en vez de ir a curarse
 PENALTY_TEAM_FAINTED = -60.0

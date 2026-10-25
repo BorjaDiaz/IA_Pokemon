@@ -1,6 +1,7 @@
 import numpy as np
 
 import src.utils.constantes as c
+from src.utils import rom_catalog
 
 class RamExtractor:
     def __init__(self, pyboy_instance):
@@ -65,3 +66,22 @@ class RamExtractor:
             hp_max_actual = (self.leer(base + 0x24) << 8) + self.leer(base + 0x25)
             hp_max_total += hp_max_actual
         return hp_max_total
+
+    def leer_pp_ataques(self):
+        """(PP actuales, PP máximos) de los ataques que hacen daño de todo el equipo. Sin ellos no se
+        puede ganar un combate: el rival de Cerezo era imposible con Placaje a 0 PP. Por Pokémon: ataques
+        en +0x02..0x05 y PP en +0x17..0x1A (6 bits bajos = PP actuales, 2 altos = Más PP usados)."""
+        party_count = self.leer_party_count()
+        if party_count > 6 or party_count == 0:
+            return 0, 0
+        actuales = maximos = 0
+        for i in range(party_count):
+            base = 0xDA2A + i * 0x30
+            for slot in range(4):
+                ataque = rom_catalog.MOVES.get(self.leer(base + 0x02 + slot))
+                if ataque is None or ataque[1] == 0:
+                    continue
+                pp = self.leer(base + 0x17 + slot)
+                actuales += pp & 0x3F
+                maximos += ataque[2] + (ataque[2] // 5) * (pp >> 6)
+        return actuales, maximos

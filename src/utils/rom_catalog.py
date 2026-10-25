@@ -17,6 +17,9 @@ def es_explorable(mapa):
     """True si el mapa es exterior o cueva/mazmorra; False en interiores (casas, Centros Pokémon,
     tiendas...) y casetas, que en un speedrun no se exploran."""
     return ENTORNOS.get(mapa, "ROUTE") in ENTORNOS_EXPLORABLES
+# {id de ataque: (nombre, potencia, pp base)}; potencia 0 = no hace daño
+MOVES = {int(i): tuple(datos) for i, datos in _catalog.get("moves", {}).items()}
+
 EVENT_FLAGS = {name: (int(info["addr"], 16), info["bit"]) for name, info in _catalog["event_flags"].items()}
 EVENT_FLAG_NAMES = {pos: name for name, pos in EVENT_FLAGS.items()}
 EVENT_FLAG_KIND = {name: info["kind"] for name, info in _catalog["event_flags"].items()}
