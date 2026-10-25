@@ -301,7 +301,9 @@ class PokemonGoldEnv(gym.Env):
             self.combate_actual["ko"] = self.combate_actual.get("ko") or (
                 self.combate_actual["ps_rival"] == 0 and self.combate_actual.get("ps_visto", False))
             self.combate_actual["ps_visto"] = self.combate_actual.get("ps_visto") or self.combate_actual["ps_rival"] > 0
-            # El nivel del rival se relee en cada paso: al empezar el combate puede no estar cargado aún
+            # Especie y nivel del rival se releen en cada paso: al empezar el combate aún no están cargados
+            # (el rival de Cerezo salía como especie 10, Caterpie, en vez de su inicial)
+            self.combate_actual["rival"] = self.ram.leer(c.ADDR_RIVAL_ESPECIE)
             self.combate_actual["nivel_rival"] = self.ram.leer(c.ADDR_RIVAL_NIVEL)
         elif self.combate_actual is not None:
             # El equipo cae en el mismo paso en que acaba el combate: eso es perder, no huir. Si no,
