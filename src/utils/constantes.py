@@ -151,10 +151,11 @@ HITOS_MAPA = {nombre: (_MAPA_POR_NOMBRE[mapa], requisito, prohibido) for nombre,
 # sin haberlo entregado), cada casilla que se acerca a la salida más que nunca en el episodio vale
 # REWARD_VUELTA_AVANCE. Objetivo (x, y) de cada mapa, None = ese eje no cuenta; sacados de los cambios de
 # mapa reales: la Ruta 30 sale a Cerezo por el sur (y=54), Cerezo y la Ruta 29 por el este (x=40, x=59)
-# y la puerta del laboratorio de Elm está en (6, 3). Solo premia superar la mejor marca: ir y volver no paga.
+# y la puerta del laboratorio de Elm está en (6, 3). En Cerezo apunta a la fila 6 de la salida: así pasa
+# por (33, 6)/(33, 7), donde salta el combate con el rival (coord_event de maps/CherrygroveCity.asm, pret). Solo premia superar la mejor marca: ir y volver no paga.
 VUELTA_GUIA = {_MAPA_POR_NOMBRE[mapa]: objetivo for mapa, objetivo in [
     ("ROUTE_30", (None, 54)),
-    ("CHERRYGROVE_CITY", (40, None)),
+    ("CHERRYGROVE_CITY", (40, 6)),
     ("ROUTE_29", (59, None)),
     ("NEW_BARK_TOWN", (6, 3)),
 ]}

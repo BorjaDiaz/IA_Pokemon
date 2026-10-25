@@ -29,8 +29,9 @@ class GuiaVueltaTests(unittest.TestCase):
     def test_each_map_has_its_own_direction(self):
         e = self.env()
         e._guia_vuelta(CEREZO, 17, 0)
-        self.assertAlmostEqual(e._guia_vuelta(CEREZO, 18, 0), c.REWARD_VUELTA_AVANCE)   # Cerezo: hacia el este
-        self.assertEqual(e._guia_vuelta(CEREZO, 18, 3), 0.0)
+        self.assertAlmostEqual(e._guia_vuelta(CEREZO, 18, 0), c.REWARD_VUELTA_AVANCE)   # Cerezo: hacia el este...
+        self.assertAlmostEqual(e._guia_vuelta(CEREZO, 18, 1), c.REWARD_VUELTA_AVANCE)   # ...y bajando a la fila 6
+        self.assertEqual(e._guia_vuelta(CEREZO, 17, 1), 0.0)                            # (donde salta el rival)
 
     def test_only_while_carrying_the_egg(self):
         for e in (self.env(huevo=False), self.env(entregado=True)):

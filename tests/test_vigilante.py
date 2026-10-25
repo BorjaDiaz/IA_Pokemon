@@ -68,9 +68,23 @@ class VigilanteTests(unittest.TestCase):
         self.episodios(10, con_hito=True)
         self.ronda()
         self.episodios(8, con_hito=False)  # en la ventana de 10 solo quedan 2 con el hito: 20% < 80%
+        for _ in range(config.VIGILAR_RONDAS_DEGRADADO - 1):
+            self.assertTrue(self.ronda())  # una bajada pasajera no para
         self.assertFalse(self.ronda())
         self.assertIn(HITO, self.v.motivo)
         self.assertTrue(self.v.degradado)
+
+    def test_a_dip_that_recovers_does_not_stop(self):
+        self.episodios(10, con_hito=True)
+        self.ronda()
+        self.episodios(3, con_hito=False)  # 70%
+        self.assertTrue(self.ronda())
+        self.episodios(10, con_hito=True)  # vuelve al 100%: la cuenta se reinicia
+        self.assertTrue(self.ronda())
+        self.episodios(3, con_hito=False)
+        for _ in range(config.VIGILAR_RONDAS_DEGRADADO - 1):
+            self.assertTrue(self.ronda())
+        self.assertIsNone(self.v.motivo_pendiente)
 
     def test_a_fresh_ai_that_has_not_mastered_the_milestone_is_not_stopped(self):
         self.episodios(10, con_hito=False)  # 0%: nunca lo ha dominado, no es empeorar
