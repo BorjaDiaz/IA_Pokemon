@@ -1,6 +1,7 @@
 import os
 
-BASE_DIR = r"C:\Users\borja\Desktop\IA"
+# Carpeta del proyecto (src/utils/config.py -> tres niveles arriba): sigue valiendo si se mueve de sitio
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROM_PATH = os.path.join(BASE_DIR, "roms", "Pokemon_Oro.gbc")
 
 # Aquí se guardarán los logros automáticos de la IA
