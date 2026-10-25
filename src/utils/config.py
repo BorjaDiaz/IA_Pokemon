@@ -13,6 +13,9 @@ IA_DIR = os.path.join(BASE_DIR, "ia")
 # herramientas sueltas) se usa la carpeta actual.
 RUNS_DIR = os.path.join(BASE_DIR, "runs")
 RUN_DIR = os.environ.get("POKEMON_RUN_DIR", ".")
+# POKEMON_SIN_RECORDS=1: no escribe récords ni savestates best_speedrun_* (pruebas, ver_ia.py). Solo el
+# entrenamiento debe cambiarlos: una prueba llegó a sustituir un récord real
+GUARDAR_RECORDS = os.environ.get("POKEMON_SIN_RECORDS") != "1"
 # Mejor tiempo de partida conseguido para cada hito (lo usan los savestates best_speedrun_*)
 RECORDS_PATH = os.path.join(STATES_DIR, "records.json")
 

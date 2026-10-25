@@ -64,6 +64,8 @@ class StoryHandler:
     def _guardar_si_es_record(self, pb, ram, hito, step_count):
         """Guarda state/best_speedrun_<hito>.state solo si es el menor tiempo de partida conseguido
         para ese hito (por cualquier clon, en cualquier ejecución). Récords en state/records.json."""
+        if not config.GUARDAR_RECORDS:
+            return
         tiempo = ram.leer_tiempo_juego()
         records = cargar_records()
         anterior = records.get(hito, {}).get("tiempo_juego_s")

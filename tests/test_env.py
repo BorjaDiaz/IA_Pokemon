@@ -65,7 +65,7 @@ class PokemonGoldEnvTests(unittest.TestCase):
                 break
         else:
             self.fail("No hubo encuentro salvaje")
-        self.assertFalse(obs[1][4:].any())  # filas 0-3: barras de PS y nivel; el resto, vacío en combate
+        self.assertFalse(obs[1][6:].any())  # filas 0-5: barras de PS, nivel y misión; el resto, vacío en combate
 
         # Pulsando A se lucha con el primer ataque hasta acabar: el combate queda registrado
         for _ in range(1500):

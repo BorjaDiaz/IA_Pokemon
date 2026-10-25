@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Los datos de esta sesión (coordenadas, capturas...) van a una carpeta temporal, no a runs/.
 # Se fija antes de importar config para que también lo vean los clones en procesos aparte.
 os.environ["POKEMON_RUN_DIR"] = tempfile.mkdtemp(prefix="ver_ia_")
+os.environ["POKEMON_SIN_RECORDS"] = "1"  # mirar no debe cambiar los récords ni los savestates del curriculum
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor

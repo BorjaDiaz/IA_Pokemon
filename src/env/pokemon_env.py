@@ -24,6 +24,7 @@ from src.env.handlers.story import StoryHandler, cargar_records
 
 # Pantalla de 10 x 9 casillas de 16 px; en la observación (72 x 80) cada casilla ocupa 8 x 8 px
 CASILLAS_X, CASILLAS_Y, JUGADOR_COL, JUGADOR_FILA = 10, 9, 4, 4
+BITS_MISION = 8
 
 
 def nuevas_estadisticas_combate():
@@ -83,6 +84,7 @@ class PokemonGoldEnv(gym.Env):
         # Para las barras de la observación: PS del equipo y nivel respecto al objetivo del tramo (0..1)
         self.fraccion_vida = 0.0
         self.fraccion_nivel = 0.0
+        self.mision = 0
 
         # Inicialización del emulador (sin sonido: no se usa y cuesta tiempo de CPU)
         self.pb = PyBoy(config.ROM_PATH, window="SDL2" if self.ventana else "null", sound_emulated=False)
@@ -142,6 +144,7 @@ class PokemonGoldEnv(gym.Env):
             "salida": self.salida,
             "nivel_inicio": self.nivel_inicio,
             "nivel_fin": self.ram.leer_nivel_max_equipo(),
+            "mision_fin": c.HITOS[self.mision] if self.mision < len(c.HITOS) else "FIN",
             "splits": self.splits,
             "combates": self.combates,
         }
@@ -202,6 +205,7 @@ class PokemonGoldEnv(gym.Env):
         self.nivel_max_previo = self.nivel_inicio = self.ram.leer_nivel_max_equipo()
         self.fraccion_vida = self.vida_equipo_anterior / self.max_vida_equipo_anterior if self.max_vida_equipo_anterior > 0 else 0.0
         self.fraccion_nivel = min(1.0, self.nivel_max_previo / self._nivel_objetivo())
+        self.mision = self._mision_actual()
         self.active_flags = self.ram.get_flag_bytes()
 
         # Resetear también las vidas que guardan los handlers internamente
@@ -314,6 +318,7 @@ class PokemonGoldEnv(gym.Env):
         self.h_combat.bajo_objetivo = nivel_max < objetivo
         self.fraccion_vida = vida_actual_equipo / max_vida_equipo if max_vida_equipo > 0 else 0.0
         self.fraccion_nivel = min(1.0, nivel_max / objetivo)
+        self.mision = self._mision_actual()
         r_comb, _ = self.h_combat.procesar(
             self.pb, self.ram, self.rewards, self.gestor,
             en_combate, vida_actual_equipo, self.vida_equipo_anterior,
@@ -481,6 +486,15 @@ class PokemonGoldEnv(gym.Env):
             return True
         return hito in rom_catalog.EVENT_FLAGS and self._evento_activo(hito)
 
+    def _mision_actual(self):
+        """Índice en HITOS del primer hito sin conseguir: la "misión" en curso (p. ej. volver con Elm
+        llevando el huevo). Va en la observación porque la pantalla no lo muestra: la Ruta 30 se ve igual
+        con el huevo que sin él."""
+        for i, hito in enumerate(c.HITOS):
+            if not self._hito_conseguido(hito):
+                return i
+        return len(c.HITOS)
+
     def _nivel_objetivo(self):
         """Nivel adecuado para el siguiente reto: el de la primera fila de NIVELES_OBJETIVO sin conseguir."""
         for hito, nivel in c.NIVELES_OBJETIVO:
@@ -546,6 +560,12 @@ class PokemonGoldEnv(gym.Env):
         exploracion[0:2, :int(round(80 * self.fraccion_vida))] = 255
         exploracion[2:4, :] = 0
         exploracion[2:4, :int(round(80 * self.fraccion_nivel))] = 255
+        # Filas 4-5 = misión en curso en binario: 8 bloques de 10 columnas, encendido = bit a 1 (hasta 255
+        # misiones). En binario y no como barra, para que añadir hitos al final no cambie las anteriores
+        exploracion[4:6, :] = 0
+        for bit in range(BITS_MISION):
+            if (self.mision >> bit) & 1:
+                exploracion[4:6, bit * 10:(bit + 1) * 10] = 255
         return np.stack([gris.astype(np.uint8), exploracion])
 
     def close(self):

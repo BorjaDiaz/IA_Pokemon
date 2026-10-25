@@ -44,6 +44,14 @@ class RecordsTests(unittest.TestCase):
         with open(config.RECORDS_PATH, encoding="utf-8") as f:
             return json.load(f)[HITO]
 
+    def test_nothing_is_written_when_records_are_disabled(self):
+        config.GUARDAR_RECORDS = False
+        try:
+            self.conseguir(1.0, b"prueba")
+        finally:
+            config.GUARDAR_RECORDS = True
+        self.assertEqual(os.listdir(self.tmp.name), [])
+
     def test_first_time_is_saved(self):
         self.conseguir(300.0, b"primero")
         self.assertEqual(self.guardado(), b"primero")
