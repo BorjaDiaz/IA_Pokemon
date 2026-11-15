@@ -27,3 +27,5 @@ mapas_descubiertos.json
 runs/
 PARAR
 state/records.json
+# Geometría de los mapas extraída de la ROM: se genera con tools/build_mapas.py
+data/mapas.json
