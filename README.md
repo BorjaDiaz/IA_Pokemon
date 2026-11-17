@@ -1,14 +1,22 @@
 # IA para speedrun de Pokémon Oro en Game Boy Color
 
-Este proyecto entrena una inteligencia artificial para jugar a Pokémon Oro (Game Boy Color, versión en español) y completar la partida lo más rápido posible mediante Reinforcement Learning.
+Este proyecto busca que una IA complete Pokémon Oro (Game Boy Color, versión en español) lo más rápido posible.
 
-## Objetivo
+## Objetivo y enfoque
 
-Entrenar un agente que:
-- controle el emulador con PyBoy,
-- observe la pantalla y la RAM del juego,
-- aprenda acciones como mover, interactuar y combatir,
-- y progrese por la historia con una estrategia orientada a speedrun.
+El enfoque actual es **híbrido** (`jugar.py`, carpeta `src/piloto/`):
+- **Programado**: moverse (buscador de caminos sobre los mapas extraídos de la ROM), pasar diálogos y escenas,
+  e ir al Centro Pokémon cuando faltan PS o PP.
+- **Lista de objetivos de la historia** (`src/piloto/objetivos.py`): cada uno dice a dónde ir o con quién hablar
+  y se da por hecho con un evento del propio juego. No hay rutas escritas a mano: el camino lo calcula el buscador.
+- **Combates**: una política aparte (`src/piloto/combate.py`); hoy, el ataque más potente con PP. Es el hueco
+  donde encaja la IA que aprenda a combatir.
+
+Antes se intentó que una sola red (PPO, `train.py`) aprendiera todo mirando la pantalla. Tras 8 millones de pasos
+no pasaba de los primeros 10 minutos de juego, y los proyectos públicos con ese método llegan como mucho a la
+segunda medalla con muchísimo más cómputo. El código sigue en el proyecto, pero ya no es el camino principal.
+
+Estado: el piloto llega a la **primera medalla** (Pegaso) desde la habitación en ~48 min de juego (~20 s reales).
 
 ## Requisitos
 
@@ -20,7 +28,11 @@ Entrenar un agente que:
 
 ## Estructura del proyecto
 
-- `train.py`: entrada de entrenamiento
+- `jugar.py`: juega la partida con el piloto (enfoque híbrido)
+- `src/piloto/`: piloto (rutas.py = buscador de caminos, juego.py = emulador y RAM, piloto.py, combate.py, objetivos.py)
+- `tools/build_mapas.py`: extrae de la ROM la geometría de los 368 mapas a `data/mapas.json` (colisiones, puertas,
+  conexiones, personajes); `src/utils/mapas.py` la carga
+- `train.py`: entrenamiento por refuerzo del enfoque anterior
 - `visualizador.py`: gráficas de progreso y mapa de calor de coordenadas
 - `src/env/pokemon_env.py`: entorno Gymnasium para el juego
 - `src/agents/`: construcción del entorno vectorizado y gestión del modelo
@@ -74,7 +86,26 @@ roms/Pokemon_Oro.gbc
 
 ## Ejecutar el proyecto
 
-### Entrenamiento
+### Jugar con el piloto (enfoque actual)
+
+Una vez, para extraer los mapas de tu ROM:
+
+```bash
+python tools/build_mapas.py
+```
+
+Después:
+
+```bash
+python jugar.py                          # sin ventana, lo más rápido posible
+python jugar.py --ventana                # verlo jugar a velocidad real
+python jugar.py --ventana --velocidad 4
+python jugar.py --desde state/piloto/04.state   # seguir desde un objetivo ya conseguido
+```
+
+Al conseguir cada objetivo guarda la partida en `state/piloto/NN.state`; si se atasca, en `state/piloto/atascado.state`.
+
+### Entrenamiento (enfoque anterior)
 
 ```bash
 python train.py
